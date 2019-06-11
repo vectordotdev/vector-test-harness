@@ -1,0 +1,17 @@
+---
+- include_role:
+    name: file_test_server
+  vars:
+    action: start
+
+- include_role:
+    name: tcp_test_server
+  vars:
+    action: start_and_wait
+    server_port: "{{ tcp_server_port }}"
+
+- include_role:
+    name: http_test_server
+  vars:
+    action: start_and_wait
+    server_port: "{{ http_server_port }}"

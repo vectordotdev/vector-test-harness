@@ -1,0 +1,38 @@
+---
+- name: Remove previous /tmp/dstat.csv
+  file:
+    path: /tmp/dstat.csv
+    state: absent
+
+# This is necessary to clear disk caches, etc. This way the disk read
+# and write statistics are consistent across test runs.
+- name: Drop caches to reset state
+  shell: echo 3 | sudo tee /proc/sys/vm/drop_caches
+
+# We use dstat to periodically (every 1s) capture snapshots of system statistics.
+# We output these snapshots to CSV for posterity.
+#
+# WARNING! - Do NOT change the options unless you are certain the CSV file is
+#            backwards compatible. Changing the structure of this file makes it
+#            very difficult to compare results across time with tools like Athena.
+- name: Start dstat profiling
+  shell: |
+    dstat \
+      --epoch \
+      --cpu \
+      --disk \
+      --io \
+      --load \
+      --mem \
+      --net \
+      --proc \
+      --proc-count \
+      --sys \
+      --socket \
+      --tcp \
+      --udp \
+      --vm \
+      --output /tmp/dstat.csv
+  async: 1000
+  poll: 0
+  register: dstat

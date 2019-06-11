@@ -1,0 +1,5 @@
+---
+- name: Install openjdk-8-jdk
+  apt: 
+    name: openjdk-8-jdk
+    state: present

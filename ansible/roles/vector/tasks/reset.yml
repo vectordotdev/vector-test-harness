@@ -1,0 +1,5 @@
+---
+- include: "stop.yml"
+
+- name: Reset Vector state
+  shell: rm -rf /var/lib/vector/*

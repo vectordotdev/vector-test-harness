@@ -1,0 +1,15 @@
+[Unit]
+Description=Prometheus {{ prometheus_exporter_name }}
+After=network-online.target
+Requires=network-online.target
+
+[Service]
+ExecStart=/opt/prometheus_{{ prometheus_exporter_name }}/{{ prometheus_exporter_name }} {{ prometheus_exporter_flags }}
+Restart=always
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=prometheus_{{ prometheus_exporter_name }}
+
+[Install]
+WantedBy=multi-user.target

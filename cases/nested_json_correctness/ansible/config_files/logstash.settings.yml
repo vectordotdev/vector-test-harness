@@ -1,0 +1,6 @@
+path.logs: /var/log/logstash
+
+# This is an interesting global setting. I'm not sure why
+# batching is relevant for streaming sinks, but without reducing
+# this it requires us to wait for data to be flushed.
+pipeline.batch.delay: 1

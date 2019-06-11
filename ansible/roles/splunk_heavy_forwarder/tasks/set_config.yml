@@ -1,0 +1,7 @@
+---
+- name: Install Splunk Heavy Forwarder configuration files
+  template:
+    src: "{{ item.src }}"
+    dest: "/opt/splunk/etc/system/local/{{ item.dest }}"
+    mode: 0644
+  with_items: "{{ configuration_files }}"

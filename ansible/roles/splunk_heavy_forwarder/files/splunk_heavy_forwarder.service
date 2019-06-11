@@ -1,0 +1,20 @@
+[Unit]
+Description=Splunk Heavy Forwarder
+After=network-online.target
+Requires=network-online.target
+
+[Service]
+Type=forking
+RemainAfterExit=False
+User=splunk
+Group=splunk
+ExecStart=/opt/splunk/bin/splunk start --accept-license --answer-yes --no-prompt
+ExecStop=/opt/splunk/bin/splunk stop
+PIDFile=/opt/splunk/var/run/splunk/splunkd.pid
+Restart=no
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=splunk_heavy_forwarder
+
+[Install]
+WantedBy=multi-user.target

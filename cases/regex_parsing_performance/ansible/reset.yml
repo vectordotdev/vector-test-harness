@@ -1,0 +1,19 @@
+- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}:&tag_TestRole_subject'
+  become: true
+  roles:
+    - role: fluentbit
+      action: reset
+    - role: fluentd
+      action: stop
+    - role: logstash
+      action: reset
+    - role: splunk_heavy_forwarder
+      action: reset
+    - role: vector
+      action: reset
+
+- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}:&tag_TestRole_consumer'
+  become: true
+  roles:
+    - role: tcp_test_server
+      action: stop

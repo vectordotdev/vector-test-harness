@@ -1,0 +1,13 @@
+logging.level: info
+
+filebeat.inputs:
+- type: log
+  enabled: true
+  scan_frequency: 2
+  tail_files: false
+  paths:
+    - "{{ test_files_root }}*.log"
+
+output.logstash:
+  hosts: ["{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"]
+  worker: 4

@@ -1,0 +1,84 @@
+#!/usr/bin/env ruby
+
+# This script exports the passed results into a .json file
+#
+# We use Ruby since we have to mangle with a complex data structure.
+# Trying to print this table using bash utilities such as jq was
+# painful.
+
+require 'json'
+
+require File.join(File.dirname(__FILE__), 'athena.rb')
+require File.join(File.dirname(__FILE__), 'util.rb')
+
+results_json = ARGV[0]
+
+if results_json.nil?
+  raise "You must pass the query results JSON as the first argument"
+end
+
+def collect_metrics(hashes, key_name, sort_dir, &block)
+  metrics =
+    hashes.
+      collect do |hash|
+        subject_meta = fetch_subject_meta!(hash["subject"])
+        val = hash[key_name].round(2)
+        label = yield val
+
+        {
+          "name" => subject_meta.fetch(:name),
+          "label" => label,
+          "value" => val
+        }
+      end.
+      sort_by { |hash| hash["value"] }
+
+  if sort_dir == :desc
+    metrics.reverse
+  else
+    metrics
+  end
+end
+
+def transform_to_data!(hashes)
+  hashes.group_by { |h| h["name"] }.collect do |name, test_hashes|
+    test_meta = fetch_test_meta!(name)
+
+    {
+      "name" => test_meta.fetch(:name),
+      "metrics" => [
+        {
+          "name" => "IO",
+          "measurements" => collect_metrics(test_hashes, "io_throughput_avg", :desc) do |v|
+            filesize(v) + "/s"
+          end
+        },
+        {
+          "name" => "Mem",
+          "measurements" => collect_metrics(test_hashes, "mem_used_max", :asc) do |v|
+            filesize(v)
+          end
+        },
+        {
+          "name" => "CPU",
+          "measurements" => collect_metrics(test_hashes, "load_avg_1m", :asc) do |v|
+            "#{v} 1m avg"
+          end
+        }
+      ]
+    }
+  end
+end
+
+results = JSON.parse(results_json)
+result_set = results["ResultSet"]
+rows = result_set["Rows"]
+result_set_metadata = result_set["ResultSetMetadata"]
+hashes = transform_to_hashes!(rows, result_set_metadata)
+data = transform_to_data!(hashes)
+data = {"performance_tests" => data}
+data = JSON.pretty_generate(data)
+
+File.open("results.json","w") do |f|
+  f.write(data)
+end

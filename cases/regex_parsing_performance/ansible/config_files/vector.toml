@@ -1,0 +1,18 @@
+[sources.in]
+  type    = "tcp"
+  address = "0.0.0.0:{{ subject_port }}"
+
+[transforms.json_parser]
+  inputs = ["in"]
+  type   = "json_parser"
+
+[transforms.apache_common_parser]
+  inputs = ["json_parser"]
+  type   = "regex_parser"
+  field  = "msg"
+  regex  = '^(?P<host>[\w\.]+) - (?P<user>[\w]+) (?P<bytes_in>[\d]+) \[(?P<timestamp>.*)\] "(?P<method>[\w]+) (?P<path>.*)" (?P<status>[\d]+) (?P<bytes_out>[\d]+)$'
+
+[sinks.out]
+  inputs  = ["apache_common_parser"]
+  type    = "tcp"
+  address = "{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"

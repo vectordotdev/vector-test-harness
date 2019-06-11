@@ -1,0 +1,3 @@
+---
+- name: Reset test file state
+  shell: rm -rf {{ test_file_path }}

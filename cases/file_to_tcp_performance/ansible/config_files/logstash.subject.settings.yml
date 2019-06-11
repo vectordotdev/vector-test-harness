@@ -1,0 +1,2 @@
+path.logs: /var/log/logstash
+log.level: debug

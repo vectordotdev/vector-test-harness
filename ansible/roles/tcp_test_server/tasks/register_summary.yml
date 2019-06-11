@@ -1,0 +1,7 @@
+---
+- name: Register tcp_test_server_summary
+  shell: cat /tmp/tcp_test_server_summary.json
+  register: output
+
+- set_fact:
+    summary: "{{ output.stdout|from_json }}"

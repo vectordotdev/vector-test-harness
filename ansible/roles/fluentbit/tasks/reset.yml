@@ -1,0 +1,5 @@
+---
+- include: "stop.yml"
+
+- name: Reset Fluentbit state
+  shell: rm -rf /var/lib/td-agent-bit/*

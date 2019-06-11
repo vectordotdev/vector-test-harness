@@ -1,0 +1,70 @@
+---
+- import_playbook: reset.yml
+
+- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}:&tag_TestRole_subject'
+  become: true
+  tasks:
+    - name: Remove previous test log file
+      file:
+        path: "{{ test_file_location }}"
+        state: absent
+
+    - name: Create a test log file
+      shell: |
+        flog --format apache_common --bytes 104857600 \
+        > {{ test_file_location }}
+
+    - name: Change test file permissions
+      file:
+        path: "{{ test_file_location }}"
+        owner: root
+        group: root
+        mode: '0774'
+
+    - name: Start test servers
+      include_role:
+        name: test_servers
+      vars:
+        action: start
+
+    - name: Start {{ test_subject }}
+      include_role:
+        name: "{{ test_subject }}"
+      vars:
+        action: start
+
+    - name: Wait 15 seconds
+      pause:
+        seconds: 15
+
+    - name: Truncate file
+      shell: truncate -s 0 {{ test_file_location }}
+
+    - name: Add 1 line to the rotated file
+      shell: echo "Hello world" >> {{ test_file_location }}
+
+    - name: Wait 15 seconds
+      pause:
+        seconds: 15
+
+    - name: Stop {{ test_subject }}
+      include_role:
+        name: "{{ test_subject }}"
+      vars:
+        action: stop
+
+    - name: Stop test servers
+      include_role:
+        name: test_servers
+      vars:
+        action: stop
+
+    - name: Capture last_message
+      include: "capture_last_message/{{ test_subject }}.yml"
+
+    - debug:
+        var: last_message
+
+    - assert:
+        that:
+          - last_message | search("Hello world")

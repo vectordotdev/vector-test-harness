@@ -1,0 +1,3 @@
+---
+- name: Reload Vector
+  shell: systemctl kill -s HUP --kill-who=main vector.service

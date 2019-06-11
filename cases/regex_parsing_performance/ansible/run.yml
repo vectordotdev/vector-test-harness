@@ -1,0 +1,103 @@
+---
+- import_playbook: reset.yml
+
+- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}'
+  become: true
+  tasks:
+    - set_fact:
+        consumer_instance: "{{ hostvars[groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_consumer'].0] }}"
+        subject_instance: "{{ hostvars[groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_subject'].0] }}"
+
+- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}:&tag_TestRole_consumer'
+  become: true
+  tasks:
+    - name: Start consumer TCP server
+      include_role:
+        name: tcp_test_server
+      vars:
+        action: start_and_wait
+        server_port: "{{ consumer_port }}"
+
+- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}:&tag_TestRole_subject'
+  become: true
+  tasks:
+    - name: Wait for consumer {{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }} to become available
+      wait_for:
+        host: "{{ consumer_instance.ec2_private_ip_address }}"
+        port: "{{ consumer_port }}"
+        delay: 1
+
+    - name: Start {{ test_subject }}
+      include_role:
+        name: "{{ test_subject }}"
+      vars:
+        action: start
+
+- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}:&tag_TestRole_producer'
+  become: true
+  tasks:
+    - name: Wait for subject {{ subject_instance.ec2_private_ip_address }}:{{ subject_port }} to become available
+      wait_for:
+        host: "{{ subject_instance.ec2_private_ip_address }}"
+        port: "{{ subject_port }}"
+        delay: 1
+
+    - name: Warmup {{ test_subject }}
+      shell: |
+        timeout 10 bash -c "
+          while true
+          do
+            cat /tmp/flog-100mib.log | \
+            socat -u - tcp:{{ subject_instance.ec2_private_ip_address }}:{{ subject_port }};
+          done
+        "
+      register: timeout
+      failed_when: timeout.rc != 124
+
+- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestRole_subject'
+  become: true
+  tasks:
+    - name: Start profiling {{ test_subject }}
+      include_role:
+        name: profiling
+      vars:
+        action: start
+
+- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}:&tag_TestRole_producer'
+  become: true
+  tasks:
+    - name: Pipe test data to {{ test_subject }}
+      shell: |
+        timeout 60 bash -c "
+          while true
+          do
+            cat /tmp/flog-100mib.log | \
+            socat -u - tcp:{{ subject_instance.ec2_private_ip_address }}:{{ subject_port }};
+          done
+        "
+      register: timeout
+      failed_when: timeout.rc != 124
+
+- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}:&tag_TestRole_subject'
+  become: true
+  tasks:
+    - name: Stop profiling {{ test_subject }}
+      include_role:
+        name: profiling
+      vars:
+        action: stop
+
+    - name: Stop {{ test_subject }}
+      include_role:
+        name: "{{ test_subject }}"
+      vars:
+        action: stop
+
+- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}:&tag_TestRole_consumer'
+  become: true
+  tasks:
+    - name: Stop consumer TCP server
+      include_role:
+        name: tcp_test_server
+      vars:
+        action: stop

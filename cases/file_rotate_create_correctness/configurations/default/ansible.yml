@@ -1,0 +1,5 @@
+---
+subject_port: 9000
+http_consumer_port: 8080
+tcp_consumer_port: 9001
+test_file_location: /tmp/flog.log

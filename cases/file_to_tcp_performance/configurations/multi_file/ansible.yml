@@ -1,0 +1,5 @@
+---
+consumer_port: 9000
+test_file_count: 20
+test_file_bytes: 262250000 # 250mib
+test_files_root: /tmp/flog

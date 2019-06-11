@@ -1,0 +1,6 @@
+---
+- name: Start splunk_heavy_forwarder systemd service
+  systemd:
+    name: splunk_heavy_forwarder
+    daemon_reload: no
+    state: started

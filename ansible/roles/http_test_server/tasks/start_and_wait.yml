@@ -1,0 +1,7 @@
+---
+- include: start.yml
+
+- name: Wait for port {{ server_port }} to become available
+  wait_for:
+    port: "{{ server_port }}"
+    delay: 1

@@ -1,0 +1,15 @@
+data_dir = "/var/lib/vector"
+
+[sources.in]
+  type    = "tcp"
+  address = "127.0.0.1:{{ subject_port }}"
+
+[sinks.out]
+  inputs  = ["in"]
+  type    = "tcp"
+  address = "127.0.0.1:{{ tcp_consumer_port }}"
+
+  [sinks.out.buffer]
+    type      = "disk"
+    max_size  = 104857600 # 100mib
+    when_full = "block"

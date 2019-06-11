@@ -1,0 +1,17 @@
+[sources.in]
+  type    = "tcp"
+  address = "127.0.0.1:{{ subject_port }}"
+
+[transforms.json_decoder]
+  inputs  = ["in"]
+  type    = "json_parser"
+
+[transforms.json_unwrapper]
+  inputs  = ["json_decoder"]
+  type    = "json_parser"
+  field   = "log"
+
+[sinks.out]
+  inputs  = ["json_unwrapper"]
+  type    = "tcp"
+  address = "127.0.0.1:{{ tcp_consumer_port }}"

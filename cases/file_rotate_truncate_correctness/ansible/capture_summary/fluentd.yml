@@ -1,0 +1,5 @@
+---
+- include_role:
+    name: http_test_server
+  vars:
+    action: register_summary

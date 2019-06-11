@@ -1,0 +1,14 @@
+logging.level: info
+queue.spool: ~
+
+filebeat.inputs:
+- type: tcp
+  max_message_size: 10MiB
+  host: "127.0.0.1:{{ subject_port }}"
+
+# Due to filebeat's limited outputs, we choose logstash since it uses TCP.
+# This is the simplest of outputs that lets us take the service down to
+# enable buffering. This should work regardless of the use of their proprietary
+# lumberjack protocol.
+output.logstash:
+  hosts: ["127.0.0.1:{{ tcp_consumer_port }}"]

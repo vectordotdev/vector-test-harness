@@ -1,0 +1,49 @@
+---
+- include_role:
+    name: golang
+
+- name: Setup the tcp_test_server user
+  user:
+    name: tcp_test_server
+    createhome: no
+    home: /opt/tcp_test_server
+    shell: /usr/sbin/nologin
+
+- name: Install tcp_test_server
+  shell: /usr/local/go/bin/go get -u github.com/timberio/tcp_test_server
+  environment:
+    GOPATH: /home/{{ ansible_user }}/go
+
+- name: Install dependencies
+  shell:
+    cmd: /home/ubuntu/go/bin/dep ensure
+    chdir: /home/{{ ansible_user }}/go/src/github.com/timberio/tcp_test_server
+  environment:
+    GOPATH: /home/{{ ansible_user }}/go
+
+- name: Build the tcp_test_server binary
+  shell:
+    cmd: /usr/local/go/bin/go build
+    chdir: /home/{{ ansible_user }}/go/src/github.com/timberio/tcp_test_server
+  environment:
+    GOPATH: /home/{{ ansible_user }}/go
+
+- name: Install the tcp_test_server binary
+  shell:
+    cmd: mv tcp_test_server /usr/local/bin
+    chdir: /home/{{ ansible_user }}/go/src/github.com/timberio/tcp_test_server
+
+- name: Install the tcp_server daemon systemd script
+  template:
+    src: tcp_test_server.service
+    dest: /etc/systemd/system/tcp_test_server.service
+    mode: 0644
+
+# This ensures that the process is not running. Each test is responsible
+# for starting and stopp the relevant services.
+- name: Ensure the tcp_test_server service is stopped
+  systemd:
+    name: tcp_test_server
+    daemon_reload: yes
+    enabled: no
+    state: stopped

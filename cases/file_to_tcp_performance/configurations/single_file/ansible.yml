@@ -1,0 +1,5 @@
+---
+consumer_port: 9000
+test_file_count: 1
+test_file_bytes: 4296000000 # 4gib
+test_files_root: /tmp/flog

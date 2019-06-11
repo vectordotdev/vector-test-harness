@@ -1,0 +1,49 @@
+---
+- include_role:
+    name: golang
+
+- name: Setup the http_test_server user
+  user:
+    name: http_test_server
+    createhome: no
+    home: /opt/http_test_server
+    shell: /usr/sbin/nologin
+
+- name: Install http_test_server
+  shell: /usr/local/go/bin/go get -u github.com/timberio/http_test_server
+  environment:
+    GOPATH: /home/{{ ansible_user }}/go
+
+- name: Install dependencies
+  shell:
+    cmd: /home/{{ ansible_user }}/go/bin/dep ensure
+    chdir: /home/{{ ansible_user }}/go/src/github.com/timberio/http_test_server
+  environment:
+    GOPATH: "/home/{{ ansible_user }}/go"
+
+- name: Build the http_test_server binary
+  shell:
+    cmd: /usr/local/go/bin/go build
+    chdir: /home/{{ ansible_user }}/go/src/github.com/timberio/http_test_server
+  environment:
+    GOPATH: "/home/{{ ansible_user }}/go"
+
+- name: Install the http_test_server binary
+  shell:
+    cmd: mv http_test_server /usr/local/bin
+    chdir: /home/{{ ansible_user }}/go/src/github.com/timberio/http_test_server
+
+- name: Install the http_test_server daemon systemd script
+  template:
+    src: http_test_server.service
+    dest: /etc/systemd/system/http_test_server.service
+    mode: 0644
+
+# This ensures that the process is not running. Each test is responsible
+# for starting and stopp the relevant services.
+- name: Ensure the http_test_server service is stopped
+  systemd:
+    name: http_test_server
+    daemon_reload: yes
+    enabled: no
+    state: stopped

@@ -1,0 +1,331 @@
+#!/usr/bin/env sh
+
+#
+# Setup
+#
+
+set -e 
+
+# saner programming env: these switches turn some bugs into errors
+set -o errexit -o pipefail -o noclobber -o nounset
+
+#
+# Usage
+#
+
+usage="
+USAGE
+   test
+
+DESCRIPTION
+   Runs and profiles the provided case, uploading the results to S3.
+
+OPTIONS
+   -b, --bootstrap-only          Bootstrap the test only, do not test any subjects
+   -c, --configuration           The test configuration (default: default, env: VECTOR_TEST_CONFIGURATION)
+   -r, --run-only                Don't run the bootstrap task, just run the test. This is helpful for repeated runs.
+   -s, --subjects                The test subjects (ex: vector=1.0.0,fluentbit=1.0.0, env: VECTOR_TEST_SUBJECTS)
+   -t, --test                    The test to run (ex: tcp_to_blackhole)
+   -u, --user-id                 Your user ID (ex: ben, env: VECTOR_TEST_USER_ID)
+
+EXAMPLE
+   test -t tcp_to_blackhole -s vector
+"
+
+#
+# Dependencies
+#
+
+if ! [ -x "$(command -v ansible-playbook)" ]; then
+  echo 'Error: ansible-playbook is not installed. (sudo pip install ansible)' >&2
+  exit 1
+fi
+
+if ! [ -x "$(command -v terraform)" ]; then
+  echo 'Error: terraform is not installed. (brew install terraform)' >&2
+  exit 1
+fi
+
+# This is required for flag parsing, specifically the posix style: --flag
+! getopt --test > /dev/null 
+if [[ ${PIPESTATUS[0]} -ne 4 ]]; then
+    echo 'Error: enhanced getopt is not installed. (brew install gnu-getopt)'
+    exit 1
+fi
+
+#
+# Helpers
+#
+
+my_dir="$(dirname "$0")"
+. "$my_dir/helpers/athena.sh"
+
+#
+# Variables
+#
+
+ANSIBLE_CONFIG=''
+bootstrap='true'
+pub_key=$VECTOR_TEST_PUB_KEY
+results_s3_bucket_name=$VECTOR_TEST_RESULTS_S3_BUCKET_NAME
+run='true'
+test_configuration='default'
+test_name=''
+test_subjects=$VECTOR_TEST_SUBJECTS
+test_subject=''
+test_timestamp=`date -u +%s`
+user_id=$VECTOR_TEST_USER_ID
+
+#
+# Flags
+#
+
+OPTIONS=bc:rs:t:u:
+LONGOPTS=bootstrap-only,configuration:,run-only,subjects:,test:,user-id:
+
+! PARSED=$(getopt --options=$OPTIONS --longoptions=$LONGOPTS --name "$0" -- "$@")
+if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
+    exit 2
+fi
+eval set -- "$PARSED"
+
+while true; do
+    case "$1" in
+        -b|--bootstrap-only)
+            bootstrap='true'
+            run='false'
+            shift
+            ;;
+        -c|--configuration)
+            test_configuration="$2"
+            shift 2
+            ;;
+        -k|--key-path)
+            pub_key="$2"
+            shift 2
+            ;;
+        -r|--run-only)
+            bootstrap='false'
+            run='true'
+            shift
+            ;;
+        -s|--subject)
+            test_subject="$2"
+            shift 2
+            ;;
+        -t|--test)
+            test_name="$2"
+            shift 2
+            ;;
+        -u|--user-id)
+            user_id="$2"
+            shift 2
+            ;;
+        --)
+            shift
+            break
+            ;;
+        *)
+            echo "Invalid option detected: $1"
+            exit 3
+            ;;
+    esac
+done
+
+#
+# Requirements
+#
+
+if [ -z "$test_configuration" ]
+  then
+    echo "Error: you must supply a test configuration via the -c flag:\n$usage"
+    exit 1
+fi
+
+if [ -z "$test_name" ]
+  then
+    echo "Error: you must supply a test name via the -t flag:\n$usage"
+    exit 1
+fi
+
+if [ -z "$test_subjects" ]
+  then
+    echo "Error: you must supply test subjects via the -s flag:\n$usage"
+    exit 1
+fi
+
+if [ -z "$user_id" ]
+  then
+    echo "Error: you must supply a user ID via the -u flag or VECTOR_TESTUSER_ID env var:\n$usage"
+    exit 1
+fi
+
+#
+# Parse flags
+#
+
+ansible_version_vars=""
+test_subjects_array=()
+
+while read -d, -r pair; do
+  IFS='=' read -r subject version <<<"$pair"
+  declare "$subject"_version=$version
+  test_subjects_array+=("$subject")
+  ansible_version_vars="$ansible_version_vars "$subject"_version=$version"
+done <<<"$test_subjects,"
+
+#
+# Header
+#
+
+divider="--------------------------------------------------------------------------------"
+
+cat << MSG
+  
+                                   __   __  __  
+                                   \\ \\ / / / /
+                                    \\ V / / /
+                                     \\_/  \\/
+
+                                   V E C T O R
+
+$divider
+User ID: $user_id
+Test name: $test_name
+Test configuration: $test_configuration
+Test subjects: $test_subjects
+Test timestamp: $test_timestamp
+$divider
+
+MSG
+
+
+if [ -z "$ANSIBLE_CONFIG" ]
+then
+  echo "ANSIBLE_CONFIG not set, defaulting to $(pwd)/ansible/ansible.cfg"
+  echo ""
+
+  ANSIBLE_CONFIG="$(pwd)/ansible/ansible.cfg"
+else
+  echo "ANSIBLE_CONFIG set to $ANSIBLE_CONFIG"
+fi
+
+#
+# Prepare global environment
+#
+
+if [ "$bootstrap" == 'true' ]
+then
+  cat << MSG
+
+$divider
+Provisioning global resources
+$divider
+MSG
+
+  cd terraform
+  terraform init
+  terraform plan -out current.plan -var results-s3-bucket-name=$results_s3_bucket_name
+  terraform apply current.plan
+  cd ..
+fi
+
+#
+# Begin testing
+#
+
+cd cases/$test_name
+
+#
+# Terraform
+#
+
+if [ "$bootstrap" == 'true' ]
+then
+  cat << MSG
+
+$divider
+Provisioning test resources
+$divider
+MSG
+
+  cd terraform
+  terraform init
+  terraform plan -out current.plan -var pub_key=$pub_key -var test_name=$test_name -var test_configuration=$test_configuration -var user_id=$user_id -var-file=../configurations/$test_configuration/terraform.tfvars
+  terraform apply current.plan
+  cd ..
+else
+  echo "Bootstrap is disabled, skipping terraform bootstrap process"
+fi
+
+#
+# Ansible
+#
+
+cd ansible
+extra_vars="test_name=$test_name test_configuration=$test_configuration test_timestamp=$test_timestamp user_id=$user_id $ansible_version_vars"
+
+if [ "$bootstrap" == 'true' ]
+then
+  cat << MSG
+
+$divider
+Bootstrapping resources
+$divider
+MSG
+
+  ansible-playbook -u ubuntu -i ../../../ansible/ec2.py --extra-vars "@../configurations/$test_configuration/ansible.yml" --extra-vars "$extra_vars" bootstrap.yml
+else
+  echo "Bootstrap is disabled, skipping ansible bootstrap process"
+fi
+
+function run {
+  if grep --quiet "role: $1" bootstrap.yml
+  then
+    cat << MSG
+
+$divider
+Testing $1
+$divider
+MSG
+
+    ansible-playbook -u ubuntu -i ../../../ansible/ec2.py --extra-vars "@../configurations/$test_configuration/ansible.yml" --extra-vars "$extra_vars test_subject=$1" run.yml
+  else
+    echo "$1 is not installed for this test, skipping..."
+  fi
+}
+
+if [ "$run" == 'true' ]
+then
+  if [ -z "$test_subject" ]
+  then
+    echo "No test subject specified, running them all..."
+
+    for subject in ${test_subjects_array[@]}; do
+      run $subject
+    done
+  else
+    echo "Running $test_subject only..."
+
+    run $test_subject
+  fi
+else
+  echo "Run is disabled, skipping ansible run process"
+fi
+
+cd ..
+
+#
+# Footer
+#
+
+# Discover new partitions to ensure querying has the latest data.
+# execution_id=$(execute_query "MSCK REPAIR TABLE vector_tests")
+
+echo "
+$divider
+Done!
+
+Compare: bin/compare -t $test_name -c $test_configuration
+Cohort: bin/cohort -t $test_name -c $test_configuration -s vector
+"

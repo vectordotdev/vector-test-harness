@@ -1,0 +1,6 @@
+---
+- include_role:
+    name: vector
+  vars:
+    action: set_config
+    configuration_file: config_files/vector.toml

@@ -1,0 +1,138 @@
+#!/usr/bin/env sh
+
+# USAGE
+#    cohort [-s <string>]
+#
+# DESCRIPTION
+#    Prints a simple table that provides a cohort analysis of test
+#    results across all tests and all versions for a single subject.
+#
+# OPTIONS
+#    -s [subject] The test subject (Ex: vector,fluentbit,splunk_universal_forwarder,etc)
+#
+# EXAMPLES
+#    ./cohort -s vector
+#
+#    Vector Bechmark Cohort Analysis - avg (quantity)
+#    ------------------------------------------------
+#    name                       | v0.1.0-alpha.5-17-geb59a3f
+#    ---------------------------|---------------------------
+#    tcp_to_blackhole (default) | 6.2s (5)    
+
+#
+# Setup
+#
+
+set -e 
+
+# saner programming env: these switches turn some bugs into errors
+set -o errexit -o pipefail -o noclobber -o nounset
+
+#
+# Usage
+#
+
+usage="
+USAGE
+   cohort [-s <string>]
+
+DESCRIPTION
+   Prints a simple table that provides a cohort analysis of test
+   results across all tests and all versions for a single subject.
+
+OPTIONS
+   -s [subject] The test subject (Ex: vector,fluentbit,splunk_universal_forwarder,etc)
+
+EXAMPLES
+   ./cohort -s vector
+
+   Vector Bechmark Cohort Analysis - avg (quantity)
+   ------------------------------------------------
+   name                       | v0.1.0-alpha.5-17-geb59a3f
+   ---------------------------|---------------------------
+   tcp_to_blackhole (default) | 6.2s (5)   
+"
+
+#
+# Helpers
+#
+
+my_dir="$(dirname "$0")"
+. "$my_dir/helpers/athena.sh"
+
+#
+# Flags
+#
+
+usage() { echo "Usage: $0 [-s <string>]" 1>&2; exit 1; }
+
+subject=''
+
+while getopts "s:" o; do
+    case "${o}" in
+        s)
+            subject=${OPTARG}
+            ;;
+        *)
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND-1))
+
+#
+# Requirements
+#
+
+if [ -z "$subject" ]
+  then
+    echo "Error: you must supply a subject via the -s flag\n$usage"
+    usage
+fi
+
+#
+# Header
+#
+
+cat << END
+  
+                  __   __  __  
+                  \\ \\ / / / /
+                   \\ V / / /
+                    \\_/  \\/
+
+                  V E C T O R
+                  
+------------------------------------------------
+
+END
+
+#
+# Execute
+#
+
+execution_id=$(execute_query "$(cat << EOF
+SELECT
+  name,
+  configuration,
+  version,
+  COUNT(*) AS count,
+  AVG(duration) AS avg_duration
+FROM (
+  SELECT
+    name,
+    configuration,
+    version,
+    MAX(epoch) - MIN(epoch) AS duration
+  FROM vector_tests
+  WHERE subject='$subject'
+  GROUP BY name, configuration, version, timestamp, hostname
+)
+GROUP BY name, configuration, version
+ORDER BY version ASC
+EOF
+)")
+
+results=$(get_results $execution_id)
+
+$my_dir/helpers/print_cohort "$results"

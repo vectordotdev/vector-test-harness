@@ -1,0 +1,6 @@
+---
+- name: Install td-agent configuration
+  template:
+    src: "{{ configuration_file }}"
+    dest: /etc/td-agent/td-agent.conf
+    mode: 0644

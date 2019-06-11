@@ -1,0 +1,35 @@
+---
+# Required to install sccache
+- name: Install openssl
+  apt:
+    name: openssl
+    state: present
+
+# Required to install sccache
+- name: Install libssl-dev
+  apt:
+    name: libssl-dev
+    state: present
+
+# Required to install sccache
+- name: Install pkg-config
+  apt:
+    name: pkg-config
+    state: present
+
+- name: Download Rust installer
+  get_url:
+    url: https://sh.rustup.rs
+    dest: /tmp/rustup.sh
+    mode: 0755
+
+- name: Execute Rust installer
+  shell: |
+    /tmp/rustup.sh -y --default-toolchain stable
+
+# This is a utiltiy that helps to speed up build times by caching artifacts
+# locally and on S3.
+- name: Install sccache
+  shell: |
+    /home/{{ ansible_user }}/.cargo/bin/cargo install sccache
+    

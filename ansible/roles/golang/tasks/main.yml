@@ -1,0 +1,58 @@
+---
+- name: Downloading Go
+  get_url:
+    url: https://dl.google.com/go/go1.12.5.linux-amd64.tar.gz
+    dest: /tmp/go.tar.gz
+    mode: 0644
+
+- name: Unarchive Go to /usr/local
+  unarchive:
+    remote_src: yes
+    src: /tmp/go.tar.gz
+    dest: /usr/local
+
+- name: Remove Go archive
+  file:
+    path: /tmp/go.tar.gz
+    state: absent
+
+- name: Create the /home/{{ ansible_user }}/go GOPATH directory
+  file:
+    path: /home/{{ ansible_user }}/go
+    state: directory
+
+- name: Add the bin GOPATH sub-directory
+  file:
+    path: /home/{{ ansible_user }}/go/bin
+    state: directory
+
+- name: Add the src GOPATH sub-directory
+  file:
+    path: /home/{{ ansible_user }}/go/src
+    state: directory
+
+- name: Add GOPATH to system-wide $PATH
+  copy:
+    dest: /etc/profile.d/go-path.sh
+    content: |
+      PATH=$PATH:/usr/local/go/bin:/home/{{ ansible_user }}/go/bin
+      GOROOT=/usr/local/go
+      GOPATH=/home/{{ ansible_user }}/go
+    mode: 0654
+
+- name: Reload profile
+  shell: /etc/profile.d/go-path.sh
+
+- name: Download go-dep installer
+  get_url:
+    url: https://raw.githubusercontent.com/golang/dep/master/install.sh
+    dest: /tmp/go_dep_install.sh
+    mode: 0755
+
+- name: Run go-dep installer
+  shell: /tmp/go_dep_install.sh
+  environment:
+    GOBIN: /home/{{ ansible_user }}/go/bin
+    GOROOT: /usr/local/go
+    GOPATH: /home/{{ ansible_user }}/go
+    PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin

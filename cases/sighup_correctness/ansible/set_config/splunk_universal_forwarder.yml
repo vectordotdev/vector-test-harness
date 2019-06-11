@@ -1,0 +1,10 @@
+---
+- include_role:
+    name: splunk_universal_forwarder
+  vars:
+    action: set_config
+    configuration_files:
+      - src: config_files/splunk.inputs.conf
+        dest: inputs.conf
+      - src: config_files/splunk.outputs.conf
+        dest: outputs.conf

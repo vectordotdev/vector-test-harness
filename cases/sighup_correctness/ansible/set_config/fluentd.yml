@@ -1,0 +1,6 @@
+---
+- include_role:
+    name: fluentd
+  vars:
+    action: set_config
+    configuration_file: config_files/td-agent.conf

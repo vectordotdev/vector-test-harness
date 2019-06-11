@@ -1,0 +1,20 @@
+---
+- set_fact:
+    summary: ""
+    
+- include_role:
+    name: file_test_server
+  vars:
+    action: register_summary
+
+- include_role:
+    name: tcp_test_server
+  vars:
+    action: register_summary
+  when: summary == ""
+
+- include_role:
+    name: http_test_server
+  vars:
+    action: register_summary
+  when: summary == ""

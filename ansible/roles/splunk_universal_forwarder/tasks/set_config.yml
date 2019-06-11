@@ -1,0 +1,7 @@
+---
+- name: Install Splunk Universal Forwarder configuration files
+  template:
+    src: "{{ item.src }}"
+    dest: "/opt/splunkforwarder/etc/system/local/{{ item.dest }}"
+    mode: 0644
+  with_items: "{{ configuration_files }}"

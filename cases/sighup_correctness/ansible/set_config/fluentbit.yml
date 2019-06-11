@@ -1,0 +1,8 @@
+---
+- include_role:
+    name: fluentbit
+  vars:
+    action: set_config
+    configuration_files:
+      - src: config_files/td-agent-bit.conf
+        dest: td-agent-bit.conf

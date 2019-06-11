@@ -1,0 +1,66 @@
+---
+- import_playbook: reset.yml
+
+- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}'
+  become: true
+  tasks:
+    - set_fact:
+        consumer_instance: "{{ hostvars[groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_consumer'].0] }}"
+        consumer_role: "{% if test_subject=='filebeat' %}logstash{% else %}tcp_test_server{% endif %}"
+
+- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}:&tag_TestRole_consumer'
+  become: true
+  tasks:
+    - include_role:
+        name: "{{ consumer_role }}"
+      vars:
+        action: start
+
+- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}:&tag_TestRole_subject'
+  become: true
+  tasks:
+    - name: Wait for port {{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }} to become available
+      wait_for:
+        host: "{{ consumer_instance.ec2_private_ip_address }}"
+        port: "{{ consumer_port }}"
+        delay: 1
+
+    - name: Start {{ test_subject }}
+      include_role:
+        name: "{{ test_subject }}"
+      vars:
+        action: start
+
+    - name: Wait 15 seconds for {{ test_subject }} to initialize and warmup
+      pause:
+        seconds: 15
+
+    - name: Start profiling {{ test_subject }}
+      include_role:
+        name: profiling
+      vars:
+        action: start
+
+    - name: Wait 60 seconds for {{ test_subject }} to run
+      pause:
+        seconds: 60
+
+    - name: Stop profiling {{ test_subject }}
+      include_role:
+        name: profiling
+      vars:
+        action: stop
+
+    - name: Stop {{ test_subject }}
+      include_role:
+        name: "{{ test_subject }}"
+      vars:
+        action: stop
+
+- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}:&tag_TestRole_consumer'
+  become: true
+  tasks:
+    - include_role:
+        name: "{{ consumer_role }}"
+      vars:
+        action: stop

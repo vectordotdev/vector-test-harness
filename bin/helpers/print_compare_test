@@ -1,0 +1,133 @@
+#!/usr/bin/env ruby
+
+# This script print a table of cohort results.
+#
+# We use Ruby since we have to mangle with a complex data structure.
+# Trying to print this table using bash utilities such as jq was
+# painful.
+
+require 'json'
+
+require File.join(File.dirname(__FILE__), 'athena.rb')
+require File.join(File.dirname(__FILE__), 'table_print.rb')
+
+$results_json = ARGV[0]
+$percentages = ARGV[1] != "false"
+
+if $results_json.nil?
+  raise "You must pass the query results JSON as the first argument"
+end
+
+def filesize(size)
+  units = ['b', 'kib', 'mib', 'gib', 'tib', 'pib', 'eib']
+
+  return '0.0 B' if size == 0
+  exp = (Math.log(size) / Math.log(1024)).to_i
+  exp = 6 if exp > 6 
+
+  ('%.1f%s' % [size.to_f / 1024 ** exp, units[exp]]).gsub('.0', '')
+end
+
+def metric_row(hashes, name, key, options = {})
+  compare = options[:compare]
+  unit = options[:unit]
+  smallest = nil
+  largest = nil
+  row = {"Metric" => name}
+
+  hashes.each do |hash|
+    metric = hash[key]
+
+    if metric != nil && (smallest == nil || metric < smallest)
+      smallest = metric
+    end
+
+    if metric != nil && (largest == nil || metric > largest)
+      largest = metric
+    end
+  end
+
+  hashes.each do |hash|
+    name = "#{hash["short_subject"]}"
+    metric = hash[key]
+
+    if metric != nil
+      percentage = nil
+
+      case compare
+      when :to_largest
+        if largest != nil && metric < largest
+          percentage = ((largest - metric) / largest) * 100 * -1
+        end
+
+      when :to_smallest
+        if smallest != nil && metric > smallest
+          percentage = ((metric - smallest) / smallest) * 100
+        end
+      end
+
+      case unit
+      when "b"
+        metric = filesize(metric)
+      when "b/s"
+        metric = filesize(metric) + "/s"
+      else
+        if metric.is_a?(Float)
+          metric = metric.round(1)
+        end
+
+        metric = "#{metric}#{unit}".gsub('.0', '')
+      end
+
+      if compare && percentage != Float::INFINITY
+        if !percentage
+          metric = "#{metric} W"
+        elsif $percentages
+          metric = "#{metric} (#{percentage > 0 ? "+" : ""}#{percentage.to_i}%)"
+        end
+      end
+    end
+
+    row[name] = metric
+  end
+
+  row
+end
+
+def pivot(hashes)
+  pivoted_hashes = []
+  pivoted_hashes << metric_row(hashes, "Test count", "count")
+  pivoted_hashes << metric_row(hashes, "IO Thrpt (avg)", "io_throughput_avg", unit: "b/s", compare: :to_largest)
+  pivoted_hashes << metric_row(hashes, "Disk Thrpt (avg)", "disk_throughput_avg", unit: "b/s", compare: :to_largest)
+  pivoted_hashes << metric_row(hashes, "Duration (avg)", "duration_avg", unit: "s")
+  pivoted_hashes << metric_row(hashes, "Duration (max)", "duration_max", unit: "s")
+  pivoted_hashes << metric_row(hashes, "CPU sys (max)", "cpu_sys_max", compare: :to_smallest)
+  pivoted_hashes << metric_row(hashes, "CPU usr (max)", "cpu_usr_max", compare: :to_smallest)
+  pivoted_hashes << metric_row(hashes, "Load 1m (avg)", "load_avg_1m", compare: :to_smallest)
+  pivoted_hashes << metric_row(hashes, "Mem used (max)", "mem_used_max", unit: "b", compare: :to_smallest)
+  pivoted_hashes << metric_row(hashes, "Disk read (sum)", "disk_read_sum", unit: "b", compare: :to_smallest)
+  pivoted_hashes << metric_row(hashes, "Disk writ (sum)", "disk_writ_sum", unit: "b", compare: :to_smallest)
+  pivoted_hashes << metric_row(hashes, "Net recv (sum)", "net_recv_sum", unit: "b", compare: :to_largest)
+  pivoted_hashes << metric_row(hashes, "Net send (sum)", "net_send_sum", unit: "b")
+  pivoted_hashes << metric_row(hashes, "TCP estab (avg)", "tcp_act_sum_avg")
+  pivoted_hashes << metric_row(hashes, "TCP sync (avg)", "tcp_syn_sum_avg")
+  pivoted_hashes << metric_row(hashes, "TCP close (avg)", "tcp_clo_sum_avg")
+  pivoted_hashes
+end
+
+
+results = JSON.parse($results_json)
+result_set = results["ResultSet"]
+rows = result_set["Rows"]
+result_set_metadata = result_set["ResultSetMetadata"]
+hashes = transform_to_hashes!(rows, result_set_metadata)
+pivoted_hashes = pivot(hashes)
+
+tp pivoted_hashes
+
+puts ("-" * 109)
+puts "W = winner"
+
+hashes.each do |hash|
+  puts "#{hash["subject"]} = #{hash["version"]}"
+end

@@ -1,0 +1,53 @@
+---
+- name: Setup the prometheus user
+  user:
+    name: prometheus
+    createhome: no
+    home: /opt/prometheus
+    shell: /usr/sbin/nologin
+
+- name: Download Prometheus daemon archive
+  get_url:
+    url: https://github.com/prometheus/prometheus/releases/download/v2.8.1/prometheus-2.8.1.linux-amd64.tar.gz
+    checksum: sha256:8acf79c9f1bb79c58df557ff3f4824fd1c1220940d70f63aedf60f2e36b8d8d7
+    dest: /tmp/prometheus.tar.gz
+    mode: 0644
+
+- name: Unarchive Prometheus daemon archive to /opt
+  unarchive:
+    dest: /opt
+    remote_src: yes
+    src: /tmp/prometheus.tar.gz
+
+- name: Remove Prometheus daemon archive
+  file:
+    path: /tmp/prometheus.tar.gz
+    state: absent
+
+- name: Remove previous Prometheus directory
+  file:
+    path: /opt/prometheus
+    state: absent
+
+- name: Rename Prometheus daemon directory
+  command: mv /opt/prometheus-2.8.1.linux-amd64 /opt/prometheus
+
+- name: Install Prometheus defaults
+  copy:
+    src: prometheus.defaults
+    dest: /etc/default/prometheus
+    mode: 0644
+    remote_src: no
+
+- name: Install Prometheus daemon systemd script
+  copy:
+    src: prometheus.service
+    dest: /etc/systemd/system/prometheus.service
+    mode: 0644
+    remote_src: no
+
+- name: Enable Prometheus systemd service
+  systemd:
+    name: prometheus
+    daemon_reload: yes
+    enabled: yes

@@ -1,0 +1,19 @@
+---
+# Disabled until we can get the conditionals to worl. Fortunately,
+# all subjects can be verified through other means.
+# - name: check if output file exists
+#   stat: 
+#     path: "{{ test_file_path }}"
+#   register: output_file
+
+# - name: Register file_test_server
+#   shell: cat {{ test_file_path }}
+#   register: output
+#   when: output_file.stat.exists == true
+
+# - set_fact:
+#     summary:
+#       first_message: "{{ output.stdout_lines|first }}"
+#       last_message: "{{ output.stdout_lines|last }}"
+#       message_count: "{{ output.stdout_lines|length }}"
+#     when: output.stdout_lines != []

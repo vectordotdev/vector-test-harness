@@ -1,0 +1,19 @@
+# Global Ansible configuration. You should not change this unless you know what
+# you are doing.
+export ANSIBLE_CONFIG=./ansible/ansible.cfg
+
+# An AWS compatible key pair. This is used for SSH access to all test machines:
+# https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair
+export VECTOR_TEST_PRIV_KEY=~/.ssh/vector_tests
+export VECTOR_TEST_PUB_KEY=~/.ssh/vector_tests.pub
+
+# Test subjects. Update as necessary. If a test does not support a subject Vector
+# will skip it.
+export VECTOR_TEST_SUBJECTS=filebeat=7.1.1,fluentbit=1.1.0,fluentd=3.3.0-1,logstash=7.0.1,splunk_heavy_forwarder=7.2.6-c0bf0f679ce9,splunk_universal_forwarder=7.2.5.1-962d9a8e1586,vector=0.2.0-6-g434bed8
+
+# Update with your own user_id. This namespaces all tests and resources to your
+# user_id. Ex: ben
+export VECTOR_TEST_USER_ID=<REPLACE_ME>
+
+# The S3 buket used to store test results.
+export VECTOR_TEST_RESULTS_S3_BUCKET_NAME=<REPLACE_ME>

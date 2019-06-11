@@ -1,0 +1,16 @@
+[Unit]
+Description=http_test_server
+After=network-online.target
+Requires=network-online.target
+
+[Service]
+User=http_test_server
+Group=http_test_server
+ExecStart=/usr/local/bin/http_test_server -a {{ server_address }}
+Restart=no
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=http_test_server
+
+[Install]
+WantedBy=multi-user.target

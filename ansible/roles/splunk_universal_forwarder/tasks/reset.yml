@@ -1,0 +1,5 @@
+---
+- include: stop.yml
+
+- name: Reset state
+  shell: rm -rf /opt/splunkforwarder/var/lib/splunk/fishbucket/{*,.*}

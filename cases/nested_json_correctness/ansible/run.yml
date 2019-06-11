@@ -1,0 +1,23 @@
+---
+- import_playbook: reset.yml
+
+- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}:&tag_TestRole_subject'
+  become: true
+  tasks:
+    - include_role:
+        name: test_servers
+      vars:
+        action: start
+        http_server_port: "{{ http_consumer_port }}"
+        tcp_server_port: "{{ tcp_consumer_port }}"
+
+    # We delegate testing to subject specific files to delegate, entirely, the
+    # process of verifying behavior. The method used is irrelevant to the result
+    # and it could differ across subjects.
+    - name: "Test {{ test_subject }}"
+      include: "run/{{ test_subject }}.yml"
+
+    - include_role:
+        name: test_servers
+      vars:
+        action: stop

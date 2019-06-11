@@ -1,0 +1,68 @@
+---
+- name: Setup the td-agent user
+  user:
+    name: td-agent
+    createhome: no
+    home: /opt/td-agent
+    shell: /usr/sbin/nologin
+
+- name: Create the /etc/td-agent directory
+  file:
+    path: /etc/td-agent
+    state: directory
+
+- name: Create the /var/log/fluent directory
+  file:
+    path: /var/log/fluent
+    state: directory
+    owner: td-agent
+    group: td-agent
+    mode: 0700
+
+- include: "set_config.yml"
+
+- name: Add td-agent apt-key
+  apt_key: 
+    url: https://packages.treasuredata.com/GPG-KEY-td-agent
+    state: present
+
+- name: Add td-agent apt repository
+  apt_repository:
+    repo: 'deb http://packages.treasuredata.com/3/ubuntu/xenial/ xenial contrib'
+    state: present
+    filename: td-agent
+    update_cache: yes
+
+- name: Install td-agent
+  apt: 
+    name: td-agent={{ version }}
+    state: present
+
+- name: Install out_http plugin
+  shell: /opt/td-agent/embedded/bin/fluent-gem install fluent-plugin-out-http
+
+- name: Install td-agent daemon systemd script
+  copy:
+    src: td-agent.service
+    dest: /etc/systemd/system/td-agent.service
+    mode: 0644
+    remote_src: no
+
+- name: Remove default td-agent.conf
+  file:
+    path: /opt/td-agent/etc/td-agent/td-agent.conf
+    state: absent
+
+- name: Remove default td-agent.conf.tmpl
+  file:
+    path: /opt/td-agent/etc/td-agent/td-agent.conf.tmpl
+    state: absent
+
+# This ensures that the process is not running. Each test is responsible
+# for starting and stopp the relevant services.
+- name: Ensure the td-agent service is stopped
+  systemd:
+    name: td-agent
+    daemon_reload: yes
+    enabled: no
+    state: stopped

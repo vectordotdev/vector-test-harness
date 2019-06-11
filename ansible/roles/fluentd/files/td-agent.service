@@ -1,0 +1,16 @@
+[Unit]
+Description=FluentD
+After=network-online.target
+Requires=network-online.target
+
+[Service]
+User=td-agent
+Group=td-agent
+ExecStart=/opt/td-agent/embedded/bin/fluentd -c /etc/td-agent/td-agent.conf
+Restart=no
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=td-agent
+
+[Install]
+WantedBy=multi-user.target
