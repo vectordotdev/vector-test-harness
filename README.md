@@ -35,8 +35,8 @@ test framework used to generate the [performance] and [correctness] results disp
 * [**`file_rotate_create_correctness` test**](cases/file_rotate_create_correctness)
 * [**`file_rotate_truncate_correctness` test**](cases/file_rotate_create_correctness)
 * [**`file_truncate_correctness` test**](cases/file_truncate_correctness)
-* [**`nested_json_correctness` test**](cases/nested_json_correctness)
 * [**`sighup_correctness` test**](cases/sighup_correctness)
+* [**`wrapped_json_correctness` test**](cases/wrapped_json_correctness)
 
 ---
 

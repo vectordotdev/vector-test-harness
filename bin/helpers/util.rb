@@ -24,19 +24,24 @@ SUBJECT_META = {
 
 TEST_META = {
   'file_to_tcp_performance' => {
-    name: 'File To TCP'
+    name: 'File To TCP',
+    description: 'A file tailing test, tailing 10 files and forwarding data over TCP'
   },
   'regex_parsing_performance' => {
-    name: 'Regex Parsing'
+    name: 'Regex Parsing',
+    description: 'A Regex test, parsing Apache common log formats'
   },
   'tcp_to_blackhole_performance' => {
-    name: 'TCP To Blachole'
+    name: 'TCP To Blackhole',
+    description: 'A raw internal performance test, accepting data over TCP and discarding it'
   },
   'tcp_to_http_performance' => {
-    name: 'TCP To HTTP'
+    name: 'TCP To HTTP',
+    description: 'An HTTP performance test, accepting data over TCP and forwarding it over HTTP'
   },
   'tcp_to_tcp_performance' => {
-    name: 'TCP To TCP'
+    name: 'TCP To TCP',
+    description: 'A TCP performance test, accepting data over TCP and forwarding it over TCP'
   }
 }
 

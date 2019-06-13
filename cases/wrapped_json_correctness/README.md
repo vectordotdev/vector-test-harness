@@ -1,12 +1,12 @@
-# Nested JSON Correctness Test
+# Wrapped JSON Correctness Test
 
-This test verifies that nested JSON documents are parsed correctly:
+This test verifies that wrapped JSON documents are parsed correctly:
 
 ```json
 {"log":"{\"message\":\"Hello world\"}"}
 ```
 
-This is a _very_ important for environments that warp log output in a JSON document, such
+This is a _very_ important for environments that wrap log output in a JSON document, such
 as Docker and Kubernetes.
 
 ## Results
@@ -39,7 +39,7 @@ The subject is configured to:
 You can run this test via:
 
 ```
-test -t nested_json_correctness
+test -t wrapped_json_correctness
 ```
 
 ## Resources

@@ -1,45 +1,32 @@
 {
   "performance_tests": [
     {
-      "name": "TCP To TCP",
+      "slug": "tcp_to_blackhole_performance",
+      "name": "TCP To Blackhole",
+      "description": "A raw internal performance test, accepting data over TCP and discarding it",
       "metrics": [
         {
           "name": "IO",
           "measurements": [
             {
-              "name": "Splunk UF",
-              "label": "70.4mib/s",
-              "value": 73798589.39
-            },
-            {
               "name": "Vector",
-              "label": "69.9mib/s",
-              "value": 73306598.74
+              "label": "86mib/s",
+              "value": 90214676.67
             },
             {
               "name": "FluentBit",
-              "label": "67.1mib/s",
-              "value": 70404342.46
+              "label": "64.4mib/s",
+              "value": 67479226.31
             },
             {
               "name": "Logstash",
-              "label": "10mib/s",
-              "value": 10519047.0
-            },
-            {
-              "name": "Splunk H",
-              "label": "7.6mib/s",
-              "value": 7921283.76
-            },
-            {
-              "name": "Filebeat",
-              "label": "5mib/s",
-              "value": 5219776.63
+              "label": "40.6mib/s",
+              "value": 42581836.28
             },
             {
               "name": "FluentD",
-              "label": "3.9mib/s",
-              "value": 4117528.35
+              "label": "27.7mib/s",
+              "value": 29077723.89
             }
           ]
         },
@@ -47,39 +34,24 @@
           "name": "Mem",
           "measurements": [
             {
-              "name": "Filebeat",
-              "label": "164.2mib",
-              "value": 172195840.0
-            },
-            {
               "name": "Vector",
-              "label": "171.6mib",
-              "value": 179970048.0
-            },
-            {
-              "name": "Splunk UF",
-              "label": "250.3mib",
-              "value": 262504448.0
+              "label": "181mib",
+              "value": 189775872.0
             },
             {
               "name": "FluentD",
-              "label": "293.6mib",
-              "value": 307896320.0
-            },
-            {
-              "name": "Splunk H",
-              "label": "399.2mib",
-              "value": 418586624.0
+              "label": "294mib",
+              "value": 308252672.0
             },
             {
               "name": "FluentBit",
-              "label": "641.2mib",
-              "value": 672354304.0
+              "label": "614.8mib",
+              "value": 644636672.0
             },
             {
               "name": "Logstash",
-              "label": "725.4mib",
-              "value": 760643584.0
+              "label": "742.5mib",
+              "value": 778551296.0
             }
           ]
         },
@@ -87,84 +59,71 @@
           "name": "CPU",
           "measurements": [
             {
-              "name": "Filebeat",
-              "label": "0.36 1m avg",
-              "value": 0.36
-            },
-            {
               "name": "FluentBit",
-              "label": "0.68 1m avg",
-              "value": 0.68
+              "label": "0.47 1m avg",
+              "value": 0.47
             },
             {
               "name": "FluentD",
-              "label": "0.79 1m avg",
-              "value": 0.79
+              "label": "0.83 1m avg",
+              "value": 0.83
             },
             {
               "name": "Vector",
-              "label": "0.94 1m avg",
-              "value": 0.94
-            },
-            {
-              "name": "Splunk UF",
-              "label": "1.56 1m avg",
-              "value": 1.56
-            },
-            {
-              "name": "Splunk H",
-              "label": "1.88 1m avg",
-              "value": 1.88
+              "label": "1.67 1m avg",
+              "value": 1.67
             },
             {
               "name": "Logstash",
-              "label": "2.2 1m avg",
-              "value": 2.2
+              "label": "1.77 1m avg",
+              "value": 1.77
             }
           ]
         }
       ]
     },
     {
+      "slug": "file_to_tcp_performance",
       "name": "File To TCP",
+      "description": "A file tailing test, tailing 10 files and forwarding data over TCP",
       "metrics": [
         {
           "name": "IO",
           "measurements": [
             {
               "name": "Vector",
-              "label": "375.9kib/s",
-              "value": 384894.33
-            },
-            {
-              "name": "Splunk H",
-              "label": "246.9kib/s",
-              "value": 252788.69
-            },
-            {
-              "name": "FluentBit",
-              "label": "113kib/s",
-              "value": 115721.28
+              "label": "76.7mib/s",
+              "value": 80477265.42
             },
             {
               "name": "Splunk UF",
-              "label": "51kib/s",
-              "value": 52248.63
+              "label": "40.1mib/s",
+              "value": 42068017.54
             },
             {
-              "name": "Logstash",
-              "label": "40.1kib/s",
-              "value": 41064.72
+              "name": "Splunk HF",
+              "label": "39mib/s",
+              "value": 40938665.1
+            },
+            {
+              "name": "FluentBit",
+              "label": "35mib/s",
+              "value": 36681306.72
             },
             {
               "name": "FluentD",
-              "label": "38.7kib/s",
-              "value": 39629.22
+              "label": "26.1mib/s",
+              "value": 27349053.38
             },
             {
               "name": "Filebeat",
-              "label": "4kib/s",
-              "value": 4105.68
+              "label": "7.8mib/s",
+              "value": 8159684.2
+            },
+            {
+              "name": "Logstash",
+              "label": "3.1mib/s",
+              "value": 3218925.95
             }
           ]
         },
@@ -192,7 +151,7 @@
               "value": 388255744.0
             },
             {
-              "name": "Splunk H",
+              "name": "Splunk HF",
               "label": "442.6mib",
               "value": 464109568.0
             },
@@ -242,7 +201,7 @@
               "value": 2.22
             },
             {
-              "name": "Splunk H",
+              "name": "Splunk HF",
               "label": "2.61 1m avg",
               "value": 2.61
             }
@@ -251,7 +210,9 @@
       ]
     },
     {
+      "slug": "regex_parsing_performance",
       "name": "Regex Parsing",
+      "description": "A Regex test, parsing Apache common log formats",
       "metrics": [
         {
           "name": "IO",
@@ -267,7 +228,7 @@
               "value": 13834604.58
             },
             {
-              "name": "Splunk H",
+              "name": "Splunk HF",
               "label": "7.8mib/s",
               "value": 8175926.8
             },
@@ -297,7 +258,7 @@
               "value": 258084864.0
             },
             {
-              "name": "Splunk H",
+              "name": "Splunk HF",
               "label": "442.4mib",
               "value": 463929344.0
             },
@@ -337,7 +298,7 @@
               "value": 2.14
             },
             {
-              "name": "Splunk H",
+              "name": "Splunk HF",
               "label": "2.19 1m avg",
               "value": 2.19
             }
@@ -346,7 +307,9 @@
       ]
     },
     {
+      "slug": "tcp_to_http_performance",
       "name": "TCP To HTTP",
+      "description": "An HTTP performance test, accepting data over TCP and forwarding it over HTTP",
       "metrics": [
         {
           "name": "IO",
@@ -426,30 +389,47 @@
       ]
     },
     {
-      "name": "TCP To Blachole",
+      "slug": "tcp_to_tcp_performance",
+      "name": "TCP To TCP",
+      "description": "A TCP performance test, accepting data over TCP and forwarding it over TCP",
       "metrics": [
         {
           "name": "IO",
           "measurements": [
             {
+              "name": "Splunk UF",
+              "label": "70.4mib/s",
+              "value": 73798589.39
+            },
+            {
               "name": "Vector",
-              "label": "86mib/s",
-              "value": 90214676.67
+              "label": "69.9mib/s",
+              "value": 73306598.74
             },
             {
               "name": "FluentBit",
-              "label": "64.4mib/s",
-              "value": 67479226.31
+              "label": "67.1mib/s",
+              "value": 70404342.46
             },
             {
               "name": "Logstash",
-              "label": "40.6mib/s",
-              "value": 42581836.28
+              "label": "10mib/s",
+              "value": 10519047.0
+            },
+            {
+              "name": "Splunk HF",
+              "label": "7.6mib/s",
+              "value": 7921283.76
+            },
+            {
+              "name": "Filebeat",
+              "label": "5mib/s",
+              "value": 5219776.63
             },
             {
               "name": "FluentD",
-              "label": "27.7mib/s",
-              "value": 29077723.89
+              "label": "3.9mib/s",
+              "value": 4117528.35
             }
           ]
         },
@@ -457,24 +437,39 @@
           "name": "Mem",
           "measurements": [
             {
+              "name": "Filebeat",
+              "label": "164.2mib",
+              "value": 172195840.0
+            },
+            {
               "name": "Vector",
-              "label": "181mib",
-              "value": 189775872.0
+              "label": "171.6mib",
+              "value": 179970048.0
+            },
+            {
+              "name": "Splunk UF",
+              "label": "250.3mib",
+              "value": 262504448.0
             },
             {
               "name": "FluentD",
-              "label": "294mib",
-              "value": 308252672.0
+              "label": "293.6mib",
+              "value": 307896320.0
+            },
+            {
+              "name": "Splunk HF",
+              "label": "399.2mib",
+              "value": 418586624.0
             },
             {
               "name": "FluentBit",
-              "label": "614.8mib",
-              "value": 644636672.0
+              "label": "641.2mib",
+              "value": 672354304.0
             },
             {
               "name": "Logstash",
-              "label": "742.5mib",
-              "value": 778551296.0
+              "label": "725.4mib",
+              "value": 760643584.0
             }
           ]
         },
@@ -482,24 +477,39 @@
           "name": "CPU",
           "measurements": [
             {
+              "name": "Filebeat",
+              "label": "0.36 1m avg",
+              "value": 0.36
+            },
+            {
               "name": "FluentBit",
-              "label": "0.47 1m avg",
-              "value": 0.47
+              "label": "0.68 1m avg",
+              "value": 0.68
             },
             {
               "name": "FluentD",
-              "label": "0.83 1m avg",
-              "value": 0.83
+              "label": "0.79 1m avg",
+              "value": 0.79
             },
             {
               "name": "Vector",
-              "label": "1.67 1m avg",
-              "value": 1.67
+              "label": "0.94 1m avg",
+              "value": 0.94
+            },
+            {
+              "name": "Splunk UF",
+              "label": "1.56 1m avg",
+              "value": 1.56
+            },
+            {
+              "name": "Splunk HF",
+              "label": "1.88 1m avg",
+              "value": 1.88
             },
             {
               "name": "Logstash",
-              "label": "1.77 1m avg",
-              "value": 1.77
+              "label": "2.2 1m avg",
+              "value": 2.2
             }
           ]
         }

@@ -1,10 +1,3 @@
-vector: pass
-fluentbit: fail
-fluentd: fail
-splunk*: fail
-logstash: warning (password, reloading shutsdown the server, not graceful at all)
-
-
 # SIGHUP Correctness Test
 
 This test verifies that the subject correctly responds to the `SIGHUP` signal, gracefully

@@ -41,33 +41,46 @@ def collect_metrics(hashes, key_name, sort_dir, &block)
 end
 
 def transform_to_data!(hashes)
-  hashes.group_by { |h| h["name"] }.collect do |name, test_hashes|
-    test_meta = fetch_test_meta!(name)
+  hashes.
+    group_by { |h| h["name"] }.
+    collect do |name, test_hashes|
+      test_meta = fetch_test_meta!(name)
 
-    {
-      "name" => test_meta.fetch(:name),
-      "metrics" => [
-        {
-          "name" => "IO",
-          "measurements" => collect_metrics(test_hashes, "io_throughput_avg", :desc) do |v|
-            filesize(v) + "/s"
-          end
-        },
-        {
-          "name" => "Mem",
-          "measurements" => collect_metrics(test_hashes, "mem_used_max", :asc) do |v|
-            filesize(v)
-          end
-        },
-        {
-          "name" => "CPU",
-          "measurements" => collect_metrics(test_hashes, "load_avg_1m", :asc) do |v|
-            "#{v} 1m avg"
-          end
-        }
-      ]
-    }
-  end
+      io_key = name.include?("file") ? "disk_throughput_avg" : "io_throughput_avg"
+
+      {
+        "slug" => name,
+        "name" => test_meta.fetch(:name),
+        "description" => test_meta.fetch(:description),
+        "metrics" => [
+          {
+            "name" => "IO",
+            "measurements" => collect_metrics(test_hashes, io_key, :desc) do |v|
+              filesize(v) + "/s"
+            end
+          },
+          {
+            "name" => "Mem",
+            "measurements" => collect_metrics(test_hashes, "mem_used_max", :asc) do |v|
+              filesize(v)
+            end
+          },
+          {
+            "name" => "CPU",
+            "measurements" => collect_metrics(test_hashes, "load_avg_1m", :asc) do |v|
+              "#{v} 1m avg"
+            end
+          }
+        ]
+      }
+    end.
+    sort_by do |h|
+      if h["name"].include?("Blackhole")
+        "AAAA"
+      else
+        h["name"]
+      end
+    end
 end
 
 results = JSON.parse(results_json)
