@@ -21,14 +21,14 @@
   tasks:
     - name: Remove previous test log file
       file:
-        path: /tmp/flog-100mib.log
+        path: /tmp/flog-100MiB.log
         state: absent
 
-    - name: Create 100mib test log file
+    - name: Create 100MiB test log file
       shell: |
         flog --format apache_common --bytes 104857600 | \
           jq -c --raw-input '{msg: .}' \
-          > /tmp/flog-100mib.log
+          > /tmp/flog-100MiB.log
 
 - hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}:&tag_TestRole_subject'
   become: true
@@ -53,7 +53,7 @@
       action: install
       version: "{{ logstash_version }}"
       pipeline_file: "config_files/logstash.conf"
-      
+    
     - role: vector
       action: install
       version: "{{ vector_version }}"

@@ -8,8 +8,8 @@
 
 require 'json'
 
-require File.join(File.dirname(__FILE__), 'athena.rb')
-require File.join(File.dirname(__FILE__), 'util.rb')
+require_relative "athena"
+require_relative "util"
 
 results_json = ARGV[0]
 
@@ -75,7 +75,7 @@ def transform_to_data!(hashes)
       }
     end.
     sort_by do |h|
-      if h["name"].include?("Blackhole")
+      if h["name"] == "File To TCP"
         "AAAA"
       else
         h["name"]

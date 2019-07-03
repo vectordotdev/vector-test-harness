@@ -1,3 +1,5 @@
+require_relative "util"
+
 def get_column!(result_set_metadata, name)
   column_info = result_set_metadata["ColumnInfo"]
 

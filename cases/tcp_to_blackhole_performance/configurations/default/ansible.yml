@@ -4,5 +4,5 @@
 # based on these parameters. Please create a new configuration and specify taht
 # configuration instead.
 ---
-bytes_per_consumer: 104857600 # 100mib
+bytes_per_consumer: 104857600 # 100MiB
 subject_port: 9000

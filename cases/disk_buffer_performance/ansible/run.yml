@@ -40,7 +40,7 @@
         timeout 10 bash -c "
           while true
           do
-            cat /tmp/flog-100mib.log | \
+            cat /tmp/flog-100MiB.log | \
             socat -u - tcp:{{ hostvars[groups.tag_TestRole_subject.0].ec2_private_ip_address }}:{{ subject_port }};
           done
         "
@@ -64,7 +64,7 @@
         timeout 60 bash -c "
           while true
           do
-            cat /tmp/flog-100mib.log | \
+            cat /tmp/flog-100MiB.log | \
             socat -u - tcp:{{ hostvars[groups.tag_TestRole_subject.0].ec2_private_ip_address }}:{{ subject_port }};
           done
         "

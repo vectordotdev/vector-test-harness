@@ -15,24 +15,24 @@ This test measures the HTTP output performance for each subject.
 ```
 $ bin/comare -t tcp_to_http_performance
 
-Metric           | fluentbit  | fluentd    | logstash     | vector     
------------------|------------|------------|--------------|------------
-Test count       | 1          | 1          | 1            | 1          
-IO Thrpt (avg)   | 19.6mib/s  | 897.8kib/s | 2.7mib/s     | 26.7mib/s W
-Disk Thrpt (avg) | 138.4kib/s | 138.1kib/s | 142.5kib/s W | 25.2kib/s  
-Duration (avg)   | 63s        | 63s        | 63s          | 61s        
-Duration (max)   | 63s        | 63s        | 63s          | 61s        
-CPU sys (max)    | 6.5        | 17.3       | 8            | 5.5 W      
-CPU usr (max)    | 49.8       | 36.7 W     | 40.9         | 94.5       
-Load 1m (avg)    | 0.5 W      | 0.7        | 1.2          | 0.9        
-Mem used (max)   | 1.1gib     | 188.9mib W | 772mib       | 233mib     
-Disk read (sum)  | 8.5mib     | 8.5mib     | 8.8mib       | 1.5mib W   
-Disk writ (sum)  | 11.2mib    | 11.2mib    | 9.8mib       | 2.1mib W   
-Net recv (sum)   | 1.2gib     | 55.2mib    | 167.1mib     | 1.6gib W   
-Net send (sum)   | 1.9gib     | 79.1mib    | 291.2mib     | 2.9gib     
-TCP estab (avg)  | 3218       | 377        | 439          | 487        
-TCP sync (avg)   | 2          | 9          | 0            | 0          
-TCP close (avg)  | 199        | 50         | 78           | 8          
+| Metric           | fluentbit  | fluentd    | logstash     | vector      |
+|:-----------------|:-----------|:-----------|:-------------|:------------|
+| Test count       | 1          | 1          | 1            | 1           |
+| IO Thrpt (avg)   | 19.6MiB/s  | 897.8kib/s | 2.7MiB/s     | 26.7MiB/s W |
+| Disk Thrpt (avg) | 138.4kib/s | 138.1kib/s | 142.5kib/s W | 25.2kib/s   |
+| Duration (avg)   | 63s        | 63s        | 63s          | 61s         |
+| Duration (max)   | 63s        | 63s        | 63s          | 61s         |
+| CPU sys (max)    | 6.5        | 17.3       | 8            | 5.5 W       |
+| CPU usr (max)    | 49.8       | 36.7 W     | 40.9         | 94.5        |
+| Load 1m (avg)    | 0.5 W      | 0.7        | 1.2          | 0.9         |
+| Mem used (max)   | 1.1gib     | 188.9MiB W | 772MiB       | 233MiB      |
+| Disk read (sum)  | 8.5MiB     | 8.5MiB     | 8.8MiB       | 1.5MiB W    |
+| Disk writ (sum)  | 11.2MiB    | 11.2MiB    | 9.8MiB       | 2.1MiB W    |
+| Net recv (sum)   | 1.2gib     | 55.2MiB    | 167.1MiB     | 1.6gib W    |
+| Net send (sum)   | 1.9gib     | 79.1MiB    | 291.2MiB     | 2.9gib      |
+| TCP estab (avg)  | 3218       | 377        | 439          | 487         |
+| TCP sync (avg)   | 2          | 9          | 0            | 0           |
+| TCP close (avg)  | 199        | 50         | 78           | 8           |
 -------------------------------------------------------------------------------------------------------------
 W = winner
 fluentbit = 1.1.0

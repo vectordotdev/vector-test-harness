@@ -16,20 +16,20 @@ for this purposes.
 ```
 $ bin/compare -t tcp_to_blackhole_performance
 
-Metric           | fluentbit  | fluentd   | logstash  | vector   
------------------|------------|-----------|-----------|----------
-IO Thrpt (avg)   | 64.4mib/s  | 27.7mib/s | 40.6mib/s | 86mib/s W
-CPU sys (max)    | 4          | 3.5 W     | 6.1       | 6.5      
-CPU usr (max)    | 53.2       | 50.8 W    | 91.5      | 96.5     
-Load 1m (avg)    | 0.5 W      | 0.8       | 1.8       | 1.7      
-Mem used (max)   | 614.8mib   | 294mib    | 742.5mib  | 181mib W 
-Disk read (sum)  | 9mib       | 2.6mib W  | 2.6mib    | 2.6mib   
-Disk writ (sum)  | 14.8mib    | 13.7mib   | 11.6mib   | 11mib W  
-Net recv (sum)   | 3.9gib     | 1.7gib    | 2.4gib    | 5.1gib W 
-Net send (sum)   | 7.9mib     | 5.7mib    | 2.6mib    | 9mib     
-TCP estab (avg)  | 663        | 664       | 665       | 664      
-TCP sync (avg)   | 0          | 0         | 0         | 0        
-TCP close (avg)  | 1          | 2         | 7         | 4        
+| Metric          | fluentbit | fluentd   | logstash  | vector    |
+|:----------------|:----------|:----------|:----------|:----------|
+| IO Thrpt (avg)  | 64.4MiB/s | 27.7MiB/s | 40.6MiB/s | 86MiB/s W |
+| CPU sys (max)   | 4         | 3.5 W     | 6.1       | 6.5       |
+| CPU usr (max)   | 53.2      | 50.8 W    | 91.5      | 96.5      |
+| Load 1m (avg)   | 0.5 W     | 0.8       | 1.8       | 1.7       |
+| Mem used (max)  | 614.8MiB  | 294MiB    | 742.5MiB  | 181MiB W  |
+| Disk read (sum) | 9MiB      | 2.6MiB W  | 2.6MiB    | 2.6MiB    |
+| Disk writ (sum) | 14.8MiB   | 13.7MiB   | 11.6MiB   | 11MiB W   |
+| Net recv (sum)  | 3.9gib    | 1.7gib    | 2.4gib    | 5.1gib W  |
+| Net send (sum)  | 7.9MiB    | 5.7MiB    | 2.6MiB    | 9MiB      |
+| TCP estab (avg) | 663       | 664       | 665       | 664       |
+| TCP sync (avg)  | 0         | 0         | 0         | 0         |
+| TCP close (avg) | 1         | 2         | 7         | 4         |
 -------------------------------------------------------------------------------------------------------------
 W = winner
 fluentbit = 1.1.0

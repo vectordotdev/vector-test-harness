@@ -8,8 +8,8 @@
 
 require 'json'
 
-require File.join(File.dirname(__FILE__), 'athena.rb')
-require File.join(File.dirname(__FILE__), 'table_print.rb')
+require_relative "athena"
+require_relative "util"
 
 results_json = ARGV[0]
 

@@ -24,20 +24,20 @@ and place the extracted values in named keys.
 ```
 $ bin/compare -t regex_parsing_performance
 
-Metric           | fluentbit   | fluentd    | logstash   | splunk_hf  | vector    
------------------|-------------|------------|------------|------------|-----------
-IO Thrpt (avg)   | 20.5mib/s W | 2.6mib/s   | 4.6mib/s   | 7.8mib/s   | 13.2mib/s 
-CPU sys (max)    | 6.5         | 1.7 W      | 9.1        | 28.9       | 4.5       
-CPU usr (max)    | 50.8        | 50.5 W     | 90.5       | 72.3       | 95        
-Load 1m (avg)    | 0.5 W       | 0.8        | 2.1        | 2.2        | 0.9       
-Mem used (max)   | 584.5mib    | 246.1mib   | 743.8mib   | 442.4mib   | 179.3mib W
-Disk read (sum)  | 8.3mib W    | 8.4mib     | 8.8mib     | 354.7mib   | 9.3mib    
-Disk writ (sum)  | 7.6mib      | 7.6mib W   | 7.9mib     | 51.3mib    | 10.7mib   
-Net recv (sum)   | 1.2gib W    | 164mib     | 282.4mib   | 475.6mib   | 804.8mib  
-Net send (sum)   | 1.6gib      | 176.8mib   | 1021.2mib  | 454.7mib   | 2gib      
-TCP estab (avg)  | 794         | 424        | 428        | 1599       | 485       
-TCP sync (avg)   | 0           | 0          | 0          | 0          | 0         
-TCP close (avg)  | 0           | 0          | 5          | 1          | 3         
+| Metric          | fluentbit   | fluentd  | logstash  | splunk_hf | vector     |
+|:----------------|:------------|:---------|:----------|:----------|:-----------|
+| IO Thrpt (avg)  | 20.5MiB/s W | 2.6MiB/s | 4.6MiB/s  | 7.8MiB/s  | 13.2MiB/s  |
+| CPU sys (max)   | 6.5         | 1.7 W    | 9.1       | 28.9      | 4.5        |
+| CPU usr (max)   | 50.8        | 50.5 W   | 90.5      | 72.3      | 95         |
+| Load 1m (avg)   | 0.5 W       | 0.8      | 2.1       | 2.2       | 0.9        |
+| Mem used (max)  | 584.5MiB    | 246.1MiB | 743.8MiB  | 442.4MiB  | 179.3MiB W |
+| Disk read (sum) | 8.3MiB W    | 8.4MiB   | 8.8MiB    | 354.7MiB  | 9.3MiB     |
+| Disk writ (sum) | 7.6MiB      | 7.6MiB W | 7.9MiB    | 51.3MiB   | 10.7MiB    |
+| Net recv (sum)  | 1.2gib W    | 164MiB   | 282.4MiB  | 475.6MiB  | 804.8MiB   |
+| Net send (sum)  | 1.6gib      | 176.8MiB | 1021.2MiB | 454.7MiB  | 2gib       |
+| TCP estab (avg) | 794         | 424      | 428       | 1599      | 485        |
+| TCP sync (avg)  | 0           | 0        | 0         | 0         | 0          |
+| TCP close (avg) | 0           | 0        | 5         | 1         | 3          |
 -------------------------------------------------------------------------------------------------------------
 W = winner
 fluentbit = 1.1.0

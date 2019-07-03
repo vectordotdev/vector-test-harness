@@ -65,7 +65,7 @@ def fetch_test_meta!(name)
 end
 
 def filesize(size)
-  units = ['b', 'kib', 'mib', 'gib', 'tib', 'pib', 'eib']
+  units = ['b', 'kib', 'MiB', 'gib', 'tib', 'pib', 'eib']
 
   return '0.0 B' if size == 0
   exp = (Math.log(size) / Math.log(1024)).to_i

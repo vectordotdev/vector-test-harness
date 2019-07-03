@@ -9,7 +9,7 @@ export VECTOR_TEST_PUB_KEY=~/.ssh/vector_tests.pub
 
 # Test subjects. Update as necessary. If a test does not support a subject Vector
 # will skip it.
-export VECTOR_TEST_SUBJECTS=filebeat=7.1.1,fluentbit=1.1.0,fluentd=3.3.0-1,logstash=7.0.1,splunk_heavy_forwarder=7.2.6-c0bf0f679ce9,splunk_universal_forwarder=7.2.5.1-962d9a8e1586,vector=0.2.0-6-g434bed8
+export VECTOR_TEST_SUBJECTS=filebeat=7.1.1,fluentbit=1.1.0,fluentd=3.3.0-1,logstash=7.0.1,splunk_heavy_forwarder=7.2.6-c0bf0f679ce9,splunk_universal_forwarder=7.2.5.1-962d9a8e1586,telegraf=1.11.0-1,vector=0.2.0-23-ge84cde3
 
 # Update with your own user_id. This namespaces all tests and resources to your
 # user_id. Ex: ben
