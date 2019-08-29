@@ -33,7 +33,7 @@ test framework used to generate the [performance] and [correctness] results disp
 
 * [**`disk_buffer_persistence_correctness` test**](cases/disk_buffer_persistence_correctness)
 * [**`file_rotate_create_correctness` test**](cases/file_rotate_create_correctness)
-* [**`file_rotate_truncate_correctness` test**](cases/file_rotate_create_correctness)
+* [**`file_rotate_truncate_correctness` test**](cases/file_rotate_truncate_correctness)
 * [**`file_truncate_correctness` test**](cases/file_truncate_correctness)
 * [**`sighup_correctness` test**](cases/sighup_correctness)
 * [**`wrapped_json_correctness` test**](cases/wrapped_json_correctness)
