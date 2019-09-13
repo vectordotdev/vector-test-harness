@@ -69,7 +69,7 @@ test framework used to generate the [performance] and [correctness] results disp
 6. Run:
 
    ```bash
-   AWS_PROFILE=timber ./bin/test -t [tcp_to_tcp_performance]
+   AWS_PROFILE=vector ./bin/test -t [tcp_to_tcp_performance]
    ```
 
    This script will take care of running the necessary Terraform and Ansible scripts.
@@ -279,4 +279,4 @@ since remote environments are easily accessible and reproducible by oother engin
 [test]: bin/test
 [usage]: #usage
 [vector]: https://github.com/timberio/vector
-[vector_docs]: https://docs.
+[vector_docs]: https://docs.vector.dev/
