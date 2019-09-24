@@ -1,0 +1,5 @@
+[[inputs.socket_listener]]
+  service_address = "tcp://:{{ subject_port }}"
+
+[[outputs.discard]]
+  # no configuration
