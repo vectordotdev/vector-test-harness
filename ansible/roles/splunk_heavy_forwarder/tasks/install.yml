@@ -22,8 +22,6 @@
     path: /tmp/splunk_heavy_forwarder.tar.gz
     state: absent
 
-- include: set_config.yml
-
 - name: Install splunk_heavy_forwarder daemon systemd script
   copy:
     src: splunk_heavy_forwarder.service
@@ -32,7 +30,7 @@
     remote_src: no
 
 # This ensures that the process is not running. Each test is responsible
-# for starting and stopp the relevant services.
+# for starting and stopping the relevant services.
 - name: Ensure the splunk_heavy_forwarder service is stopped
   systemd:
     name: splunk_heavy_forwarder

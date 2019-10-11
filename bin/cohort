@@ -1,23 +1,4 @@
-#!/usr/bin/env sh
-
-# USAGE
-#    cohort [-s <string>]
-#
-# DESCRIPTION
-#    Prints a simple table that provides a cohort analysis of test
-#    results across all tests and all versions for a single subject.
-#
-# OPTIONS
-#    -s [subject] The test subject (Ex: vector,fluentbit,splunk_universal_forwarder,etc)
-#
-# EXAMPLES
-#    ./cohort -s vector
-#
-#    Vector Bechmark Cohort Analysis - avg (quantity)
-#    ------------------------------------------------
-#    name                       | v0.1.0-alpha.5-17-geb59a3f
-#    ---------------------------|---------------------------
-#    tcp_to_blackhole (default) | 6.2s (5)    
+#!/usr/bin/env sh 
 
 #
 # Setup
@@ -34,14 +15,14 @@ set -o errexit -o pipefail -o noclobber -o nounset
 
 usage="
 USAGE
-   cohort [-s <string>]
+   cohort [-s subject]
 
 DESCRIPTION
    Prints a simple table that provides a cohort analysis of test
    results across all tests and all versions for a single subject.
 
 OPTIONS
-   -s [subject] The test subject (Ex: vector,fluentbit,splunk_universal_forwarder,etc)
+   -s  The test subject (Ex: vector,fluentbit,splunk_universal_forwarder,etc)
 
 EXAMPLES
    ./cohort -s vector
@@ -54,6 +35,13 @@ EXAMPLES
 "
 
 #
+# Functions
+#
+
+error() { echo "\033[0;31m$1\033[0m"; }
+usage() { echo "$usage" 1>&2; }
+
+#
 # Helpers
 #
 
@@ -64,8 +52,6 @@ my_dir="$(dirname "$0")"
 # Flags
 #
 
-usage() { echo "Usage: $0 [-s <string>]" 1>&2; exit 1; }
-
 subject=''
 
 while getopts "s:" o; do
@@ -75,6 +61,7 @@ while getopts "s:" o; do
             ;;
         *)
             usage
+            exit 3
             ;;
     esac
 done
@@ -86,8 +73,9 @@ shift $((OPTIND-1))
 
 if [ -z "$subject" ]
   then
-    echo "Error: you must supply a subject via the -s flag\n$usage"
+    error "Error: you must supply a subject via the -s flag"
     usage
+    exit 3
 fi
 
 #

@@ -20,14 +20,8 @@
     path: /tmp/filebeat.deb
     state: absent
 
-- name: Install Filebeat configuration
-  template:
-    src: "{{ configuration_file }}"
-    dest: /etc/filebeat/filebeat.yml
-    mode: 0644
-
 # This ensures that the process is not running. Each test is responsible
-# for starting and stopp the relevant services.
+# for starting and stopping the relevant services.
 - name: Ensure the filebeat service is stopped
   systemd:
     name: filebeat

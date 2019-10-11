@@ -55,7 +55,7 @@
     remote_src: no
 
 # This ensures that the process is not running. Each test is responsible
-# for starting and stopp the relevant services.
+# for starting and stopping the relevant services.
 - name: Ensure the sumocollector service is stopped
   systemd:
     name: sumocollector

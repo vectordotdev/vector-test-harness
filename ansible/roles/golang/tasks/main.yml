@@ -1,7 +1,7 @@
 ---
 - name: Downloading Go
   get_url:
-    url: https://dl.google.com/go/go1.12.5.linux-amd64.tar.gz
+    url: https://dl.google.com/go/go1.13.1.linux-amd64.tar.gz
     dest: /tmp/go.tar.gz
     mode: 0644
 
@@ -42,17 +42,3 @@
 
 - name: Reload profile
   shell: /etc/profile.d/go-path.sh
-
-- name: Download go-dep installer
-  get_url:
-    url: https://raw.githubusercontent.com/golang/dep/master/install.sh
-    dest: /tmp/go_dep_install.sh
-    mode: 0755
-
-- name: Run go-dep installer
-  shell: /tmp/go_dep_install.sh
-  environment:
-    GOBIN: /home/{{ ansible_user }}/go/bin
-    GOROOT: /usr/local/go
-    GOPATH: /home/{{ ansible_user }}/go
-    PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin

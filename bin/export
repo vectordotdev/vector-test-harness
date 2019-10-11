@@ -29,6 +29,13 @@ EXAMPLES
 "
 
 #
+# Functions
+#
+
+error() { echo "\033[0;31m$1\033[0m"; }
+usage() { echo "$usage" 1>&2; }
+
+#
 # Helpers
 #
 
@@ -65,7 +72,7 @@ while true; do
             break
             ;;
         *)
-            echo "Invalid option detected: $1"
+            error "Invalid option detected: $1"
             exit 3
             ;;
     esac

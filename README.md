@@ -18,6 +18,7 @@ test framework used to generate the [performance] and [correctness] results disp
 * [Setup][setup]
 * [Usage][usage]
 * [Development][development]
+* [Debugging][debugging]
 * [How It Works][how_it_works]
 
 ### Performance Tests
@@ -40,19 +41,12 @@ test framework used to generate the [performance] and [correctness] results disp
 
 ---
 
-## Results
-
-* High-level results can be found in the Vector [performance] and [correctness] documentation
-  sections.
-* Detailed results can be found within each [test case's][cases] README.
-* Raw performance result data can be found in our public [S3 bucket][s3_bucket].
-* You can run your own queries against the raw data. See the [Usage][usage] section.
-
 ## Directories
 
 * [`/ansible`](/ansible) - global ansible resources and tasks
 * [`/bin`](/bin) - contains all scripts
 * [`/cases`][cases] - contains all test cases
+* [`/packer`](/packer) - packer script to build the AMIs necessart for tests
 * [`/terraform`](/terraform) - global terraform state, resources, and modules
 
 ## Setup
@@ -69,16 +63,26 @@ test framework used to generate the [performance] and [correctness] results disp
 6. Run:
 
    ```bash
-   AWS_PROFILE=vector ./bin/test -t [tcp_to_tcp_performance]
+   ./bin/test -t [tcp_to_tcp_performance]
    ```
 
    This script will take care of running the necessary Terraform and Ansible scripts.
 
 ## Usage
 
-* [`bin/test`][test] - run a test
+* [`bin/build-amis`][build-amis] - builds AMIs for use in test cases
 * [`bin/cohort`][cohort] - perform a cohort analysis of test results across a subject's versions
 * [`bin/compare`][compare] - compare of test results across all subjects
+* [`bin/ssh`][test] - utility script to SSH into a test server
+* [`bin/test`][test] - run a specific test
+
+## Results
+
+* High-level results can be found in the Vector [performance] and [correctness] documentation
+  sections.
+* Detailed results can be found within each [test case's][cases] README.
+* Raw performance result data can be found in our public [S3 bucket][s3_bucket].
+* You can run your own queries against the raw data. See the [Usage][usage] section.
 
 ## Development
 
@@ -107,6 +111,47 @@ in such a way that would violate historical data we recommend creating an entire
 ### Deleting a test
 
 Simply delete the folder and any data in the [s3 bucket][s3_bucket].
+
+## Debugging
+
+If you encounter an error it's likely you'll need to SSH onto the server to
+investigate.
+
+### SSHing
+
+```bash
+ssh  -o 'IdentityFile="~/.ssh/vector_management"' ubuntu@51.5.210.84
+```
+
+Where:
+
+* `vector_management` = the `VECTOR_TEST_PRIV_KEY` value provided in your `.envrc` file.
+* `ubuntu` = the default root username for the instance.
+* `51.5.210.84` = the _public_ IP address of the instance.
+
+### Viewing logs
+
+All services are configured with systemd where their logs can be access with
+`journalctl`:
+
+```bash
+sudo journactl -fu <service>
+```
+
+### Failed servies
+
+If you find that the service failed to start, I find it helpful to manually
+attempt to start the service by inspecting the command in the `.service` file:
+
+```bash
+cat /etc/systemd/system/<name>.service
+```
+
+Then copy the command specified in `ExecStart` and run it manually. Ex:
+
+```bash
+/usr/bin/vector
+```
 
 ## How It Works
 
@@ -252,12 +297,14 @@ since remote environments are easily accessible and reproducible by oother engin
 [aws_cli]: https://aws.amazon.com/cli/
 [aws_profile]: https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html
 [bin]: /bin
+[build-amis]: bin/build-amis
 [cases]: /cases
 [cohort]: bin/cohort
 [compare]: bin/compare
 [correctness]: https://docs.vector.dev/correctness
 [create_keys]: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html
 [data_location]: #performance-data-location
+[debugging]: #debugging
 [development]: #development
 [directories]: #directories
 [direnv]: https://direnv.net/

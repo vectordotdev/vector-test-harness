@@ -2,12 +2,12 @@ provider "aws" {}
 
 data "aws_region" "current" {}
 
-data "aws_ami" "ubuntu" {
+data "aws_ami" "ami" {
   most_recent = true
 
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"]
+    values = ["vector/images/hvm-ssd/test-harness-amd64-*"]
   }
 
   filter {
@@ -15,13 +15,13 @@ data "aws_ami" "ubuntu" {
     values = ["hvm"]
   }
 
-  owners = ["099720109477"] # Canonical
+  owners = ["071959437513"]
 }
 
 resource "aws_spot_instance_request" "default" {
   count = "${var.instance_count}"
 
-  ami                         = "${data.aws_ami.ubuntu.id}"
+  ami                         = data.aws_ami.ami.id
   associate_public_ip_address = true
   availability_zone           = "${var.availability_zone}"
   iam_instance_profile        = "${var.instance_profile_name}"

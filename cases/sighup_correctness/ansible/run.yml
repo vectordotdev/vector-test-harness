@@ -1,7 +1,7 @@
 ---
 - import_playbook: reset.yml
 
-- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}:&tag_TestRole_consumer'
+- hosts: '{{ test_namespace }}:&tag_TestRole_consumer'
   become: true
   tasks:
     - include_role:
@@ -10,14 +10,14 @@
         action: start_and_wait
         server_port: "{{ consumer_port }}"
 
-- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}:&tag_TestRole_subject'
+- hosts: '{{ test_namespace }}:&tag_TestRole_subject'
   become: true
   tasks:
     - set_fact:
         consumer_instance: "{{ hostvars[groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_consumer'].0] }}"
 
     - name: "Reset the config to it's original state"
-      include: "set_config/{{ test_subject }}.yml"
+      include: "configure/{{ test_subject }}.yml"
 
     - set_fact:
         consumer_instance: "{{ hostvars[groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_consumer'].1] }}"
@@ -37,7 +37,7 @@
         echo "{\"log\": \"First line\"}" | socat -u - tcp:127.0.0.1:{{ subject_port }}
 
     - name: "Update config to point to the new consumer"
-      include: "set_config/{{ test_subject }}.yml"
+      include: "configure/{{ test_subject }}.yml"
 
     - include_role:
         name: "{{ test_subject }}"
@@ -53,7 +53,7 @@
       vars:
         action: stop
 
-- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}:&tag_TestRole_consumer'
+- hosts: '{{ test_namespace }}:&tag_TestRole_consumer'
   become: true
   tasks:
     - include_role:

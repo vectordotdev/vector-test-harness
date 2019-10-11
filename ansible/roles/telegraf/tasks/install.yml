@@ -6,7 +6,7 @@
     home: /opt/telegraf
     shell: /usr/sbin/nologin
 
-- name: "Downloading Filebeat ({{ version }})"
+- name: "Downloading Telegraf ({{ version }})"
   get_url:
     url: "https://dl.influxdata.com/telegraf/releases/telegraf_{{ version }}_amd64.deb"
     dest: /tmp/telegraf.deb
@@ -27,7 +27,7 @@
     mode: 0644
 
 # This ensures that the process is not running. Each test is responsible
-# for starting and stopp the relevant services.
+# for starting and stopping the relevant services.
 - name: Ensure the telegraf service is stopped
   systemd:
     name: telegraf

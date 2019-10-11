@@ -15,41 +15,48 @@ set -o errexit -o pipefail -o noclobber -o nounset
 
 usage="
 USAGE
-   test
+   test -t test [-c configuration] [-s subjects] [-u user-id] [{-b|-r}]
 
 DESCRIPTION
    Runs and profiles the provided case, uploading the results to S3.
 
 OPTIONS
-   -b, --bootstrap-only          Bootstrap the test only, do not test any subjects
-   -c, --configuration           The test configuration (default: default, env: VECTOR_TEST_CONFIGURATION)
-   -r, --run-only                Don't run the bootstrap task, just run the test. This is helpful for repeated runs.
-   -s, --subjects                The test subjects (ex: vector=1.0.0,fluentbit=1.0.0, env: VECTOR_TEST_SUBJECTS)
-   -t, --test                    The test to run (ex: tcp_to_blackhole)
-   -u, --user-id                 Your user ID (ex: ben, env: VECTOR_TEST_USER_ID)
+   -b, --bootstrap-only  Bootstrap the test only, do not test any subjects
+   -c, --configuration   The test configuration (default: default, env: VECTOR_TEST_CONFIGURATION)
+   -r, --run-only        Don't run the bootstrap task, just run the test. This is helpful for repeated runs.
+   -s, --subjects        The test subjects (ex: vector=1.0.0,fluentbit=1.0.0, env: VECTOR_TEST_SUBJECTS)
+   -t, --test            The test to run (ex: tcp_to_blackhole)
+   -u, --user-id         Your user ID (ex: ben, env: VECTOR_TEST_USER_ID)
 
 EXAMPLE
    test -t tcp_to_blackhole -s vector
 "
 
 #
+# Functions
+#
+
+error() { echo "\033[0;31m$1\033[0m"; }
+usage() { echo "$usage" 1>&2; }
+
+#
 # Dependencies
 #
 
 if ! [ -x "$(command -v ansible-playbook)" ]; then
-  echo 'Error: ansible-playbook is not installed. (sudo pip install ansible)' >&2
+  error 'Error: ansible-playbook is not installed. (sudo pip install ansible)' >&2
   exit 1
 fi
 
 if ! [ -x "$(command -v terraform)" ]; then
-  echo 'Error: terraform is not installed. (brew install terraform)' >&2
+  error 'Error: terraform is not installed. (brew install terraform)' >&2
   exit 1
 fi
 
 # This is required for flag parsing, specifically the posix style: --flag
 ! getopt --test > /dev/null 
 if [[ ${PIPESTATUS[0]} -ne 4 ]]; then
-    echo 'Error: enhanced getopt is not installed. (brew install gnu-getopt)'
+    error 'Error: enhanced getopt is not installed. (brew install gnu-getopt)'
     exit 1
 fi
 
@@ -126,7 +133,7 @@ while true; do
             break
             ;;
         *)
-            echo "Invalid option detected: $1"
+            error "Invalid option detected: $1"
             exit 3
             ;;
     esac
@@ -138,26 +145,30 @@ done
 
 if [ -z "$test_configuration" ]
   then
-    echo "Error: you must supply a test configuration via the -c flag:\n$usage"
-    exit 1
+    error "Error: you must supply a test configuration via the -c flag:"
+    usage
+    exit 3
 fi
 
 if [ -z "$test_name" ]
   then
-    echo "Error: you must supply a test name via the -t flag:\n$usage"
-    exit 1
+    error "Error: you must supply a test name via the -t flag:"
+    usage
+    exit 3
 fi
 
 if [ -z "$test_subjects" ]
   then
-    echo "Error: you must supply test subjects via the -s flag:\n$usage"
-    exit 1
+    error "Error: you must supply test subjects via the -s flag:"
+    usage
+    exit 3
 fi
 
 if [ -z "$user_id" ]
   then
-    echo "Error: you must supply a user ID via the -u flag or VECTOR_TESTUSER_ID env var:\n$usage"
-    exit 1
+    error "Error: you must supply a user ID via the -u flag or VECTOR_TESTUSER_ID env var:"
+    usage
+    exit 3
 fi
 
 #
@@ -263,7 +274,8 @@ fi
 #
 
 cd ansible
-extra_vars="test_name=$test_name test_configuration=$test_configuration test_timestamp=$test_timestamp user_id=$user_id $ansible_version_vars"
+test_namespace="tag_TestName_$test_name:&tag_TestConfiguration_$test_configuration:&tag_TestUserID_$user_id"
+extra_vars="test_name=$test_name test_configuration=$test_configuration test_namespace=$test_namespace test_timestamp=$test_timestamp user_id=$user_id $ansible_version_vars"
 
 if [ "$bootstrap" == 'true' ]
 then

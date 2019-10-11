@@ -2,5 +2,5 @@
 - include_role:
     name: logstash
   vars:
-    action: set_config
+    action: configure
     pipeline_file: config_files/logstash.conf

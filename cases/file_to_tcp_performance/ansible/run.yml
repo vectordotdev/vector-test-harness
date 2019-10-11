@@ -1,14 +1,14 @@
 ---
 - import_playbook: reset.yml
 
-- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}'
+- hosts: '{{ test_namespace }}'
   become: true
   tasks:
     - set_fact:
         consumer_instance: "{{ hostvars[groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_consumer'].0] }}"
         consumer_role: "{% if test_subject=='filebeat' %}logstash{% else %}tcp_test_server{% endif %}"
 
-- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}:&tag_TestRole_consumer'
+- hosts: '{{ test_namespace }}:&tag_TestRole_consumer'
   become: true
   tasks:
     - include_role:
@@ -16,7 +16,7 @@
       vars:
         action: start
 
-- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}:&tag_TestRole_subject'
+- hosts: '{{ test_namespace }}:&tag_TestRole_subject'
   become: true
   tasks:
     - name: Wait for port {{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }} to become available
@@ -57,7 +57,7 @@
       vars:
         action: stop
 
-- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}:&tag_TestRole_consumer'
+- hosts: '{{ test_namespace }}:&tag_TestRole_consumer'
   become: true
   tasks:
     - include_role:

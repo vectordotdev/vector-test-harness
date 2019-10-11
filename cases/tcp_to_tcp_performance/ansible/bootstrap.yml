@@ -1,26 +1,18 @@
 ---
-- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}'
+- hosts: '{{ test_namespace }}'
   tasks:
     - meta: refresh_inventory
     - name: Wait 600 seconds for target connection to become reachable/usable
       wait_for_connection:
 
-- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}'
+- hosts: '{{ test_namespace }}'
   become: true
-  roles:
-    - utilities
-    - python3
-    - awscli
-    - journald-rate-limits
   tasks:
     - set_fact:
         consumer_instance: "{{ hostvars[groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_consumer'].0] }}"
 
-- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}:&tag_TestRole_producer'
+- hosts: '{{ test_namespace }}:&tag_TestRole_producer'
   become: true
-  roles:
-    - flog
-
   tasks:
     - name: Remove previous test log file
       file:
@@ -33,37 +25,29 @@
           jq -c --raw-input '{msg: .}' \
           > /tmp/flog-100MiB.log
 
-- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}:&tag_TestRole_subject'
+- hosts: '{{ test_namespace }}:&tag_TestRole_subject'
   become: true
   roles:
-    - role: profiling
-      action: install
-
     - role: filebeat
-      action: install
-      version: "{{ filebeat_version }}"
+      action: configure
       configuration_file: "config_files/filebeat.yml"
 
     - role: fluentbit
-      action: install
-      version: "{{ fluentbit_version }}"
+      action: configure
       configuration_files:
         - src: config_files/td-agent-bit.conf
           dest: td-agent-bit.conf
 
     - role: fluentd
-      action: install
-      version: "{{ fluentd_version }}"
+      action: configure
       configuration_file: "config_files/td-agent.conf"
 
     - role: logstash
-      action: install
-      version: "{{ logstash_version }}"
+      action: configure
       pipeline_file: "config_files/logstash.subject.pipeline.conf"
 
     - role: splunk_heavy_forwarder
-      action: install
-      version_with_hash: "{{ splunk_heavy_forwarder_version }}"
+      action: configure
       configuration_files:
         - src: config_files/splunk.inputs.conf
           dest: inputs.conf
@@ -71,8 +55,7 @@
           dest: outputs.conf
 
     - role: splunk_universal_forwarder
-      action: install
-      version_with_hash: "{{ splunk_universal_forwarder_version }}"
+      action: configure
       configuration_files:
         - src: config_files/splunk.inputs.conf
           dest: inputs.conf
@@ -80,19 +63,17 @@
           dest: outputs.conf
       
     - role: vector
-      action: install
-      version: "{{ vector_version }}"
+      action: configure
       configuration_file: "config_files/vector.toml"
 
-- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}:&tag_TestRole_consumer'
+- hosts: '{{ test_namespace }}:&tag_TestRole_consumer'
   become: true
   roles:
     - role: logstash
-      action: install
-      version: "{{ logstash_version }}"
+      action: configure
       pipeline_file: "config_files/logstash.consumer.pipeline.conf"
 
     - role: tcp_test_server
-      action: install
+      action: configure
       server_address: "0.0.0.0:{{ consumer_port }}"
 

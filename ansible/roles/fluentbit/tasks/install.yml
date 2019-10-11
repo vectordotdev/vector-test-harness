@@ -41,8 +41,6 @@
     path: /etc/td-agent-bit/parsers.conf
     state: absent
 
-- include: "set_config.yml"
-
 - name: Install td-agent-bit daemon systemd script
   copy:
     src: td-agent-bit.service
@@ -51,7 +49,7 @@
     remote_src: no
 
 # This ensures that the process is not running. Each test is responsible
-# for starting and stopp the relevant services.
+# for starting and stopping the relevant services.
 - name: Ensure the td-agent-bit service is stopped
   systemd:
     name: td-agent-bit

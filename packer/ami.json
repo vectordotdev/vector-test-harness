@@ -1,0 +1,34 @@
+{
+  "variables": {
+    "ansible_version_vars": "{{env `ansible_version_vars`}}"
+  },
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "region": "us-east-1",
+      "source_ami_filter": {
+        "filters": {
+          "virtualization-type": "hvm",
+          "name": "ubuntu/images/*ubuntu-xenial-16.04-amd64-server-*",
+          "root-device-type": "ebs"
+        },
+        "owners": ["099720109477"],
+        "most_recent": true
+      },
+      "instance_type": "c5.large",
+      "ssh_username": "ubuntu",
+      "ami_name": "vector/images/hvm-ssd/test-harness-amd64-{{ isotime \"2006-01-02\" | clean_ami_name }}-{{ timestamp }}"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "script": "bootstrap.sh"
+    },
+    {
+      "type": "ansible",
+      "playbook_file": "../ansible/ami.yml",
+      "extra_arguments": [ "--extra-vars", "{{user `ansible_version_vars`}}" ]
+    }
+  ]
+}

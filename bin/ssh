@@ -1,0 +1,68 @@
+#!/usr/bin/env sh     
+
+#
+# Setup
+#
+
+set -e 
+
+# saner programming env: these switches turn some bugs into errors
+set -o errexit -o pipefail -o noclobber -o nounset
+
+#
+# Usage
+#
+
+usage="
+USAGE
+   ssh -h host
+
+DESCRIPTION
+   SSHs onto the provided host.
+
+OPTIONS
+   -h  The IP address of the target host
+
+EXAMPLES
+   ./ssh -h 2.76.231.121  
+"
+
+#
+# Functions
+#
+
+error() { echo "\033[0;31m$1\033[0m"; }
+usage() { echo "$usage" 1>&2; }
+
+#
+# Flags
+#
+
+host=''
+
+while getopts "h:" o; do
+    case "${o}" in
+        h)
+            host=${OPTARG}
+            ;;
+        *)
+            error "Invalid option detected: $1"
+            exit 3
+            ;;
+    esac
+done
+shift $((OPTIND-1))
+
+#
+# Requirements
+#
+
+if [ -z "$host" ]
+  then
+    error "Error: you must supply a host via the -h flag"
+    usage
+    exit 3
+fi
+
+ssh  -o "IdentityFile=\"$VECTOR_TEST_PRIV_KEY\"" ubuntu@$host
+

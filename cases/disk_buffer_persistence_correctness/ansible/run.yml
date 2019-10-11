@@ -1,7 +1,7 @@
 ---
 - import_playbook: reset.yml
 
-- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}:&tag_TestRole_subject'
+- hosts: '{{ test_namespace }}:&tag_TestRole_subject'
   become: true
   tasks:
     - include_role:

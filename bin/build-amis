@@ -1,0 +1,62 @@
+#!/usr/bin/env sh
+
+#
+# Setup
+#
+
+set -e 
+
+# saner programming env: these switches turn some bugs into errors
+set -o errexit -o pipefail -o noclobber -o nounset
+
+#
+# Usage
+#
+
+usage="
+USAGE
+   build-amis
+
+DESCRIPTION
+   Builds the various AMIs necessary to run the test cases. This saves quite
+   a bit of time when tests are consecutively run, avoiding the need to
+   install dependencies and test subjects.
+"
+
+#
+# Dependencies
+#
+
+if ! [ -x "$(command -v ansible-playbook)" ]; then
+  echo 'Error: ansible-playbook is not installed. (sudo pip install ansible)' >&2
+  exit 1
+fi
+
+if ! [ -x "$(command -v packer)" ]; then
+  echo 'Error: packer is not installed. (brew install packer)' >&2
+  exit 1
+fi
+
+#
+# Variables
+#
+
+test_subjects=$VECTOR_TEST_SUBJECTS
+
+ansible_version_vars=""
+
+while read -d, -r pair; do
+  IFS='=' read -r subject version <<<"$pair"
+  declare "$subject"_version=$version
+  ansible_version_vars="$ansible_version_vars "$subject"_version=$version"
+done <<<"$test_subjects,"
+
+export ansible_version_vars
+
+#
+# Build AMIs
+#
+
+cd packer
+
+packer build ami.json

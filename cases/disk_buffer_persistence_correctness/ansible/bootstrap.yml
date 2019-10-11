@@ -1,50 +1,34 @@
 ---
-- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}'
+- hosts: '{{ test_namespace }}'
   tasks:
     - meta: refresh_inventory
     - name: Wait 600 seconds for target connection to become reachable/usable
       wait_for_connection:
 
-- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}'
+- hosts: '{{ test_namespace }}:&tag_TestRole_subject'
   become: true
   roles:
-    - utilities
-    - python3
-    - awscli
-    - journald-rate-limits
-
-- hosts: 'tag_TestName_{{ test_name }}:&tag_TestConfiguration_{{ test_configuration }}:&tag_TestUserID_{{ user_id }}:&tag_TestRole_subject'
-  become: true
-  roles:
-    - role: profiling
-      action: install
-
     - role: fluentbit
-      action: install
-      version: "{{ fluentbit_version }}"
+      action: configure
       configuration_files:
         - src: config_files/td-agent-bit.conf
           dest: td-agent-bit.conf
 
     - role: filebeat
-      action: install
-      version: "{{ filebeat_version }}"
+      action: configure
       configuration_file: "config_files/filebeat.yml"
 
     - role: fluentd
-      action: install
-      version: "{{ fluentd_version }}"
+      action: configure
       configuration_file: "config_files/td-agent.conf"
 
     - role: logstash
-      action: install
-      version: "{{ logstash_version }}"
+      action: configure
       configuration_file: "config_files/logstash.settings.yml"
       pipeline_file: "config_files/logstash.pipeline.conf"
 
     - role: splunk_heavy_forwarder
-      action: install
-      version_with_hash: "{{ splunk_heavy_forwarder_version }}"
+      action: configure
       configuration_files:
         - src: config_files/splunk.inputs.conf
           dest: inputs.conf
@@ -52,8 +36,7 @@
           dest: outputs.conf
 
     - role: splunk_universal_forwarder
-      action: install
-      version_with_hash: "{{ splunk_universal_forwarder_version }}"
+      action: configure
       configuration_files:
         - src: config_files/splunk.inputs.conf
           dest: inputs.conf
@@ -61,12 +44,11 @@
           dest: outputs.conf
 
     - role: test_servers
-      action: install
+      action: configure
       http_server_address: "127.0.0.1:{{ http_consumer_port }}"
       tcp_server_address: "127.0.0.1:{{ tcp_consumer_port }}"
           
     - role: vector
-      action: install
-      version: "{{ vector_version }}"
+      action: configure
       configuration_file: "config_files/vector.toml"
 

@@ -19,8 +19,6 @@
     group: td-agent
     mode: 0700
 
-- include: "set_config.yml"
-
 - name: Add td-agent apt-key
   apt_key: 
     url: https://packages.treasuredata.com/GPG-KEY-td-agent
@@ -28,7 +26,7 @@
 
 - name: Add td-agent apt repository
   apt_repository:
-    repo: 'deb http://packages.treasuredata.com/3/ubuntu/xenial/ xenial contrib'
+    repo: 'deb https://packages.treasuredata.com/3/ubuntu/xenial/ xenial contrib'
     state: present
     filename: td-agent
     update_cache: yes
@@ -59,7 +57,7 @@
     state: absent
 
 # This ensures that the process is not running. Each test is responsible
-# for starting and stopp the relevant services.
+# for starting and stopping the relevant services.
 - name: Ensure the td-agent service is stopped
   systemd:
     name: td-agent

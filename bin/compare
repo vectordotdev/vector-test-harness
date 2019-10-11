@@ -15,19 +15,27 @@ set -o errexit -o pipefail -o noclobber -o nounset
 
 usage="
 USAGE
-   compare
+   compare -t test [-c configuration] [-p]
 
 DESCRIPTION
    Prints a simple table that compares the average test times
    across all subjects on all tests.
 
 OPTIONS
-   -t [test_name] The test name (ex: tcp_to_blackhole,etc)
-   -c [test_configuration] The test configuration (default: default)
+   -c, --configuration  The test configuration (default: default)
+   -p, --percentages    To include percentage increase from test winner (default: false)
+   -t, --test           The test name (ex: tcp_to_blackhole,etc)
 
 EXAMPLES
-   ./compare
+   ./compare -t tcp_to_tcp_performance
 "
+
+#
+# Functions
+#
+
+error() { echo "\033[0;31m$1\033[0m"; }
+usage() { echo "$usage" 1>&2; }
 
 #
 # Dependencies
@@ -36,7 +44,7 @@ EXAMPLES
 # This is required for flag parsing, specifically the posix style: --flag
 ! getopt --test > /dev/null 
 if [[ ${PIPESTATUS[0]} -ne 4 ]]; then
-    echo 'Error: enhanced getopt is not installed. (brew install gnu-getopt)'
+    error 'Error: enhanced getopt is not installed. (brew install gnu-getopt)'
     exit 1
 fi
 
@@ -87,11 +95,22 @@ while true; do
             break
             ;;
         *)
-            echo "Invalid option detected: $1"
+            error "Invalid option detected: $1"
             exit 3
             ;;
     esac
 done
+
+#
+# Requirements
+#
+
+if [ -z "$test_name" ]
+  then
+    error "Error: you must supply a test name via the -t flag"
+    usage
+    exit 3
+fi
 
 #
 # Header

@@ -8,10 +8,8 @@
     name: http_test_server
   vars:
     action: install
-    server_address: "{{ http_server_address }}"
 
 - include_role:
     name: tcp_test_server
   vars:
     action: install
-    server_address: "{{ tcp_server_address }}"
