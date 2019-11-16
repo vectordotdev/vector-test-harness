@@ -1,228 +1,2372 @@
 {
   "performance_tests": [
     {
+      "slug": "tcp_to_tcp_performance",
+      "name": "TCP To TCP",
+      "description": "A TCP performance test, accepting data over TCP and forwarding it over TCP",
+      "metrics": [
+        {
+          "slug": "duration_avg",
+          "name": "Duration",
+          "unit": "s",
+          "measurements": [
+            {
+              "label": 61.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 61.0
+            },
+            {
+              "label": 62.0,
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 62.0
+            },
+            {
+              "label": 62.0,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 62.0
+            },
+            {
+              "label": 62.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 62.0
+            },
+            {
+              "label": 62.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 62.0
+            },
+            {
+              "label": 62.0,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 62.0
+            },
+            {
+              "label": 62.0,
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 62.0
+            }
+          ]
+        },
+        {
+          "slug": "duration_max",
+          "name": "Duration",
+          "unit": "s",
+          "measurements": [
+            {
+              "label": 61.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 61.0
+            },
+            {
+              "label": 62.0,
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 62.0
+            },
+            {
+              "label": 62.0,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 62.0
+            },
+            {
+              "label": 62.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 62.0
+            },
+            {
+              "label": 62.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 62.0
+            },
+            {
+              "label": 62.0,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 62.0
+            },
+            {
+              "label": 62.0,
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 62.0
+            }
+          ]
+        },
+        {
+          "slug": "cpu_sys_avg",
+          "name": "CPU Sys",
+          "unit": "load",
+          "measurements": [
+            {
+              "label": 0.91,
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 0.91
+            },
+            {
+              "label": 0.91,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 0.91
+            },
+            {
+              "label": 2.76,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 2.76
+            },
+            {
+              "label": 3.49,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 3.49
+            },
+            {
+              "label": 7.62,
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 7.62
+            },
+            {
+              "label": 12.81,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 12.81
+            },
+            {
+              "label": 23.48,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 23.48
+            }
+          ]
+        },
+        {
+          "slug": "cpu_usr_avg",
+          "name": "CPU Usr",
+          "unit": "load",
+          "measurements": [
+            {
+              "label": 44.12,
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 44.12
+            },
+            {
+              "label": 46.75,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 46.75
+            },
+            {
+              "label": 48.23,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 48.23
+            },
+            {
+              "label": 62.21,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 62.21
+            },
+            {
+              "label": 63.36,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 63.36
+            },
+            {
+              "label": 78.18,
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 78.18
+            },
+            {
+              "label": 89.16,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 89.16
+            }
+          ]
+        },
+        {
+          "slug": "cpu_sys_max",
+          "name": "CPU Sys",
+          "unit": "load",
+          "measurements": [
+            {
+              "label": 2.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 2.0
+            },
+            {
+              "label": 4.06,
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 4.06
+            },
+            {
+              "label": 6.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 6.0
+            },
+            {
+              "label": 8.04,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 8.04
+            },
+            {
+              "label": 16.58,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 16.58
+            },
+            {
+              "label": 21.86,
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 21.86
+            },
+            {
+              "label": 28.35,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 28.35
+            }
+          ]
+        },
+        {
+          "slug": "cpu_usr_max",
+          "name": "CPU Usr",
+          "unit": "load",
+          "measurements": [
+            {
+              "label": 50.51,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 50.51
+            },
+            {
+              "label": 50.76,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 50.76
+            },
+            {
+              "label": 52.79,
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 52.79
+            },
+            {
+              "label": 72.17,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 72.17
+            },
+            {
+              "label": 75.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 75.0
+            },
+            {
+              "label": 93.5,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 93.5
+            },
+            {
+              "label": 99.5,
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 99.5
+            }
+          ]
+        },
+        {
+          "slug": "load_avg_1m",
+          "name": "CPU Load 1m",
+          "unit": "load",
+          "measurements": [
+            {
+              "label": 0.36,
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 0.36
+            },
+            {
+              "label": 0.68,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 0.68
+            },
+            {
+              "label": 0.79,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 0.79
+            },
+            {
+              "label": 0.94,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 0.94
+            },
+            {
+              "label": 1.56,
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 1.56
+            },
+            {
+              "label": 1.88,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 1.88
+            },
+            {
+              "label": 2.2,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 2.2
+            }
+          ]
+        },
+        {
+          "slug": "mem_used_avg",
+          "name": "Mem Used",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "161.9MiB",
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 169794413.71
+            },
+            {
+              "label": "170MiB",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 178261025.03
+            },
+            {
+              "label": "238.4MiB",
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 249976149.33
+            },
+            {
+              "label": "256.7MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 269164348.95
+            },
+            {
+              "label": "392.3MiB",
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 411337029.08
+            },
+            {
+              "label": "509.8MiB",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 534552380.95
+            },
+            {
+              "label": "722.8MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 757876703.49
+            }
+          ]
+        },
+        {
+          "slug": "mem_used_max",
+          "name": "Mem Used",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "164.2MiB",
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 172195840.0
+            },
+            {
+              "label": "171.6MiB",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 179970048.0
+            },
+            {
+              "label": "250.3MiB",
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 262504448.0
+            },
+            {
+              "label": "293.6MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 307896320.0
+            },
+            {
+              "label": "399.2MiB",
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 418586624.0
+            },
+            {
+              "label": "641.2MiB",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 672354304.0
+            },
+            {
+              "label": "725.4MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 760643584.0
+            }
+          ]
+        },
+        {
+          "slug": "disk_read_avg",
+          "name": "Disk Read",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "36.7kib",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 37615.4
+            },
+            {
+              "label": "135.8kib",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 139085.27
+            },
+            {
+              "label": "136kib",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 139306.3
+            },
+            {
+              "label": "136.5kib",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 139749.73
+            },
+            {
+              "label": "159.1kib",
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 162946.0
+            },
+            {
+              "label": "194.2kib",
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 198814.75
+            },
+            {
+              "label": "6MiB",
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 6302571.87
+            }
+          ]
+        },
+        {
+          "slug": "disk_read_sum",
+          "name": "Disk Read",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "372.7MiB",
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 390765757.76
+            },
+            {
+              "label": "11.8MiB",
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 12326514.66
+            },
+            {
+              "label": "9.6MiB",
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 10102651.75
+            },
+            {
+              "label": "8.3MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 8664483.08
+            },
+            {
+              "label": "8.2MiB",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 8637129.65
+            },
+            {
+              "label": "8.2MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 8623286.94
+            },
+            {
+              "label": "2.2MiB",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 2294539.15
+            }
+          ]
+        },
+        {
+          "slug": "disk_writ_sum",
+          "name": "Disk Write",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "12.1MiB",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 12737522.08
+            },
+            {
+              "label": "8.8MiB",
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 9262301.88
+            },
+            {
+              "label": "6.1MiB",
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 6393766.43
+            },
+            {
+              "label": "2.7MiB",
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 2827977.15
+            },
+            {
+              "label": "2.7MiB",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 2797653.3
+            },
+            {
+              "label": "2.7MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 2786687.8
+            },
+            {
+              "label": "2.6MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 2776266.75
+            }
+          ]
+        },
+        {
+          "slug": "io_read_sum",
+          "name": "IO Read",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "21kib",
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 21491.0
+            },
+            {
+              "label": "632.1b",
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 632.06
+            },
+            {
+              "label": "575.1b",
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 575.07
+            },
+            {
+              "label": "555.4b",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 555.36
+            },
+            {
+              "label": "549.5b",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 549.47
+            },
+            {
+              "label": "546b",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 545.99
+            },
+            {
+              "label": "244.4b",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 244.4
+            }
+          ]
+        },
+        {
+          "slug": "io_writ_sum",
+          "name": "IO Write",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "1.6kib",
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 1685.3
+            },
+            {
+              "label": "870.7b",
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 870.71
+            },
+            {
+              "label": "719.1b",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 719.12
+            },
+            {
+              "label": "244.3b",
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 244.27
+            },
+            {
+              "label": "243.8b",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 243.75
+            },
+            {
+              "label": "237.2b",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 237.25
+            },
+            {
+              "label": "234.7b",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 234.67
+            }
+          ]
+        },
+        {
+          "slug": "net_recv_avg",
+          "name": "Net Recv",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "3.9MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 4117528.35
+            },
+            {
+              "label": "5MiB",
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 5219776.63
+            },
+            {
+              "label": "7.6MiB",
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 7921283.76
+            },
+            {
+              "label": "10MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 10519047.0
+            },
+            {
+              "label": "67.1MiB",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 70404342.46
+            },
+            {
+              "label": "69.9MiB",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 73306598.74
+            },
+            {
+              "label": "70.4MiB",
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 73798589.39
+            }
+          ]
+        },
+        {
+          "slug": "net_recv_sum",
+          "name": "Net Recv",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "4.3gib",
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 4575512542.0
+            },
+            {
+              "label": "4.2gib",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 4471702523.0
+            },
+            {
+              "label": "4.1gib",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 4365139632.0
+            },
+            {
+              "label": "622MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 652180914.0
+            },
+            {
+              "label": "468.4MiB",
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 491127514.0
+            },
+            {
+              "label": "308.6MiB",
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 323626151.0
+            },
+            {
+              "label": "243.5MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 255286758.0
+            }
+          ]
+        },
+        {
+          "slug": "net_send_sum",
+          "name": "Net Send",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "4.3gib",
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 4572671651.0
+            },
+            {
+              "label": "4.2gib",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 4468254416.0
+            },
+            {
+              "label": "4.1gib",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 4371869164.0
+            },
+            {
+              "label": "1.1gib",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 1196719274.0
+            },
+            {
+              "label": "450.8MiB",
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 472657638.0
+            },
+            {
+              "label": "292MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 306220315.0
+            },
+            {
+              "label": "178.9MiB",
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 187617898.0
+            }
+          ]
+        },
+        {
+          "slug": "sock_total_sum",
+          "name": "Socket Total",
+          "unit": "conns",
+          "measurements": [
+            {
+              "label": 8047.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 8047.0
+            },
+            {
+              "label": 8056.0,
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 8056.0
+            },
+            {
+              "label": 8168.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 8168.0
+            },
+            {
+              "label": 8234.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 8234.0
+            },
+            {
+              "label": 8867.0,
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 8867.0
+            },
+            {
+              "label": 9525.0,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 9525.0
+            },
+            {
+              "label": 9688.0,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 9688.0
+            }
+          ]
+        },
+        {
+          "slug": "tcp_act_sum",
+          "name": "TCP ACT",
+          "unit": "conns",
+          "measurements": [
+            {
+              "label": 423.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 423.0
+            },
+            {
+              "label": 425.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 425.0
+            },
+            {
+              "label": 425.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 425.0
+            },
+            {
+              "label": 431.0,
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 431.0
+            },
+            {
+              "label": 553.0,
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 553.0
+            },
+            {
+              "label": 1562.0,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 1562.0
+            },
+            {
+              "label": 1910.0,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 1910.0
+            }
+          ]
+        },
+        {
+          "slug": "tcp_syn_sum",
+          "name": "TCP Syn",
+          "unit": "syns",
+          "measurements": [
+            {
+              "label": 0.0,
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 0.0
+            },
+            {
+              "label": 0.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 0.0
+            },
+            {
+              "label": 0.0,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 0.0
+            },
+            {
+              "label": 0.0,
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 0.0
+            },
+            {
+              "label": 0.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 0.0
+            },
+            {
+              "label": 5.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 5.0
+            },
+            {
+              "label": 14.0,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 14.0
+            }
+          ]
+        },
+        {
+          "slug": "tcp_clo_sum",
+          "name": "TCP Close",
+          "unit": "closes",
+          "measurements": [
+            {
+              "label": 0.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 0.0
+            },
+            {
+              "label": 2.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 2.0
+            },
+            {
+              "label": 3.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 3.0
+            },
+            {
+              "label": 3.0,
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 3.0
+            },
+            {
+              "label": 4.0,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 4.0
+            },
+            {
+              "label": 5.0,
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 5.0
+            },
+            {
+              "label": 5.0,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 5.0
+            }
+          ]
+        }
+      ],
+      "io_metric_slug": "net_recv_avg"
+    },
+    {
       "slug": "file_to_tcp_performance",
       "name": "File To TCP",
       "description": "A file tailing test, tailing 10 files and forwarding data over TCP",
       "metrics": [
         {
-          "name": "IO",
+          "slug": "duration_avg",
+          "name": "Duration",
+          "unit": "s",
           "measurements": [
             {
-              "name": "Vector",
-              "label": "76.7MiB/s",
-              "value": 80477265.42
+              "label": 60.0,
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 60.0
             },
             {
-              "name": "Splunk UF",
-              "label": "40.1MiB/s",
-              "value": 42068017.54
+              "label": 60.0,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 60.0
             },
             {
-              "name": "Splunk HF",
-              "label": "39MiB/s",
-              "value": 40938665.1
+              "label": 60.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 60.0
             },
             {
-              "name": "FluentBit",
-              "label": "35MiB/s",
-              "value": 36681306.72
+              "label": 60.0,
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 60.0
             },
             {
-              "name": "FluentD",
-              "label": "26.1MiB/s",
-              "value": 27349053.38
+              "label": 61.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 61.0
             },
             {
-              "name": "Filebeat",
-              "label": "7.8MiB/s",
-              "value": 8159684.2
+              "label": 61.0,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 61.0
             },
             {
-              "name": "Logstash",
-              "label": "3.1MiB/s",
-              "value": 3218925.95
+              "label": 61.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 61.0
             }
           ]
         },
         {
-          "name": "Mem",
+          "slug": "duration_max",
+          "name": "Duration",
+          "unit": "s",
           "measurements": [
             {
-              "name": "Filebeat",
+              "label": 60.0,
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 60.0
+            },
+            {
+              "label": 60.0,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 60.0
+            },
+            {
+              "label": 60.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 60.0
+            },
+            {
+              "label": 60.0,
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 60.0
+            },
+            {
+              "label": 61.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 61.0
+            },
+            {
+              "label": 61.0,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 61.0
+            },
+            {
+              "label": 61.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 61.0
+            }
+          ]
+        },
+        {
+          "slug": "cpu_sys_avg",
+          "name": "CPU Sys",
+          "unit": "load",
+          "measurements": [
+            {
+              "label": 1.09,
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 1.09
+            },
+            {
+              "label": 1.3,
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 1.3
+            },
+            {
+              "label": 1.49,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 1.49
+            },
+            {
+              "label": 2.99,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 2.99
+            },
+            {
+              "label": 17.92,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 17.92
+            },
+            {
+              "label": 20.22,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 20.22
+            },
+            {
+              "label": 29.93,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 29.93
+            }
+          ]
+        },
+        {
+          "slug": "cpu_usr_avg",
+          "name": "CPU Usr",
+          "unit": "load",
+          "measurements": [
+            {
+              "label": 0.82,
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 0.82
+            },
+            {
+              "label": 47.88,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 47.88
+            },
+            {
+              "label": 48.47,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 48.47
+            },
+            {
+              "label": 53.18,
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 53.18
+            },
+            {
+              "label": 65.77,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 65.77
+            },
+            {
+              "label": 69.17,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 69.17
+            },
+            {
+              "label": 70.59,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 70.59
+            }
+          ]
+        },
+        {
+          "slug": "cpu_sys_max",
+          "name": "CPU Sys",
+          "unit": "load",
+          "measurements": [
+            {
+              "label": 4.52,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 4.52
+            },
+            {
+              "label": 4.68,
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 4.68
+            },
+            {
+              "label": 6.6,
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 6.6
+            },
+            {
+              "label": 6.65,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 6.65
+            },
+            {
+              "label": 22.96,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 22.96
+            },
+            {
+              "label": 34.65,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 34.65
+            },
+            {
+              "label": 46.5,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 46.5
+            }
+          ]
+        },
+        {
+          "slug": "cpu_usr_max",
+          "name": "CPU Usr",
+          "unit": "load",
+          "measurements": [
+            {
+              "label": 18.09,
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 18.09
+            },
+            {
+              "label": 50.25,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 50.25
+            },
+            {
+              "label": 50.52,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 50.52
+            },
+            {
+              "label": 63.82,
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 63.82
+            },
+            {
+              "label": 74.87,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 74.87
+            },
+            {
+              "label": 84.69,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 84.69
+            },
+            {
+              "label": 98.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 98.0
+            }
+          ]
+        },
+        {
+          "slug": "load_avg_1m",
+          "name": "CPU Load 1m",
+          "unit": "load",
+          "measurements": [
+            {
+              "label": 0.56,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 0.56
+            },
+            {
+              "label": 0.57,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 0.57
+            },
+            {
+              "label": 0.61,
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 0.61
+            },
+            {
+              "label": 1.03,
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 1.03
+            },
+            {
+              "label": 1.51,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 1.51
+            },
+            {
+              "label": 2.22,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 2.22
+            },
+            {
+              "label": 2.61,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 2.61
+            }
+          ]
+        },
+        {
+          "slug": "mem_used_avg",
+          "name": "Mem Used",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "169.2MiB",
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 177416494.16
+            },
+            {
+              "label": "173.1MiB",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 181479357.94
+            },
+            {
+              "label": "235.5MiB",
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 246891033.18
+            },
+            {
+              "label": "333.2MiB",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 349415659.02
+            },
+            {
+              "label": "425.2MiB",
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 445843852.39
+            },
+            {
+              "label": "627.7MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 658147563.02
+            },
+            {
+              "label": "728MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 763367093.68
+            }
+          ]
+        },
+        {
+          "slug": "mem_used_max",
+          "name": "Mem Used",
+          "unit": "bytes",
+          "measurements": [
+            {
               "label": "170.7MiB",
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
               "value": 179032064.0
             },
             {
-              "name": "Vector",
               "label": "188.1MiB",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
               "value": 197222400.0
             },
             {
-              "name": "Splunk UF",
               "label": "241.4MiB",
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
               "value": 253095936.0
             },
             {
-              "name": "FluentBit",
               "label": "370.3MiB",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
               "value": 388255744.0
             },
             {
-              "name": "Splunk HF",
               "label": "442.6MiB",
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
               "value": 464109568.0
             },
             {
-              "name": "Logstash",
               "label": "763.7MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
               "value": 800808960.0
             },
             {
-              "name": "FluentD",
               "label": "890.6MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
               "value": 933810176.0
             }
           ]
         },
         {
-          "name": "CPU",
+          "slug": "disk_read_avg",
+          "name": "Disk Read",
+          "unit": "bytes",
           "measurements": [
             {
-              "name": "FluentBit",
-              "label": "0.56 1m avg",
-              "value": 0.56
+              "label": "3.1MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 3218925.95
             },
             {
-              "name": "FluentD",
-              "label": "0.57 1m avg",
-              "value": 0.57
+              "label": "7.8MiB",
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 8159684.2
             },
             {
-              "name": "Splunk UF",
-              "label": "0.61 1m avg",
-              "value": 0.61
+              "label": "26.1MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 27349053.38
             },
             {
-              "name": "Filebeat",
-              "label": "1.03 1m avg",
-              "value": 1.03
+              "label": "35MiB",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 36681306.72
             },
             {
-              "name": "Vector",
-              "label": "1.51 1m avg",
-              "value": 1.51
+              "label": "39MiB",
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 40938665.1
             },
             {
-              "name": "Logstash",
-              "label": "2.22 1m avg",
-              "value": 2.22
+              "label": "40.1MiB",
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 42068017.54
             },
             {
-              "name": "Splunk HF",
-              "label": "2.61 1m avg",
-              "value": 2.61
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "slug": "regex_parsing_performance",
-      "name": "Regex Parsing",
-      "description": "A Regex test, parsing Apache common log formats",
-      "metrics": [
-        {
-          "name": "IO",
-          "measurements": [
-            {
-              "name": "FluentBit",
-              "label": "20.5MiB/s",
-              "value": 21508433.64
-            },
-            {
-              "name": "Vector",
-              "label": "13.5MiB/s",
-              "value": 14114261.23
-            },
-            {
-              "name": "Splunk HF",
-              "label": "7.8MiB/s",
-              "value": 8175926.8
-            },
-            {
-              "name": "Logstash",
-              "label": "4.6MiB/s",
-              "value": 4775582.95
-            },
-            {
-              "name": "FluentD",
-              "label": "2.6MiB/s",
-              "value": 2687343.81
+              "label": "76.7MiB",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 80477265.42
             }
           ]
         },
         {
-          "name": "Mem",
+          "slug": "disk_read_sum",
+          "name": "Disk Read",
+          "unit": "bytes",
           "measurements": [
             {
-              "name": "Vector",
-              "label": "168MiB",
-              "value": 176111616.0
+              "label": "4.6gib",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 4909113190.84
             },
             {
-              "name": "FluentD",
-              "label": "246.1MiB",
-              "value": 258084864.0
+              "label": "2.4gib",
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 2524081052.61
             },
             {
-              "name": "Splunk HF",
-              "label": "442.4MiB",
-              "value": 463929344.0
+              "label": "2.3gib",
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 2497258571.1
             },
             {
-              "name": "FluentBit",
-              "label": "584.5MiB",
-              "value": 612917248.0
+              "label": "2gib",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 2200878403.09
             },
             {
-              "name": "Logstash",
-              "label": "743.8MiB",
-              "value": 779882496.0
+              "label": "1.5gib",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 1640943202.59
+            },
+            {
+              "label": "466.9MiB",
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 489581052.08
+            },
+            {
+              "label": "187.3MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 196360920.49
             }
           ]
         },
         {
-          "name": "CPU",
+          "slug": "disk_writ_sum",
+          "name": "Disk Write",
+          "unit": "bytes",
           "measurements": [
             {
-              "name": "FluentBit",
-              "label": "0.48 1m avg",
-              "value": 0.48
+              "label": "602.6MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 631924165.21
             },
             {
-              "name": "FluentD",
-              "label": "0.77 1m avg",
-              "value": 0.77
+              "label": "177.6MiB",
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 186269788.61
             },
             {
-              "name": "Vector",
-              "label": "0.9 1m avg",
-              "value": 0.9
+              "label": "54.3MiB",
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 56982487.04
             },
             {
-              "name": "Logstash",
-              "label": "2.14 1m avg",
-              "value": 2.14
+              "label": "24.4MiB",
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 25558758.26
             },
             {
-              "name": "Splunk HF",
-              "label": "2.19 1m avg",
-              "value": 2.19
+              "label": "16.1MiB",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 16879958.96
+            },
+            {
+              "label": "11.6MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 12181002.15
+            },
+            {
+              "label": "6.1MiB",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 6382683.54
+            }
+          ]
+        },
+        {
+          "slug": "io_read_sum",
+          "name": "IO Read",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "37.1kib",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 38028.17
+            },
+            {
+              "label": "35.1kib",
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 35901.63
+            },
+            {
+              "label": "20.7kib",
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 21198.11
+            },
+            {
+              "label": "16.6kib",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 17033.32
+            },
+            {
+              "label": "12.6kib",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 12854.49
+            },
+            {
+              "label": "5.1kib",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 5260.42
+            },
+            {
+              "label": "4kib",
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 4099.89
+            }
+          ]
+        },
+        {
+          "slug": "io_writ_sum",
+          "name": "IO Write",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "43.8kib",
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 44856.24
+            },
+            {
+              "label": "5kib",
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 5081.34
+            },
+            {
+              "label": "3.1kib",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 3219.93
+            },
+            {
+              "label": "913.2b",
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 913.24
+            },
+            {
+              "label": "449.3b",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 449.28
+            },
+            {
+              "label": "401.3b",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 401.32
+            },
+            {
+              "label": "303.8b",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 303.82
+            }
+          ]
+        },
+        {
+          "slug": "net_recv_avg",
+          "name": "Net Recv",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "4kib",
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 4105.68
+            },
+            {
+              "label": "38.7kib",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 39629.22
+            },
+            {
+              "label": "40.1kib",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 41064.72
+            },
+            {
+              "label": "51kib",
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 52248.63
+            },
+            {
+              "label": "113kib",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 115721.28
+            },
+            {
+              "label": "246.9kib",
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 252788.69
+            },
+            {
+              "label": "375.9kib",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 384894.33
+            }
+          ]
+        },
+        {
+          "slug": "net_recv_sum",
+          "name": "Net Recv",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "22.4MiB",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 23478554.0
+            },
+            {
+              "label": "14.7MiB",
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 15420110.0
+            },
+            {
+              "label": "6.6MiB",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 6943277.0
+            },
+            {
+              "label": "3MiB",
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 3134918.0
+            },
+            {
+              "label": "2.4MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 2505030.0
+            },
+            {
+              "label": "2.3MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 2377753.0
+            },
+            {
+              "label": "240.6kib",
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 246341.0
+            }
+          ]
+        },
+        {
+          "slug": "net_send_sum",
+          "name": "Net Send",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "2.3gib",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 2482752945.0
+            },
+            {
+              "label": "2gib",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 2167765729.0
+            },
+            {
+              "label": "1.2gib",
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 1263266820.0
+            },
+            {
+              "label": "1007.4MiB",
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 1056289679.0
+            },
+            {
+              "label": "573.7MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 601601225.0
+            },
+            {
+              "label": "167.3MiB",
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 175419867.0
+            },
+            {
+              "label": "65.2MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 68401255.0
+            }
+          ]
+        },
+        {
+          "slug": "sock_total_sum",
+          "name": "Socket Total",
+          "unit": "conns",
+          "measurements": [
+            {
+              "label": 7712.0,
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 7712.0
+            },
+            {
+              "label": 7745.0,
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 7745.0
+            },
+            {
+              "label": 7990.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 7990.0
+            },
+            {
+              "label": 8124.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 8124.0
+            },
+            {
+              "label": 8155.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 8155.0
+            },
+            {
+              "label": 8574.0,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 8574.0
+            },
+            {
+              "label": 9956.0,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 9956.0
+            }
+          ]
+        },
+        {
+          "slug": "tcp_act_sum",
+          "name": "TCP ACT",
+          "unit": "conns",
+          "measurements": [
+            {
+              "label": 122.0,
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 122.0
+            },
+            {
+              "label": 175.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 175.0
+            },
+            {
+              "label": 183.0,
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 183.0
+            },
+            {
+              "label": 183.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 183.0
+            },
+            {
+              "label": 186.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 186.0
+            },
+            {
+              "label": 1070.0,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 1070.0
+            },
+            {
+              "label": 1358.0,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 1358.0
+            }
+          ]
+        },
+        {
+          "slug": "tcp_syn_sum",
+          "name": "TCP Syn",
+          "unit": "syns",
+          "measurements": [
+            {
+              "label": 0.0,
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 0.0
+            },
+            {
+              "label": 0.0,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 0.0
+            },
+            {
+              "label": 0.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 0.0
+            },
+            {
+              "label": 0.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 0.0
+            },
+            {
+              "label": 0.0,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 0.0
+            },
+            {
+              "label": 0.0,
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 0.0
+            },
+            {
+              "label": 0.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "slug": "tcp_clo_sum",
+          "name": "TCP Close",
+          "unit": "closes",
+          "measurements": [
+            {
+              "label": 0.0,
+              "subject_slug": "filebeat",
+              "subject_name": "Filebeat",
+              "subject_version": "7.1.1",
+              "value": 0.0
+            },
+            {
+              "label": 0.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 0.0
+            },
+            {
+              "label": 0.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 0.0
+            },
+            {
+              "label": 0.0,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 0.0
+            },
+            {
+              "label": 0.0,
+              "subject_slug": "splunk_universal_forwarder",
+              "subject_name": "Splunk UF",
+              "subject_version": "7.2.5.1-962d9a8e1586",
+              "value": 0.0
+            },
+            {
+              "label": 0.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0",
+              "value": 0.0
+            },
+            {
+              "label": 1.0,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 1.0
             }
           ]
         }
-      ]
+      ],
+      "io_metric_slug": "disk_read_avg"
     },
     {
       "slug": "tcp_to_blackhole_performance",
@@ -230,81 +2374,742 @@
       "description": "A raw internal performance test, accepting data over TCP and discarding it",
       "metrics": [
         {
-          "name": "IO",
+          "slug": "duration_avg",
+          "name": "Duration",
+          "unit": "s",
           "measurements": [
             {
-              "name": "Vector",
-              "label": "86MiB/s",
-              "value": 90214676.67
+              "label": 61.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 61.0
             },
             {
-              "name": "FluentBit",
-              "label": "64.4MiB/s",
-              "value": 67479226.31
+              "label": 61.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 61.0
             },
             {
-              "name": "Logstash",
-              "label": "40.6MiB/s",
-              "value": 42581836.28
+              "label": 61.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 61.0
             },
             {
-              "name": "FluentD",
-              "label": "27.7MiB/s",
-              "value": 29077723.89
+              "label": 62.0,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 62.0
             }
           ]
         },
         {
-          "name": "Mem",
+          "slug": "duration_max",
+          "name": "Duration",
+          "unit": "s",
           "measurements": [
             {
-              "name": "Vector",
+              "label": 61.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 61.0
+            },
+            {
+              "label": 61.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 61.0
+            },
+            {
+              "label": 61.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 61.0
+            },
+            {
+              "label": 62.0,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 62.0
+            }
+          ]
+        },
+        {
+          "slug": "cpu_sys_avg",
+          "name": "CPU Sys",
+          "unit": "load",
+          "measurements": [
+            {
+              "label": 1.04,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 1.04
+            },
+            {
+              "label": 1.76,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 1.76
+            },
+            {
+              "label": 3.96,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 3.96
+            },
+            {
+              "label": 4.01,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 4.01
+            }
+          ]
+        },
+        {
+          "slug": "cpu_usr_avg",
+          "name": "CPU Usr",
+          "unit": "load",
+          "measurements": [
+            {
+              "label": 46.75,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 46.75
+            },
+            {
+              "label": 48.61,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 48.61
+            },
+            {
+              "label": 74.03,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 74.03
+            },
+            {
+              "label": 91.15,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 91.15
+            }
+          ]
+        },
+        {
+          "slug": "cpu_sys_max",
+          "name": "CPU Sys",
+          "unit": "load",
+          "measurements": [
+            {
+              "label": 3.51,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 3.51
+            },
+            {
+              "label": 4.04,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 4.04
+            },
+            {
+              "label": 6.09,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 6.09
+            },
+            {
+              "label": 6.53,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 6.53
+            }
+          ]
+        },
+        {
+          "slug": "cpu_usr_max",
+          "name": "CPU Usr",
+          "unit": "load",
+          "measurements": [
+            {
+              "label": 50.76,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 50.76
+            },
+            {
+              "label": 53.23,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 53.23
+            },
+            {
+              "label": 91.5,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 91.5
+            },
+            {
+              "label": 96.47,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 96.47
+            }
+          ]
+        },
+        {
+          "slug": "load_avg_1m",
+          "name": "CPU Load 1m",
+          "unit": "load",
+          "measurements": [
+            {
+              "label": 0.47,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 0.47
+            },
+            {
+              "label": 0.83,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 0.83
+            },
+            {
+              "label": 1.67,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 1.67
+            },
+            {
+              "label": 1.77,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 1.77
+            }
+          ]
+        },
+        {
+          "slug": "mem_used_avg",
+          "name": "Mem Used",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "179.1MiB",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 187753240.77
+            },
+            {
+              "label": "250.2MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 262304602.84
+            },
+            {
+              "label": "427.5MiB",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 448231586.54
+            },
+            {
+              "label": "736.6MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 772392299.35
+            }
+          ]
+        },
+        {
+          "slug": "mem_used_max",
+          "name": "Mem Used",
+          "unit": "bytes",
+          "measurements": [
+            {
               "label": "181MiB",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
               "value": 189775872.0
             },
             {
-              "name": "FluentD",
               "label": "294MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
               "value": 308252672.0
             },
             {
-              "name": "FluentBit",
               "label": "614.8MiB",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
               "value": 644636672.0
             },
             {
-              "name": "Logstash",
               "label": "742.5MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
               "value": 778551296.0
             }
           ]
         },
         {
-          "name": "CPU",
+          "slug": "disk_read_avg",
+          "name": "Disk Read",
+          "unit": "bytes",
           "measurements": [
             {
-              "name": "FluentBit",
-              "label": "0.47 1m avg",
-              "value": 0.47
+              "label": "43.3kib",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 44337.59
             },
             {
-              "name": "FluentD",
-              "label": "0.83 1m avg",
-              "value": 0.83
+              "label": "44.3kib",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 45381.98
             },
             {
-              "name": "Vector",
-              "label": "1.67 1m avg",
-              "value": 1.67
+              "label": "44.4kib",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 45443.68
             },
             {
-              "name": "Logstash",
-              "label": "1.77 1m avg",
-              "value": 1.77
+              "label": "148kib",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 151515.07
+            }
+          ]
+        },
+        {
+          "slug": "disk_read_sum",
+          "name": "Disk Read",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "9MiB",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 9393934.47
+            },
+            {
+              "label": "2.6MiB",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 2772064.19
+            },
+            {
+              "label": "2.6MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 2768300.99
+            },
+            {
+              "label": "2.6MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 2704593.08
+            }
+          ]
+        },
+        {
+          "slug": "disk_writ_sum",
+          "name": "Disk Write",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "14.8MiB",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 15469220.62
+            },
+            {
+              "label": "13.7MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 14346936.18
+            },
+            {
+              "label": "11.6MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 12135653.98
+            },
+            {
+              "label": "11MiB",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 11503813.78
+            }
+          ]
+        },
+        {
+          "slug": "io_read_sum",
+          "name": "IO Read",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "594b",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 593.99
+            },
+            {
+              "label": "292.5b",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 292.52
+            },
+            {
+              "label": "289.5b",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 289.52
+            },
+            {
+              "label": "280.3b",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 280.27
+            }
+          ]
+        },
+        {
+          "slug": "io_writ_sum",
+          "name": "IO Write",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "961.5b",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 961.53
+            },
+            {
+              "label": "801.6b",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 801.59
+            },
+            {
+              "label": "773.6b",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 773.63
+            },
+            {
+              "label": "511.1b",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 511.06
+            }
+          ]
+        },
+        {
+          "slug": "net_recv_avg",
+          "name": "Net Recv",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "27.7MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 29077723.89
+            },
+            {
+              "label": "40.6MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 42581836.28
+            },
+            {
+              "label": "64.4MiB",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 67479226.31
+            },
+            {
+              "label": "86MiB",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 90214676.67
+            }
+          ]
+        },
+        {
+          "slug": "net_recv_sum",
+          "name": "Net Recv",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "5.1gib",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 5503095277.0
+            },
+            {
+              "label": "3.9gib",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 4183712031.0
+            },
+            {
+              "label": "2.4gib",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 2597492013.0
+            },
+            {
+              "label": "1.7gib",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 1773741157.0
+            }
+          ]
+        },
+        {
+          "slug": "net_send_sum",
+          "name": "Net Send",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "9MiB",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 9410075.0
+            },
+            {
+              "label": "7.9MiB",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 8252757.0
+            },
+            {
+              "label": "5.7MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 5950751.0
+            },
+            {
+              "label": "2.6MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 2752059.0
+            }
+          ]
+        },
+        {
+          "slug": "sock_total_sum",
+          "name": "Socket Total",
+          "unit": "conns",
+          "measurements": [
+            {
+              "label": 8281.0,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 8281.0
+            },
+            {
+              "label": 8286.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 8286.0
+            },
+            {
+              "label": 8289.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 8289.0
+            },
+            {
+              "label": 8356.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 8356.0
+            }
+          ]
+        },
+        {
+          "slug": "tcp_act_sum",
+          "name": "TCP ACT",
+          "unit": "conns",
+          "measurements": [
+            {
+              "label": 663.0,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 663.0
+            },
+            {
+              "label": 664.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 664.0
+            },
+            {
+              "label": 664.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 664.0
+            },
+            {
+              "label": 665.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 665.0
+            }
+          ]
+        },
+        {
+          "slug": "tcp_syn_sum",
+          "name": "TCP Syn",
+          "unit": "syns",
+          "measurements": [
+            {
+              "label": 0.0,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 0.0
+            },
+            {
+              "label": 0.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 0.0
+            },
+            {
+              "label": 0.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 0.0
+            },
+            {
+              "label": 0.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "slug": "tcp_clo_sum",
+          "name": "TCP Close",
+          "unit": "closes",
+          "measurements": [
+            {
+              "label": 1.0,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 1.0
+            },
+            {
+              "label": 2.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 2.0
+            },
+            {
+              "label": 4.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 4.0
+            },
+            {
+              "label": 7.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 7.0
             }
           ]
         }
-      ]
+      ],
+      "io_metric_slug": "net_recv_avg"
     },
     {
       "slug": "tcp_to_http_performance",
@@ -312,208 +3117,1632 @@
       "description": "An HTTP performance test, accepting data over TCP and forwarding it over HTTP",
       "metrics": [
         {
-          "name": "IO",
+          "slug": "duration_avg",
+          "name": "Duration",
+          "unit": "s",
           "measurements": [
             {
-              "name": "Vector",
-              "label": "26.7MiB/s",
-              "value": 28038601.8
+              "label": 61.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 61.0
             },
             {
-              "name": "FluentBit",
-              "label": "19.6MiB/s",
-              "value": 20516963.4
+              "label": 63.0,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 63.0
             },
             {
-              "name": "Logstash",
-              "label": "2.7MiB/s",
-              "value": 2781534.84
+              "label": 63.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 63.0
             },
             {
-              "name": "FluentD",
-              "label": "897.8kib/s",
-              "value": 919326.69
+              "label": 63.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 63.0
             }
           ]
         },
         {
-          "name": "Mem",
+          "slug": "duration_max",
+          "name": "Duration",
+          "unit": "s",
           "measurements": [
             {
-              "name": "FluentD",
+              "label": 61.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 61.0
+            },
+            {
+              "label": 63.0,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 63.0
+            },
+            {
+              "label": 63.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 63.0
+            },
+            {
+              "label": 63.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 63.0
+            }
+          ]
+        },
+        {
+          "slug": "cpu_sys_avg",
+          "name": "CPU Sys",
+          "unit": "load",
+          "measurements": [
+            {
+              "label": 1.99,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 1.99
+            },
+            {
+              "label": 3.09,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 3.09
+            },
+            {
+              "label": 5.13,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 5.13
+            },
+            {
+              "label": 13.98,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 13.98
+            }
+          ]
+        },
+        {
+          "slug": "cpu_usr_avg",
+          "name": "CPU Usr",
+          "unit": "load",
+          "measurements": [
+            {
+              "label": 27.85,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 27.85
+            },
+            {
+              "label": 30.96,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 30.96
+            },
+            {
+              "label": 46.83,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 46.83
+            },
+            {
+              "label": 76.95,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 76.95
+            }
+          ]
+        },
+        {
+          "slug": "cpu_sys_max",
+          "name": "CPU Sys",
+          "unit": "load",
+          "measurements": [
+            {
+              "label": 5.53,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 5.53
+            },
+            {
+              "label": 6.53,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 6.53
+            },
+            {
+              "label": 7.96,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 7.96
+            },
+            {
+              "label": 17.33,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 17.33
+            }
+          ]
+        },
+        {
+          "slug": "cpu_usr_max",
+          "name": "CPU Usr",
+          "unit": "load",
+          "measurements": [
+            {
+              "label": 36.68,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 36.68
+            },
+            {
+              "label": 40.86,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 40.86
+            },
+            {
+              "label": 49.75,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 49.75
+            },
+            {
+              "label": 94.47,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 94.47
+            }
+          ]
+        },
+        {
+          "slug": "load_avg_1m",
+          "name": "CPU Load 1m",
+          "unit": "load",
+          "measurements": [
+            {
+              "label": 0.52,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 0.52
+            },
+            {
+              "label": 0.74,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 0.74
+            },
+            {
+              "label": 0.94,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 0.94
+            },
+            {
+              "label": 1.21,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 1.21
+            }
+          ]
+        },
+        {
+          "slug": "mem_used_avg",
+          "name": "Mem Used",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "187.1MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 196231488.0
+            },
+            {
+              "label": "218.9MiB",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 229490621.94
+            },
+            {
+              "label": "739.4MiB",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 775266432.0
+            },
+            {
+              "label": "771.1MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 808589568.0
+            }
+          ]
+        },
+        {
+          "slug": "mem_used_max",
+          "name": "Mem Used",
+          "unit": "bytes",
+          "measurements": [
+            {
               "label": "188.9MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
               "value": 198041600.0
             },
             {
-              "name": "Vector",
               "label": "233MiB",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
               "value": 244322304.0
             },
             {
-              "name": "Logstash",
               "label": "772MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
               "value": 809459712.0
             },
             {
-              "name": "FluentBit",
               "label": "1.1gib",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
               "value": 1217200128.0
             }
           ]
         },
         {
-          "name": "CPU",
+          "slug": "disk_read_avg",
+          "name": "Disk Read",
+          "unit": "bytes",
           "measurements": [
             {
-              "name": "FluentBit",
-              "label": "0.52 1m avg",
-              "value": 0.52
+              "label": "25.2kib",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 25807.81
             },
             {
-              "name": "FluentD",
-              "label": "0.74 1m avg",
-              "value": 0.74
+              "label": "138.1kib",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 141404.06
             },
             {
-              "name": "Vector",
-              "label": "0.94 1m avg",
-              "value": 0.94
+              "label": "138.4kib",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 141733.57
             },
             {
-              "name": "Logstash",
-              "label": "1.21 1m avg",
-              "value": 1.21
+              "label": "142.5kib",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 145912.72
+            }
+          ]
+        },
+        {
+          "slug": "disk_read_sum",
+          "name": "Disk Read",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "8.8MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 9192501.52
+            },
+            {
+              "label": "8.5MiB",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 8929215.17
+            },
+            {
+              "label": "8.5MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 8908314.25
+            },
+            {
+              "label": "1.5MiB",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 1574276.4
+            }
+          ]
+        },
+        {
+          "slug": "disk_writ_sum",
+          "name": "Disk Write",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "11.2MiB",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 11784430.77
+            },
+            {
+              "label": "11.2MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 11709930.75
+            },
+            {
+              "label": "9.8MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 10242080.29
+            },
+            {
+              "label": "2.1MiB",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 2179844.93
+            }
+          ]
+        },
+        {
+          "slug": "io_read_sum",
+          "name": "IO Read",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "603.4b",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 603.37
+            },
+            {
+              "label": "571.9b",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 571.91
+            },
+            {
+              "label": "570.8b",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 570.81
+            },
+            {
+              "label": "210.4b",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 210.43
+            }
+          ]
+        },
+        {
+          "slug": "io_writ_sum",
+          "name": "IO Write",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "920.3b",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 920.3
+            },
+            {
+              "label": "781.2b",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 781.21
+            },
+            {
+              "label": "675.2b",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 675.21
+            },
+            {
+              "label": "208.5b",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 208.52
+            }
+          ]
+        },
+        {
+          "slug": "net_recv_avg",
+          "name": "Net Recv",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "897.8kib",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 919326.69
+            },
+            {
+              "label": "2.7MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 2781534.84
+            },
+            {
+              "label": "19.6MiB",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 20516963.4
+            },
+            {
+              "label": "26.7MiB",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 28038601.8
+            }
+          ]
+        },
+        {
+          "slug": "net_recv_sum",
+          "name": "Net Recv",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "1.6gib",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 1710354710.0
+            },
+            {
+              "label": "1.2gib",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 1292568694.0
+            },
+            {
+              "label": "167.1MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 175236695.0
+            },
+            {
+              "label": "55.2MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 57916662.0
+            }
+          ]
+        },
+        {
+          "slug": "net_send_sum",
+          "name": "Net Send",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "2.9gib",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 3071222586.0
+            },
+            {
+              "label": "1.9gib",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 2024909029.0
+            },
+            {
+              "label": "291.2MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 305387669.0
+            },
+            {
+              "label": "79.1MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 82974780.0
+            }
+          ]
+        },
+        {
+          "slug": "sock_total_sum",
+          "name": "Socket Total",
+          "unit": "conns",
+          "measurements": [
+            {
+              "label": 8303.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 8303.0
+            },
+            {
+              "label": 8315.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 8315.0
+            },
+            {
+              "label": 8444.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 8444.0
+            },
+            {
+              "label": 11205.0,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 11205.0
+            }
+          ]
+        },
+        {
+          "slug": "tcp_act_sum",
+          "name": "TCP ACT",
+          "unit": "conns",
+          "measurements": [
+            {
+              "label": 377.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 377.0
+            },
+            {
+              "label": 439.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 439.0
+            },
+            {
+              "label": 487.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 487.0
+            },
+            {
+              "label": 3218.0,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 3218.0
+            }
+          ]
+        },
+        {
+          "slug": "tcp_syn_sum",
+          "name": "TCP Syn",
+          "unit": "syns",
+          "measurements": [
+            {
+              "label": 0.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 0.0
+            },
+            {
+              "label": 0.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 0.0
+            },
+            {
+              "label": 2.0,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 2.0
+            },
+            {
+              "label": 9.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 9.0
+            }
+          ]
+        },
+        {
+          "slug": "tcp_clo_sum",
+          "name": "TCP Close",
+          "unit": "closes",
+          "measurements": [
+            {
+              "label": 8.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-6-g434bed8",
+              "value": 8.0
+            },
+            {
+              "label": 50.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 50.0
+            },
+            {
+              "label": 78.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 78.0
+            },
+            {
+              "label": 199.0,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 199.0
             }
           ]
         }
-      ]
+      ],
+      "io_metric_slug": "net_recv_avg"
     },
     {
-      "slug": "tcp_to_tcp_performance",
-      "name": "TCP To TCP",
-      "description": "A TCP performance test, accepting data over TCP and forwarding it over TCP",
+      "slug": "regex_parsing_performance",
+      "name": "Regex Parsing",
+      "description": "A Regex test, parsing Apache common log formats",
       "metrics": [
         {
-          "name": "IO",
+          "slug": "duration_avg",
+          "name": "Duration",
+          "unit": "s",
           "measurements": [
             {
-              "name": "Splunk UF",
-              "label": "70.4MiB/s",
-              "value": 73798589.39
+              "label": 61.0,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 61.0
             },
             {
-              "name": "Vector",
-              "label": "69.9MiB/s",
-              "value": 73306598.74
+              "label": 61.0,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 61.0
             },
             {
-              "name": "FluentBit",
-              "label": "67.1MiB/s",
-              "value": 70404342.46
+              "label": 62.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 62.0
             },
             {
-              "name": "Logstash",
-              "label": "10MiB/s",
-              "value": 10519047.0
+              "label": 62.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-32-gb37a4d4",
+              "value": 62.0
             },
             {
-              "name": "Splunk HF",
-              "label": "7.6MiB/s",
-              "value": 7921283.76
-            },
-            {
-              "name": "Filebeat",
-              "label": "5MiB/s",
-              "value": 5219776.63
-            },
-            {
-              "name": "FluentD",
-              "label": "3.9MiB/s",
-              "value": 4117528.35
+              "label": 64.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 64.0
             }
           ]
         },
         {
-          "name": "Mem",
+          "slug": "duration_max",
+          "name": "Duration",
+          "unit": "s",
           "measurements": [
             {
-              "name": "Filebeat",
-              "label": "164.2MiB",
-              "value": 172195840.0
+              "label": 61.0,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 61.0
             },
             {
-              "name": "Vector",
-              "label": "171.6MiB",
-              "value": 179970048.0
+              "label": 61.0,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 61.0
             },
             {
-              "name": "Splunk UF",
-              "label": "250.3MiB",
-              "value": 262504448.0
+              "label": 62.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 62.0
             },
             {
-              "name": "FluentD",
-              "label": "293.6MiB",
-              "value": 307896320.0
+              "label": 62.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-32-gb37a4d4",
+              "value": 62.0
             },
             {
-              "name": "Splunk HF",
-              "label": "399.2MiB",
-              "value": 418586624.0
-            },
-            {
-              "name": "FluentBit",
-              "label": "641.2MiB",
-              "value": 672354304.0
-            },
-            {
-              "name": "Logstash",
-              "label": "725.4MiB",
-              "value": 760643584.0
+              "label": 64.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 64.0
             }
           ]
         },
         {
-          "name": "CPU",
+          "slug": "cpu_sys_avg",
+          "name": "CPU Sys",
+          "unit": "load",
           "measurements": [
             {
-              "name": "Filebeat",
-              "label": "0.36 1m avg",
-              "value": 0.36
+              "label": 0.54,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 0.54
             },
             {
-              "name": "FluentBit",
-              "label": "0.68 1m avg",
-              "value": 0.68
+              "label": 2.08,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 2.08
             },
             {
-              "name": "FluentD",
-              "label": "0.79 1m avg",
-              "value": 0.79
+              "label": 2.94,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-32-gb37a4d4",
+              "value": 2.94
             },
             {
-              "name": "Vector",
-              "label": "0.94 1m avg",
-              "value": 0.94
+              "label": 7.06,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 7.06
             },
             {
-              "name": "Splunk UF",
-              "label": "1.56 1m avg",
-              "value": 1.56
+              "label": 23.6,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 23.6
+            }
+          ]
+        },
+        {
+          "slug": "cpu_usr_avg",
+          "name": "CPU Usr",
+          "unit": "load",
+          "measurements": [
+            {
+              "label": 47.38,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 47.38
             },
             {
-              "name": "Splunk HF",
-              "label": "1.88 1m avg",
-              "value": 1.88
+              "label": 47.51,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 47.51
             },
             {
-              "name": "Logstash",
-              "label": "2.2 1m avg",
-              "value": 2.2
+              "label": 66.67,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 66.67
+            },
+            {
+              "label": 84.83,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 84.83
+            },
+            {
+              "label": 90.06,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-32-gb37a4d4",
+              "value": 90.06
+            }
+          ]
+        },
+        {
+          "slug": "cpu_sys_max",
+          "name": "CPU Sys",
+          "unit": "load",
+          "measurements": [
+            {
+              "label": 1.73,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 1.73
+            },
+            {
+              "label": 4.98,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-32-gb37a4d4",
+              "value": 4.98
+            },
+            {
+              "label": 6.53,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 6.53
+            },
+            {
+              "label": 9.14,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 9.14
+            },
+            {
+              "label": 28.87,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 28.87
+            }
+          ]
+        },
+        {
+          "slug": "cpu_usr_max",
+          "name": "CPU Usr",
+          "unit": "load",
+          "measurements": [
+            {
+              "label": 50.51,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 50.51
+            },
+            {
+              "label": 50.75,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 50.75
+            },
+            {
+              "label": 72.31,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 72.31
+            },
+            {
+              "label": 90.45,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 90.45
+            },
+            {
+              "label": 96.5,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-32-gb37a4d4",
+              "value": 96.5
+            }
+          ]
+        },
+        {
+          "slug": "load_avg_1m",
+          "name": "CPU Load 1m",
+          "unit": "load",
+          "measurements": [
+            {
+              "label": 0.48,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 0.48
+            },
+            {
+              "label": 0.77,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 0.77
+            },
+            {
+              "label": 0.9,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-32-gb37a4d4",
+              "value": 0.9
+            },
+            {
+              "label": 2.14,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 2.14
+            },
+            {
+              "label": 2.19,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 2.19
+            }
+          ]
+        },
+        {
+          "slug": "mem_used_avg",
+          "name": "Mem Used",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "166MiB",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-32-gb37a4d4",
+              "value": 174074668.7
+            },
+            {
+              "label": "229.1MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 240209667.94
+            },
+            {
+              "label": "402.3MiB",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 421836800.0
+            },
+            {
+              "label": "418.9MiB",
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 439226301.94
+            },
+            {
+              "label": "736.8MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 772586999.87
+            }
+          ]
+        },
+        {
+          "slug": "mem_used_max",
+          "name": "Mem Used",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "168MiB",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-32-gb37a4d4",
+              "value": 176111616.0
+            },
+            {
+              "label": "246.1MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 258084864.0
+            },
+            {
+              "label": "442.4MiB",
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 463929344.0
+            },
+            {
+              "label": "584.5MiB",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 612917248.0
+            },
+            {
+              "label": "743.8MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 779882496.0
+            }
+          ]
+        },
+        {
+          "slug": "disk_read_avg",
+          "name": "Disk Read",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "132.3kib",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-32-gb37a4d4",
+              "value": 135478.69
+            },
+            {
+              "label": "133.9kib",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 137162.15
+            },
+            {
+              "label": "139.3kib",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 142600.42
+            },
+            {
+              "label": "144.7kib",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 148144.93
+            },
+            {
+              "label": "5.8MiB",
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 6097777.04
+            }
+          ]
+        },
+        {
+          "slug": "disk_read_sum",
+          "name": "Disk Read",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "354.7MiB",
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 371970496.9
+            },
+            {
+              "label": "8.8MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 9184985.64
+            },
+            {
+              "label": "8.4MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 8778377.35
+            },
+            {
+              "label": "8.3MiB",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 8698482.73
+            },
+            {
+              "label": "8MiB",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-32-gb37a4d4",
+              "value": 8399678.49
+            }
+          ]
+        },
+        {
+          "slug": "disk_writ_sum",
+          "name": "Disk Write",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "51.3MiB",
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 53791754.83
+            },
+            {
+              "label": "7.9MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 8334614.37
+            },
+            {
+              "label": "7.6MiB",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 8018524.86
+            },
+            {
+              "label": "7.6MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 7939149.82
+            },
+            {
+              "label": "3.7MiB",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-32-gb37a4d4",
+              "value": 3897495.29
+            }
+          ]
+        },
+        {
+          "slug": "io_read_sum",
+          "name": "IO Read",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "21.1kib",
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 21619.95
+            },
+            {
+              "label": "690.5b",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 690.51
+            },
+            {
+              "label": "615.9b",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 615.87
+            },
+            {
+              "label": "605.4b",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 605.43
+            },
+            {
+              "label": "490.4b",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-32-gb37a4d4",
+              "value": 490.42
+            }
+          ]
+        },
+        {
+          "slug": "io_writ_sum",
+          "name": "IO Write",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "6.1kib",
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 6273.4
+            },
+            {
+              "label": "675.9b",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 675.87
+            },
+            {
+              "label": "504.4b",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 504.43
+            },
+            {
+              "label": "365.3b",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 365.33
+            },
+            {
+              "label": "230b",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-32-gb37a4d4",
+              "value": 230.04
+            }
+          ]
+        },
+        {
+          "slug": "net_recv_avg",
+          "name": "Net Recv",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "2.6MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 2687343.81
+            },
+            {
+              "label": "4.6MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 4775582.95
+            },
+            {
+              "label": "7.8MiB",
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 8175926.8
+            },
+            {
+              "label": "13.5MiB",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-32-gb37a4d4",
+              "value": 14114261.23
+            },
+            {
+              "label": "20.5MiB",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 21508433.64
+            }
+          ]
+        },
+        {
+          "slug": "net_recv_sum",
+          "name": "Net Recv",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "1.2gib",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 1311992945.0
+            },
+            {
+              "label": "834.5MiB",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-32-gb37a4d4",
+              "value": 875084196.0
+            },
+            {
+              "label": "475.6MiB",
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 498739710.0
+            },
+            {
+              "label": "282.4MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 296086143.0
+            },
+            {
+              "label": "164MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 171990004.0
+            }
+          ]
+        },
+        {
+          "slug": "net_send_sum",
+          "name": "Net Send",
+          "unit": "bytes",
+          "measurements": [
+            {
+              "label": "2.4gib",
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-32-gb37a4d4",
+              "value": 2576061053.0
+            },
+            {
+              "label": "1.6gib",
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 1746709656.0
+            },
+            {
+              "label": "1021.2MiB",
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 1070843351.0
+            },
+            {
+              "label": "454.7MiB",
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 476746817.0
+            },
+            {
+              "label": "176.8MiB",
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 185410344.0
+            }
+          ]
+        },
+        {
+          "slug": "sock_total_sum",
+          "name": "Socket Total",
+          "unit": "conns",
+          "measurements": [
+            {
+              "label": 8244.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 8244.0
+            },
+            {
+              "label": 8409.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 8409.0
+            },
+            {
+              "label": 8420.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-32-gb37a4d4",
+              "value": 8420.0
+            },
+            {
+              "label": 8478.0,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 8478.0
+            },
+            {
+              "label": 9833.0,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 9833.0
+            }
+          ]
+        },
+        {
+          "slug": "tcp_act_sum",
+          "name": "TCP ACT",
+          "unit": "conns",
+          "measurements": [
+            {
+              "label": 424.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 424.0
+            },
+            {
+              "label": 428.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 428.0
+            },
+            {
+              "label": 490.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-32-gb37a4d4",
+              "value": 490.0
+            },
+            {
+              "label": 794.0,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 794.0
+            },
+            {
+              "label": 1599.0,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 1599.0
+            }
+          ]
+        },
+        {
+          "slug": "tcp_syn_sum",
+          "name": "TCP Syn",
+          "unit": "syns",
+          "measurements": [
+            {
+              "label": 0.0,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 0.0
+            },
+            {
+              "label": 0.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 0.0
+            },
+            {
+              "label": 0.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 0.0
+            },
+            {
+              "label": 0.0,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 0.0
+            },
+            {
+              "label": 0.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-32-gb37a4d4",
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "slug": "tcp_clo_sum",
+          "name": "TCP Close",
+          "unit": "closes",
+          "measurements": [
+            {
+              "label": 0.0,
+              "subject_slug": "fluentbit",
+              "subject_name": "FluentBit",
+              "subject_version": "1.1.0",
+              "value": 0.0
+            },
+            {
+              "label": 0.0,
+              "subject_slug": "fluentd",
+              "subject_name": "FluentD",
+              "subject_version": "3.3.0-1",
+              "value": 0.0
+            },
+            {
+              "label": 1.0,
+              "subject_slug": "splunk_heavy_forwarder",
+              "subject_name": "Splunk HF",
+              "subject_version": "7.2.6-c0bf0f679ce9",
+              "value": 1.0
+            },
+            {
+              "label": 3.0,
+              "subject_slug": "vector",
+              "subject_name": "Vector",
+              "subject_version": "0.2.0-32-gb37a4d4",
+              "value": 3.0
+            },
+            {
+              "label": 5.0,
+              "subject_slug": "logstash",
+              "subject_name": "Logstash",
+              "subject_version": "7.0.1",
+              "value": 5.0
             }
           ]
         }
-      ]
+      ],
+      "io_metric_slug": "net_recv_avg"
     }
   ]
 }

@@ -87,21 +87,21 @@ end
 def pivot(hashes)
   pivoted_hashes = []
   pivoted_hashes << metric_row(hashes, "Test count", "count")
-  pivoted_hashes << metric_row(hashes, "IO Thrpt (avg)", "io_throughput_avg", unit: "b/s", compare: :to_largest)
-  pivoted_hashes << metric_row(hashes, "Disk Thrpt (avg)", "disk_throughput_avg", unit: "b/s", compare: :to_largest)
   pivoted_hashes << metric_row(hashes, "Duration (avg)", "duration_avg", unit: "s")
   pivoted_hashes << metric_row(hashes, "Duration (max)", "duration_max", unit: "s")
   pivoted_hashes << metric_row(hashes, "CPU sys (max)", "cpu_sys_max", compare: :to_smallest)
   pivoted_hashes << metric_row(hashes, "CPU usr (max)", "cpu_usr_max", compare: :to_smallest)
   pivoted_hashes << metric_row(hashes, "Load 1m (avg)", "load_avg_1m", compare: :to_smallest)
   pivoted_hashes << metric_row(hashes, "Mem used (max)", "mem_used_max", unit: "b", compare: :to_smallest)
+  pivoted_hashes << metric_row(hashes, "Disk read (avg)", "disk_read_avg", unit: "b/s", compare: :to_largest)
   pivoted_hashes << metric_row(hashes, "Disk read (sum)", "disk_read_sum", unit: "b", compare: :to_smallest)
   pivoted_hashes << metric_row(hashes, "Disk writ (sum)", "disk_writ_sum", unit: "b", compare: :to_smallest)
+  pivoted_hashes << metric_row(hashes, "Net recv (avg)", "net_recv_avg", unit: "b/s", compare: :to_largest)
   pivoted_hashes << metric_row(hashes, "Net recv (sum)", "net_recv_sum", unit: "b", compare: :to_largest)
   pivoted_hashes << metric_row(hashes, "Net send (sum)", "net_send_sum", unit: "b")
-  pivoted_hashes << metric_row(hashes, "TCP estab (avg)", "tcp_act_sum_avg")
-  pivoted_hashes << metric_row(hashes, "TCP sync (avg)", "tcp_syn_sum_avg")
-  pivoted_hashes << metric_row(hashes, "TCP close (avg)", "tcp_clo_sum_avg")
+  pivoted_hashes << metric_row(hashes, "TCP estab (avg)", "tcp_act_sum")
+  pivoted_hashes << metric_row(hashes, "TCP sync (avg)", "tcp_syn_sum")
+  pivoted_hashes << metric_row(hashes, "TCP close (avg)", "tcp_clo_sum")
   pivoted_hashes
 end
 

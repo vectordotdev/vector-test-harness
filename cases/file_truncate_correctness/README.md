@@ -42,8 +42,8 @@ test -t file_truncate_correctness
 
 
 [development]: /README.md#development
-[docs]: https://docs.vectorproject.io
+[docs]: https://docs.vector.dev
 [how_it_works]: /README.md#how-it-works
 [repo]: https://github.com/timberio/vector
 [setup]: /README.md#setup
-[website]: https://vectorproject.io
+[website]: https://vector.dev

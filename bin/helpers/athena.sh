@@ -21,7 +21,7 @@ execute_query () {
   local result=$(aws athena start-query-execution \
     --query-execution-context "Database=vector_tests" \
     --query-string "$1" \
-    --result-configuration "OutputLocation=s3://vector-tests-athena-results")
+    --result-configuration "OutputLocation=s3://vector-test-athena-results")
   result=$(echo $result | tr '\n' ' ')
 
   local execution_id=$(echo $result | jq -r ".QueryExecutionId")

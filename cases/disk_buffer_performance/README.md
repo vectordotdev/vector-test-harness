@@ -68,10 +68,10 @@ bin/test -t disk_buffer_performance
 
 
 [development]: /README.md#development
-[docs]: https://docs.vectorproject.io
+[docs]: https://docs.vector.dev
 [how_it_works]: /README.md#how-it-works
 [performance_data]: /README.md#performance-data
 [repo]: https://github.com/timberio/vector
 [setup]: /README.md#setup
 [usage]: /README.md#usage
-[website]: https://vectorproject.io
+[website]: https://vector.dev

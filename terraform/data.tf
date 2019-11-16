@@ -10,6 +10,18 @@ resource "aws_s3_bucket" "vector-tests" {
     enabled = true
   }
 
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET"]
+    allowed_origins = ["*"]
+    max_age_seconds = 3000
+  }
+
+  website {
+    index_document = "index.html"
+    error_document = "index.html"
+  }
+
   lifecycle_rule {
     id      = "delete_old_versions"
     prefix  = ""
@@ -35,10 +47,62 @@ resource "aws_s3_bucket" "vector-tests" {
       expired_object_delete_marker = true
     }
   }
+
+  lifecycle {
+    prevent_destroy = "true"
+  }
 }
 
-resource "aws_s3_bucket" "vector-tests-athena-results" {
-  bucket = "${var.results-s3-bucket-name}-athena-results"
+data "aws_iam_policy_document" "vector-tests" {
+  statement {
+    sid = "AllowEveryoneReadObjects"
+
+    actions = [
+      "s3:GetObject",
+    ]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+
+    resources = [
+      "${aws_s3_bucket.vector-tests.arn}/*",
+    ]
+  }
+
+  statement {
+    sid = "AllowEveryoneListBucket"
+
+    actions = [
+      "s3:ListBucket",
+    ]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+
+    resources = [
+      aws_s3_bucket.vector-tests.arn,
+    ]
+  }
+}
+
+resource "aws_s3_bucket_policy" "vector-tests" {
+  bucket = aws_s3_bucket.vector-tests.id
+  policy = data.aws_iam_policy_document.vector-tests.json
+}
+
+resource "aws_s3_bucket_object" "vector-tests-index" {
+  bucket       = aws_s3_bucket.vector-tests.id
+  key          = "index.html"
+  source       = "data/index.html"
+  content_type = "text/html"
+}
+
+resource "aws_s3_bucket" "vector-test-athena-results" {
+  bucket = "vector-test-athena-results"
   acl    = "private"
 
   tags = {
@@ -54,6 +118,10 @@ resource "aws_s3_bucket" "vector-tests-athena-results" {
       days = 30
     }
   }
+
+  # lifecycle {
+  #   prevent_destroy = "true"
+  # }
 }
 
 resource "aws_glue_catalog_database" "vector_tests" {

@@ -4,10 +4,8 @@
 - hosts: '{{ test_namespace }}:&tag_TestRole_subject'
   become: true
   tasks:
-    - name: Remove previous test log file
-      file:
-        path: "{{ test_file_location }}"
-        state: absent
+    - name: Remove previous test log files
+      shell: rm -rf {{ test_file_location }}*
 
     - name: Create a test log file
       shell: echo "First line" > {{ test_file_location }}

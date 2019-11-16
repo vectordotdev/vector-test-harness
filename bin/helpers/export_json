@@ -12,32 +12,51 @@ require_relative "athena"
 require_relative "util"
 
 results_json = ARGV[0]
+file_name = ARGV[1]
 
 if results_json.nil?
   raise "You must pass the query results JSON as the first argument"
 end
 
-def collect_metrics(hashes, key_name, sort_dir, &block)
-  metrics =
-    hashes.
-      collect do |hash|
-        subject_meta = fetch_subject_meta!(hash["subject"])
-        val = hash[key_name].round(2)
-        label = yield val
+def build_metric(metric_slug, test_hashes)
+  metric_meta = fetch_metric_meta!(metric_slug)
+  metric_name = metric_meta.fetch(:name)
+  metric_unit = metric_meta.fetch(:unit)
+  metric_sort = metric_meta.fetch(:sort)
+  measurements = build_measurements(test_hashes, metric_slug, metric_unit)
 
-        {
-          "name" => subject_meta.fetch(:name),
-          "label" => label,
-          "value" => val
-        }
-      end.
-      sort_by { |hash| hash["value"] }
-
-  if sort_dir == :desc
-    metrics.reverse
-  else
-    metrics
+  if metric_sort == :desc
+    measurements = measurements.reverse
   end
+
+  {
+    "slug" => metric_slug,
+    "name" => metric_name,
+    "unit" => metric_unit,
+    "measurements" => measurements
+  }
+end
+
+def build_measurements(hashes, metric_slug, metric_unit)
+  hashes.
+    collect do |hash|
+      subject_slug = hash.fetch("subject")
+      subject_meta = fetch_subject_meta!(subject_slug)
+      subject_name = subject_meta.fetch(:name)
+      subject_version = hash.fetch("version")
+
+      measurement_value = hash.fetch(metric_slug).round(2)
+      measurement_label = metric_unit == "bytes" ? filesize(measurement_value) : measurement_value
+
+      {
+        "label" => measurement_label,
+        "subject_slug" => subject_slug,
+        "subject_name" => subject_name,
+        "subject_version" => subject_version,
+        "value" => measurement_value
+      }
+    end.
+    sort_by { |hash| hash.fetch("value") }
 end
 
 def transform_to_data!(hashes)
@@ -45,41 +64,22 @@ def transform_to_data!(hashes)
     group_by { |h| h["name"] }.
     collect do |name, test_hashes|
       test_meta = fetch_test_meta!(name)
+      io_key = name.include?("file") ? "disk_read_avg" : "net_recv_avg"
 
-      io_key = name.include?("file") ? "disk_throughput_avg" : "io_throughput_avg"
+      metrics =
+        test_hashes.
+          first.
+          keys.
+          select { |key| is_metric?(key) }.
+          collect { |metric_slug| build_metric(metric_slug, test_hashes) }
 
       {
         "slug" => name,
         "name" => test_meta.fetch(:name),
         "description" => test_meta.fetch(:description),
-        "metrics" => [
-          {
-            "name" => "IO",
-            "measurements" => collect_metrics(test_hashes, io_key, :desc) do |v|
-              filesize(v) + "/s"
-            end
-          },
-          {
-            "name" => "Mem",
-            "measurements" => collect_metrics(test_hashes, "mem_used_max", :asc) do |v|
-              filesize(v)
-            end
-          },
-          {
-            "name" => "CPU",
-            "measurements" => collect_metrics(test_hashes, "load_avg_1m", :asc) do |v|
-              "#{v} 1m avg"
-            end
-          }
-        ]
+        "metrics" => metrics,
+        "io_metric_slug" => test_meta.fetch(:io_metric_slug)
       }
-    end.
-    sort_by do |h|
-      if h["name"] == "File To TCP"
-        "AAAA"
-      else
-        h["name"]
-      end
     end
 end
 
@@ -92,6 +92,6 @@ data = transform_to_data!(hashes)
 data = {"performance_tests" => data}
 data = JSON.pretty_generate(data)
 
-File.open("results.json","w") do |f|
+File.open(file_name, "w") do |f|
   f.write(data)
 end

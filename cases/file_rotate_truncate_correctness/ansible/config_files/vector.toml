@@ -1,9 +1,15 @@
+data_dir = "/var/lib/vector"
+
 [sources.in]
   type               = "file"
-  include            = ["{{ test_file_location }}"]
+  include            = ["{{ test_file_location }}*"]
   start_at_beginning = true
 
+  [sources.in.fingerprinting]
+    strategy = "device_and_inode"
+
 [sinks.out]
-  inputs  = ["in"]
-  type    = "tcp"
-  address = "127.0.0.1:{{ tcp_consumer_port }}"
+  inputs   = ["in"]
+  type     = "tcp"
+  address  = "127.0.0.1:{{ tcp_consumer_port }}"
+  encoding = "text"
