@@ -2,131 +2,159 @@ AGGREGATE_FUNS = ["avg", "max", "min", "sum"]
 
 METRIC_META = {
   'cpu_sys_avg' => {
-    name: "CPU Sys",
+    category: "CPU",
+    name: "CPU Sys (avg)",
     aggregate: "avg",
     unit: "load",
     sort: :asc
   },
   'cpu_sys_max' => {
-    name: "CPU Sys",
+    category: "CPU",
+    name: "CPU Sys (max)",
     aggregate: "max",
     unit: "load",
     sort: :asc
   },
   'cpu_usr_avg' => {
-    name: "CPU Usr",
+    category: "CPU",
+    name: "CPU Usr (avg)",
     aggregate: "avg",
     unit: "load",
     sort: :asc
   },
   'cpu_usr_max' => {
-    name: "CPU Usr",
+    category: "CPU",
+    name: "CPU Usr (max)",
     aggregate: "max",
     unit: "load",
     sort: :asc
   },
   'duration_avg' => {
-    name: "Duration",
+    category: "Duration",
+    name: "Duration (avg)",
     aggregate: "avg",
     unit: "s",
     sort: :asc
   },
   'duration_max' => {
-    name: "Duration",
+    category: "Duration",
+    name: "Duration (max)",
     aggregate: "max",
     unit: "s",
     sort: :asc
   },
   'disk_read_avg' => {
-    name: "Disk Read",
+    category: "IO",
+    name: "Disk Read (avg)",
     aggregate: "avg",
     unit: "bytes",
     sort: :asc
   },
   'disk_read_sum' => {
-    name: "Disk Read",
+    category: "IO",
+    name: "Disk Read (total)",
     aggregate: "sum",
     unit: "bytes",
     sort: :desc
   },
   'disk_writ_sum' => {
-    name: "Disk Write",
+    category: "IO",
+    name: "Disk Write (total)",
     aggregate: "sum",
     unit: "bytes",
     sort: :desc
   },
   'io_read_sum' => {
-    name: "IO Read",
+    category: "IO",
+    name: "IO Read (total)",
     aggregate: "sum",
     unit: "bytes",
     sort: :desc
   },
   'io_writ_sum' => {
-    name: "IO Write",
+    category: "IO",
+    name: "IO Write (total)",
     aggregate: "sum",
     unit: "bytes",
     sort: :desc
   },
   'load_avg_1m' => {
-    name: "CPU Load 1m",
+    category: "CPU",
+    name: "CPU Load 1m (avg)",
     aggregate: "avg",
     unit: "load",
     sort: :asc
   },
   'mem_used_avg' => {
-    name: "Mem Used",
+    category: "Mem",
+    name: "Mem Used (avg)",
     aggregate: "avg",
     unit: "bytes",
     sort: :asc
   },
   'mem_used_max' => {
-    name: "Mem Used",
+    category: "Mem",
+    name: "Mem Used (max)",
     aggregate: "max",
     unit: "bytes",
     sort: :asc
   },
   'net_recv_avg' => {
-    name: "Net Recv",
+    category: "IO",
+    name: "Net Recv (avg)",
     aggregate: "avg",
     unit: "bytes",
     sort: :asc
   },
   'net_recv_sum' => {
-    name: "Net Recv",
+    category: "IO",
+    name: "Net Recv (total)",
     aggregate: "sum",
     unit: "bytes",
     sort: :desc
   },
   'net_send_sum' => {
-    name: "Net Send",
+    category: "IO",
+    name: "Net Send (total)",
     aggregate: "sum",
     unit: "bytes",
     sort: :desc
   },
   'sock_total_sum' => {
-    name: "Socket Total",
+    category: "Socket",
+    name: "Socket Total (total)",
     aggregate: "sum",
     unit: "conns",
     sort: :asc
   },
   'tcp_act_sum' => {
-    name: "TCP ACT",
+    category: "Socket",
+    name: "TCP ACT (total)",
     aggregate: "sum",
     unit: "conns",
     sort: :asc
   },
   'tcp_syn_sum' => {
-    name: "TCP Syn",
+    category: "Socket",
+    name: "TCP Syn (total)",
     aggregate: "sum",
     unit: "syns",
     sort: :asc
   },
   'tcp_clo_sum' => {
-    name: "TCP Close",
+    category: "Socket",
+    name: "TCP Close (total)",
     aggregate: "sum",
     unit: "closes",
     sort: :asc
   },
+  'throughput_avg' => {
+    category: "IO",
+    name: "Throughput (avg)",
+    aggregate: "avg",
+    unit: "bytes",
+    sort: :desc
+  }
 }
 
 SUBJECT_META = {
@@ -155,29 +183,19 @@ SUBJECT_META = {
 
 TEST_META = {
   'file_to_tcp_performance' => {
-    name: 'File To TCP',
-    description: 'A file tailing test, tailing 10 files and forwarding data over TCP',
-    io_metric_slug: 'disk_read_avg'
+    name: 'File To TCP'
   },
   'regex_parsing_performance' => {
-    name: 'Regex Parsing',
-    description: 'A Regex test, parsing Apache common log formats',
-    io_metric_slug: 'net_recv_avg'
+    name: 'Regex Parsing'
   },
   'tcp_to_blackhole_performance' => {
-    name: 'TCP To Blackhole',
-    description: 'A raw internal performance test, accepting data over TCP and discarding it',
-    io_metric_slug: 'net_recv_avg'
+    name: 'TCP To Blackhole'
   },
   'tcp_to_http_performance' => {
-    name: 'TCP To HTTP',
-    description: 'An HTTP performance test, accepting data over TCP and forwarding it over HTTP',
-    io_metric_slug: 'net_recv_avg'
+    name: 'TCP To HTTP'
   },
   'tcp_to_tcp_performance' => {
-    name: 'TCP To TCP',
-    description: 'A TCP performance test, accepting data over TCP and forwarding it over TCP',
-    io_metric_slug: 'net_recv_avg'
+    name: 'TCP To TCP'
   }
 }
 
@@ -201,7 +219,14 @@ def fetch_subject_meta!(slug)
 end
 
 def fetch_test_meta!(slug)
-  TEST_META.fetch(slug)
+  content = File.read("#{File.dirname(__FILE__)}/../../cases/#{slug}/README.md")
+  sections = content.split(/\n\n/)
+
+  meta = TEST_META.fetch(slug)
+
+  meta.merge(
+    description: sections.fetch(1)
+  )
 end
 
 def filesize(size)
@@ -211,7 +236,7 @@ def filesize(size)
   exp = (Math.log(size) / Math.log(1024)).to_i
   exp = 6 if exp > 6 
 
-  ('%.1f%s' % [size.to_f / 1024 ** exp, units[exp]]).gsub('.0', '')
+  ('%.1f %s' % [size.to_f / 1024 ** exp, units[exp]]).gsub('.0', '')
 end
 
 def is_metric?(metric_slug)

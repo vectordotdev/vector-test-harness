@@ -38,7 +38,7 @@ def metric_row(hashes, name, key, options = {})
   end
 
   hashes.each do |hash|
-    name = "#{hash["short_subject"]}"
+    name = "#{hash.fetch("short_subject")}"
     metric = hash[key]
 
     if metric != nil
@@ -107,9 +107,9 @@ end
 
 
 results = JSON.parse($results_json)
-result_set = results["ResultSet"]
-rows = result_set["Rows"]
-result_set_metadata = result_set["ResultSetMetadata"]
+result_set = results.fetch("ResultSet")
+rows = result_set.fetch("Rows")
+result_set_metadata = result_set.fetch("ResultSetMetadata")
 hashes = transform_to_hashes!(rows, result_set_metadata)
 pivoted_hashes = pivot(hashes)
 

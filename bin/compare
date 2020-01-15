@@ -205,7 +205,7 @@ FROM (
     SUM(disk_writ) AS disk_writ_sum,
     SUM(io_read) AS io_read_sum,
     SUM(io_writ) AS io_writ_sum,
-    (SUM(net_recv) / (MAX(epoch) - MIN(epoch))) AS net_recv_agv,
+    (SUM(net_recv) / (MAX(epoch) - MIN(epoch))) AS net_recv_avg,
     SUM(net_recv) AS net_recv_sum,
     SUM(net_send) AS net_send_sum,
     SUM(sock_total) AS sock_total_sum,

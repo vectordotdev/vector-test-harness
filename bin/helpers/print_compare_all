@@ -20,12 +20,12 @@ end
 def pivot(hashes)
   pivoted_hashes = []
 
-  hashes.group_by { |h| "#{h['name']} (#{h['configuration']})" }.each do |name, hashes|
+  hashes.group_by { |h| "#{h.fetch('name')} (#{h.fetch('configuration')})" }.each do |name, hashes|
     pivoted_hash = {"name" => name}
 
     hashes.each do |hash|
       subject = hash["subject"]
-      pivoted_hash[subject] = "#{hash["count"]}/#{hash["avg_duration"].round(1)}s/#{hash["avg_cpu_usr"].round(1)}cpu/#{hash["avg_duration"].round(2)}mem"
+      pivoted_hash[subject] = "#{hash.fetch("count")}/#{hash.fetch("avg_duration").round(1)}s/#{hash.fetch("avg_cpu_usr").round(1)}cpu/#{hash.fetch("avg_duration").round(2)}mem"
     end
 
     pivoted_hashes << pivoted_hash
@@ -36,9 +36,9 @@ end
 
 
 results = JSON.parse(results_json)
-result_set = results["ResultSet"]
-rows = result_set["Rows"]
-result_set_metadata = result_set["ResultSetMetadata"]
+result_set = results.fetch("ResultSet")
+rows = result_set,.fetch("Rows")
+result_set_metadata = result_set.fetch("ResultSetMetadata")
 hashes = transform_to_hashes!(rows, result_set_metadata)
 hashes = pivot(hashes)
 
