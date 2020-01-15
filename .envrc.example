@@ -2,7 +2,7 @@
 # you are doing.
 export ANSIBLE_CONFIG=./ansible/ansible.cfg
 
-# Specifying which AWS credentails set to use. See the "Setup" section in the
+# Specifying which AWS credentials set to use. See the "Setup" section in the
 # README.
 export AWS_PROFILE=vector
 
@@ -19,5 +19,5 @@ export VECTOR_TEST_SUBJECTS=filebeat=7.1.1,fluentbit=1.1.0,fluentd=3.3.0-1,logst
 # user_id. Ex: ben
 export VECTOR_TEST_USER_ID=<REPLACE_ME>
 
-# The S3 buket used to store test results.
+# The S3 bucket used to store test results.
 export VECTOR_TEST_RESULTS_S3_BUCKET_NAME=<REPLACE_ME>
