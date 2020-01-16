@@ -34,7 +34,6 @@ EOF
 
 variable "key_name" {
   type = "string"
-  default = "t3.micro"
 
   description = <<EOF
 Name of the key pair to use.
