@@ -47,3 +47,7 @@
     - role: vector
       action: install
       version: "{{ vector_version }}"
+
+    - role: docker
+      action: install
+      version: "{{ docker_version }}"
