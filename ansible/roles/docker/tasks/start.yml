@@ -1,0 +1,6 @@
+---
+- name: Start the docker systemd service
+  systemd:
+    name: docker
+    daemon_reload: no
+    state: started
