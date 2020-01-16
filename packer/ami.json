@@ -1,4 +1,5 @@
 {
+  "min_packer_version": "1.5.0",
   "variables": {
     "ansible_version_vars": "{{env `ansible_version_vars`}}"
   },
