@@ -2,7 +2,7 @@
 # you are doing.
 export ANSIBLE_CONFIG=./ansible/ansible.cfg
 
-# Specifying which AWS credentails set to use. See the "Setup" section in the
+# Specifying which AWS credentials set to use. See the "Setup" section in the
 # README.
 export AWS_PROFILE=vector
 
