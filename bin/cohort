@@ -1,10 +1,10 @@
-#!/usr/bin/env sh 
+#!/bin/bash
 
 #
 # Setup
 #
 
-set -e 
+set -e
 
 # saner programming env: these switches turn some bugs into errors
 set -o errexit -o pipefail -o noclobber -o nounset
@@ -31,7 +31,7 @@ EXAMPLES
    ------------------------------------------------
    name                       | v0.1.0-alpha.5-17-geb59a3f
    ---------------------------|---------------------------
-   tcp_to_blackhole (default) | 6.2s (5)   
+   tcp_to_blackhole (default) | 6.2s (5)
 "
 
 #
@@ -83,14 +83,14 @@ fi
 #
 
 cat << END
-  
-                  __   __  __  
+
+                  __   __  __
                   \\ \\ / / / /
                    \\ V / / /
                     \\_/  \\/
 
                   V E C T O R
-                  
+
 ------------------------------------------------
 
 END

@@ -1,10 +1,10 @@
-#!/usr/bin/env sh     
+#!/bin/bash
 
 #
 # Setup
 #
 
-set -e 
+set -e
 
 # saner programming env: these switches turn some bugs into errors
 set -o errexit -o pipefail -o noclobber -o nounset
@@ -39,10 +39,10 @@ usage() { echo "$usage" 1>&2; }
 
 #
 # Dependencies
-# 
+#
 
 # This is required for flag parsing, specifically the posix style: --flag
-! getopt --test > /dev/null 
+! getopt --test > /dev/null
 if [[ ${PIPESTATUS[0]} -ne 4 ]]; then
     error 'Error: enhanced getopt is not installed. (brew install gnu-getopt)'
     exit 1
@@ -119,14 +119,14 @@ fi
 divider=$(seq -s- 109|tr -d '[:digit:]')
 
 cat << END
-  
-                                                  __   __  __  
+
+                                                  __   __  __
                                                   \\ \\ / / / /
                                                    \\ V / / /
                                                     \\_/  \\/
 
                                                   V E C T O R
-                  
+
 $divider
 Test Comparison
 Test name: $test_name

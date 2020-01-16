@@ -1,6 +1,6 @@
-#!/usr/bin/env sh
+#!/bin/bash
 
-set -e 
+set -e
 
 # saner programming env: these switches turn some bugs into errors
 set -o errexit -o pipefail -o noclobber -o nounset

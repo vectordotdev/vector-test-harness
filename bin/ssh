@@ -1,10 +1,10 @@
-#!/usr/bin/env sh     
+#!/bin/bash
 
 #
 # Setup
 #
 
-set -e 
+set -e
 
 # saner programming env: these switches turn some bugs into errors
 set -o errexit -o pipefail -o noclobber -o nounset
@@ -24,7 +24,7 @@ OPTIONS
    -h  The IP address of the target host
 
 EXAMPLES
-   ./ssh -h 2.76.231.121  
+   ./ssh -h 2.76.231.121
 "
 
 #

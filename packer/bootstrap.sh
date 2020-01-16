@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # This file is designed to bootstrap an Ubuntu instance before it is
 # provisioned using Ansible.
