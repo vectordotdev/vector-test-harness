@@ -17,7 +17,7 @@
       },
       "instance_type": "c5.large",
       "ssh_username": "ubuntu",
-      "ami_name": "vector/images/hvm-ssd/test-harness-amd64-{{ isotime \"2006-01-02\" | clean_ami_name }}-{{ timestamp }}"
+      "ami_name": "vector/images/hvm-ssd/test-harness-amd64-{{ isotime \"2006-01-02\" | clean_resource_name }}-{{ timestamp }}"
     }
   ],
   "provisioners": [
