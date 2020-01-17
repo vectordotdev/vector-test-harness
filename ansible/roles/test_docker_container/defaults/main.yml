@@ -1,0 +1,5 @@
+---
+image_name: test-container-image
+container_name: test-container
+build_pull: true
+build_context_temp_dirs: /home/{{ ansible_user }}/test_docker_container_image_build_context_tmp
