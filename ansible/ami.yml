@@ -54,3 +54,5 @@
 
     - role: python-docker
       action: install
+
+    - role: docker_socket_access
