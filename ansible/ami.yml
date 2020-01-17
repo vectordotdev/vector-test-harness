@@ -51,3 +51,6 @@
     - role: docker
       action: install
       version: "{{ docker_version }}"
+
+    - role: python-docker
+      action: install
