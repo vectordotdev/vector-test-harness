@@ -1,0 +1,7 @@
+---
+- name: Ensure python bindings for docker are installed
+  pip:
+    name:
+      - docker-py
+      - docker
+    state: present
