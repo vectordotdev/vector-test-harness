@@ -1,20 +1,18 @@
 ---
 - name: Ensure old docker versions are not installed on the system
   apt:
-    name: '{{ item }}'
+    name:
+      - docker
+      - docker-engine
+      - docker.io
     state: absent
-  with_items:
-    - docker
-    - docker-engine
-    - docker.io
 
 - name: Ensure dependencies are installed
   apt:
-    name: '{{ item }}'
+    name:
+      - apt-transport-https
+      - ca-certificates
     state: present
-  with_items:
-    - apt-transport-https
-    - ca-certificates
 
 - name: Ensure repo key is installed
   apt_key:
@@ -33,7 +31,7 @@
     name: '{{ docker_package }}'
     state: '{{ docker_package_state }}'
 
-- name: Ensure docker is configured to start on boot
+- name: Ensure docker is configured to not start on boot
   service:
     name: docker
-    enabled: yes
+    enabled: no
