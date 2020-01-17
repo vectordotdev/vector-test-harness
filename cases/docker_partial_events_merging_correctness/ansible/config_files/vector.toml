@@ -9,6 +9,7 @@
   drop_field = true
 
 [sinks.out]
-  inputs  = ["parse_json"]
-  type    = "tcp"
-  address = "127.0.0.1:{{ tcp_consumer_port }}"
+  inputs   = ["parse_json"]
+  type     = "tcp"
+  address  = "127.0.0.1:{{ tcp_consumer_port }}"
+  encoding = "text"
