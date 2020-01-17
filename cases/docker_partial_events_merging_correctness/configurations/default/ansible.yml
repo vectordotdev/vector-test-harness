@@ -1,0 +1,3 @@
+---
+http_consumer_port: 8080
+tcp_consumer_port: 9001

@@ -1,0 +1,8 @@
+---
+- include_role:
+    name: tcp_test_server
+  vars:
+    action: register_summary
+
+- set_fact:
+    last_message: "{{ summary.last_message }}"
