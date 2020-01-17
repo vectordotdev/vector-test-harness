@@ -153,6 +153,22 @@ Then copy the command specified in `ExecStart` and run it manually. Ex:
 /usr/bin/vector
 ```
 
+### Ansible Failures
+
+```bash
+export ANSIBLE_ENABLE_TASK_DEBUGGER=True
+```
+
+Set the environment variable above, and Ansible will drop you in a debug mode on any task failure.
+
+See Ansible documentation on [Playbook Debugger](https://docs.ansible.com/ansible/latest/user_guide/playbooks_debugger.html) to learn more.
+
+Some useful commands:
+
+```
+pprint task_vars['hostvars'][str(host)]['last_message']
+```
+
 ## How It Works
 
 ### Design
