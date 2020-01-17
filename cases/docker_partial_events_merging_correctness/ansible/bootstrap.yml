@@ -28,6 +28,9 @@
       action: build
       image_build_context_path: "image/"
 
+    - role: docker
+      action: stop
+
     - role: vector
       action: configure
       configuration_file: "config_files/vector.toml"

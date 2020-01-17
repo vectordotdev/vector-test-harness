@@ -11,6 +11,11 @@
         http_server_port: "{{ http_consumer_port }}"
         tcp_server_port: "{{ tcp_consumer_port }}"
 
+    - include_role:
+        name: docker
+      vars:
+        action: start
+
     # We delegate testing to subject specific files to delegate, entirely, the
     # process of verifying behavior. The method used is irrelevant to the result
     # and it could differ across subjects.
@@ -19,6 +24,11 @@
 
     - include_role:
         name: test_servers
+      vars:
+        action: stop
+
+    - include_role:
+        name: docker
       vars:
         action: stop
 
