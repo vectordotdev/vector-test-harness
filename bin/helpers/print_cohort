@@ -9,6 +9,7 @@
 require 'json'
 
 require_relative "athena"
+require_relative "table_print"
 require_relative "util"
 
 results_json = ARGV[0]
