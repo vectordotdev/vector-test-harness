@@ -73,6 +73,7 @@ my_dir="$(dirname "$0")"
 
 ANSIBLE_CONFIG=''
 bootstrap='true'
+skip_terraform='false'
 pub_key=$VECTOR_TEST_PUB_KEY
 results_s3_bucket_name=$VECTOR_TEST_RESULTS_S3_BUCKET_NAME
 run='true'
@@ -88,7 +89,7 @@ user_id=$VECTOR_TEST_USER_ID
 #
 
 OPTIONS=bc:rs:t:u:
-LONGOPTS=bootstrap-only,configuration:,run-only,subjects:,test:,user-id:
+LONGOPTS=bootstrap-only,configuration:,run-only,subjects:,test:,user-id:,skip-terraform
 
 ! PARSED=$(getopt --options=$OPTIONS --longoptions=$LONGOPTS --name "$0" -- "$@")
 if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
@@ -127,6 +128,10 @@ while true; do
         -u|--user-id)
             user_id="$2"
             shift 2
+            ;;
+        --skip-terraform)
+            skip_terraform='true'
+            shift
             ;;
         --)
             shift
@@ -225,7 +230,7 @@ fi
 # Prepare global environment
 #
 
-if [ "$bootstrap" == 'true' ]
+if [ "$bootstrap" == 'true' ] && [ "$skip_terraform" != 'true' ]
 then
   cat << MSG
 
@@ -251,7 +256,7 @@ cd cases/$test_name
 # Terraform
 #
 
-if [ "$bootstrap" == 'true' ]
+if [ "$bootstrap" == 'true' ] && [ "$skip_terraform" != 'true' ]
 then
   cat << MSG
 
