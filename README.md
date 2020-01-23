@@ -153,7 +153,7 @@ Then copy the command specified in `ExecStart` and run it manually. Ex:
 /usr/bin/vector
 ```
 
-### Ansible Failures
+### Ansible Task Debugger
 
 ```bash
 export ANSIBLE_ENABLE_TASK_DEBUGGER=True
@@ -168,6 +168,15 @@ Some useful commands:
 ```
 pprint task_vars['hostvars'][str(host)]['last_message']
 ```
+
+### Ansible Verbose
+
+```bash
+ANSIBLE_EXTRA_ARGS=-vvv
+```
+
+Set the environment variable above, and Ansible will print verbose debug
+information for every task it executes.
 
 ## How It Works
 
