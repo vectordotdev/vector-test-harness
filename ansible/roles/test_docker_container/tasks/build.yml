@@ -25,7 +25,6 @@
     source: build
     state: present
     force_source: yes
-  debugger: on_failed
 
 - name: Clear the temp directory for build context
   file:
