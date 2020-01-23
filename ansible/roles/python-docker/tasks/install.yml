@@ -1,14 +1,12 @@
 ---
 - name: Ensure Python <= 2.6 bindings for docker are not installed
   pip:
-    name:
-      - docker-py
+    name: docker-py
     state: absent
 
 - name: Ensure modern Python bindings for docker are installed
   pip:
-    name:
-      - docker
+    name: docker
     state: present
 
 # Ansible Docker is broken: it attempts to read a file that's not exposed
