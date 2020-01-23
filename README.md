@@ -172,7 +172,7 @@ pprint task_vars['hostvars'][str(host)]['last_message']
 ### Ansible Verbose
 
 ```bash
-ANSIBLE_EXTRA_ARGS=-vvv
+export ANSIBLE_EXTRA_ARGS=-vvv
 ```
 
 Set the environment variable above, and Ansible will print verbose debug
