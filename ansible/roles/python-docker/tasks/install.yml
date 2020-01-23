@@ -17,11 +17,22 @@
 # See https://github.com/ansible/ansible/issues/62791
 # Someone should submit a PR to ansible/ansible or docker/docker-py to fix this,
 # for now we just patch things up so it works.
+- tempfile:
+    state: file
+    suffix: temp
+  register: init_fix_script
+- copy:
+    dest: '{{ init_fix_script.path }}'
+    content: |
+      import docker
+      try:
+          print(docker.__path__.__dict__["_path"][0])
+      except:
+          print(docker.__path__[0])
 - command:
     argv:
       - '{{ ansible_python_interpreter }}'
-      - -c
-      - import docker;print(docker.__path__.__dict__["_path"][0])
+      - '{{ init_fix_script.path }}'
   register: docker_py_path
 - name: Ensure the docker/__init__.py exists
   copy:
