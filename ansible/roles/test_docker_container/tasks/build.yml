@@ -1,0 +1,33 @@
+- name: Prepare directory for temporary directories for build contexts
+  file:
+    state: directory
+    path: '{{ build_context_temp_dirs }}'
+
+- name: Create temporary directory for build context
+  tempfile:
+    state: directory
+    path: '{{ build_context_temp_dirs }}'
+  register: remote_build_context
+
+- name: Copy build context into the temp directory
+  copy:
+    src: '{{ image_build_context_path }}'
+    dest: '{{ remote_build_context.path }}'
+    backup: yes # to provide stable timestamps
+    mode: preserve
+
+- name: Build test docker container image
+  docker_image:
+    name: '{{ image_name }}'
+    build:
+      pull: '{{ build_pull }}'
+      path: '{{ remote_build_context.path }}'
+    source: build
+    state: present
+    force_source: yes
+
+- name: Clear the temp directory for build context
+  file:
+    path: "{{ remote_build_context.path }}"
+    state: absent
+  when: remote_build_context.path is defined

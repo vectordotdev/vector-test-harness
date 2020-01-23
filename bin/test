@@ -36,7 +36,7 @@ EXAMPLE
 # Functions
 #
 
-error() { echo "\033[0;31m$1\033[0m"; }
+error() { echo -e "\033[0;31m$1\033[0m"; }
 usage() { echo "$usage" 1>&2; }
 
 #
@@ -73,6 +73,7 @@ my_dir="$(dirname "$0")"
 
 ANSIBLE_CONFIG=''
 bootstrap='true'
+skip_terraform='false'
 pub_key=$VECTOR_TEST_PUB_KEY
 results_s3_bucket_name=$VECTOR_TEST_RESULTS_S3_BUCKET_NAME
 run='true'
@@ -88,7 +89,7 @@ user_id=$VECTOR_TEST_USER_ID
 #
 
 OPTIONS=bc:rs:t:u:
-LONGOPTS=bootstrap-only,configuration:,run-only,subjects:,test:,user-id:
+LONGOPTS=bootstrap-only,configuration:,run-only,subjects:,test:,user-id:,skip-terraform
 
 ! PARSED=$(getopt --options=$OPTIONS --longoptions=$LONGOPTS --name "$0" -- "$@")
 if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
@@ -127,6 +128,10 @@ while true; do
         -u|--user-id)
             user_id="$2"
             shift 2
+            ;;
+        --skip-terraform)
+            skip_terraform='true'
+            shift
             ;;
         --)
             shift
@@ -225,7 +230,7 @@ fi
 # Prepare global environment
 #
 
-if [ "$bootstrap" == 'true' ]
+if [ "$bootstrap" == 'true' ] && [ "$skip_terraform" != 'true' ]
 then
   cat << MSG
 
@@ -235,9 +240,9 @@ $divider
 MSG
 
   cd terraform
-  terraform init
-  terraform plan -out current.plan -var results-s3-bucket-name=$results_s3_bucket_name
-  terraform apply current.plan
+  terraform init -input=false
+  terraform plan -input=false -out current.plan -var results-s3-bucket-name=$results_s3_bucket_name
+  terraform apply -input=false current.plan
   cd ..
 fi
 
@@ -251,7 +256,7 @@ cd cases/$test_name
 # Terraform
 #
 
-if [ "$bootstrap" == 'true' ]
+if [ "$bootstrap" == 'true' ] && [ "$skip_terraform" != 'true' ]
 then
   cat << MSG
 
@@ -261,9 +266,9 @@ $divider
 MSG
 
   cd terraform
-  terraform init
-  terraform plan -out current.plan -var pub_key=$pub_key -var test_name=$test_name -var test_configuration=$test_configuration -var user_id=$user_id -var-file=../configurations/$test_configuration/terraform.tfvars
-  terraform apply current.plan
+  terraform init -input=false
+  terraform plan -input=false -out current.plan -var pub_key=$pub_key -var test_name=$test_name -var test_configuration=$test_configuration -var user_id=$user_id -var-file=../configurations/$test_configuration/terraform.tfvars
+  terraform apply -input=false current.plan
   cd ..
 else
   echo "Bootstrap is disabled, skipping terraform bootstrap process"
@@ -276,6 +281,7 @@ fi
 cd ansible
 test_namespace="tag_TestName_$test_name:&tag_TestConfiguration_$test_configuration:&tag_TestUserID_$user_id"
 extra_vars="test_name=$test_name test_configuration=$test_configuration test_namespace=$test_namespace test_timestamp=$test_timestamp user_id=$user_id $ansible_version_vars"
+extra_args="${ANSIBLE_EXTRA_ARGS:-""}"
 
 if [ "$bootstrap" == 'true' ]
 then
@@ -286,7 +292,7 @@ Bootstrapping resources
 $divider
 MSG
 
-  ansible-playbook -u ubuntu -i ../../../ansible/ec2.py --extra-vars "@../configurations/$test_configuration/ansible.yml" --extra-vars "$extra_vars" bootstrap.yml
+  ansible-playbook -u ubuntu -i ../../../ansible/ec2.py --extra-vars "@../configurations/$test_configuration/ansible.yml" --extra-vars "$extra_vars" $extra_args bootstrap.yml
 else
   echo "Bootstrap is disabled, skipping ansible bootstrap process"
 fi
@@ -301,7 +307,7 @@ Testing $1
 $divider
 MSG
 
-    ansible-playbook -u ubuntu -i ../../../ansible/ec2.py --extra-vars "@../configurations/$test_configuration/ansible.yml" --extra-vars "$extra_vars test_subject=$1" run.yml
+    ansible-playbook -u ubuntu -i ../../../ansible/ec2.py --extra-vars "@../configurations/$test_configuration/ansible.yml" --extra-vars "$extra_vars test_subject=$1" $extra_args run.yml
   else
     echo "$1 is not installed for this test, skipping..."
   fi

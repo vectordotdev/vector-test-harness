@@ -1,0 +1,7 @@
+- name: Run test docker container, wait for it to complete and remove it
+  docker_container:
+    name: '{{ container_name }}'
+    image: '{{ image_name }}'
+    state: started
+    auto_remove: true
+    detach: false

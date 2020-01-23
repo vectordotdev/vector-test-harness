@@ -47,3 +47,11 @@
     - role: vector
       action: install
       version: "{{ vector_version }}"
+
+    - role: docker
+      action: install
+
+    - role: python-docker
+      action: install
+
+    - role: docker_socket_access

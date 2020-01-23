@@ -51,7 +51,7 @@ test framework used to generate the [performance] and [correctness] results disp
 
 ## Setup
 
-1. Ensure you have [Ansible][ansible] and [Terraform][terraform] installed.
+1. Ensure you have [Ansible][ansible] (2.7+) and [Terraform][terraform] (0.12+) installed.
 2. This step is optional, but highly recommended. Setup a [`vector`][vector] specific
    [AWS profile][aws_profile] in your `~/.aws/credentials` file. We highly recommend running the
    Vector test harness in a separate AWS sandbox account if possible.
@@ -152,6 +152,31 @@ Then copy the command specified in `ExecStart` and run it manually. Ex:
 ```bash
 /usr/bin/vector
 ```
+
+### Ansible Task Debugger
+
+```bash
+export ANSIBLE_ENABLE_TASK_DEBUGGER=True
+```
+
+Set the environment variable above, and Ansible will drop you in a debug mode on any task failure.
+
+See Ansible documentation on [Playbook Debugger](https://docs.ansible.com/ansible/latest/user_guide/playbooks_debugger.html) to learn more.
+
+Some useful commands:
+
+```
+pprint task_vars['hostvars'][str(host)]['last_message']
+```
+
+### Ansible Verbose
+
+```bash
+ANSIBLE_EXTRA_ARGS=-vvv
+```
+
+Set the environment variable above, and Ansible will print verbose debug
+information for every task it executes.
 
 ## How It Works
 

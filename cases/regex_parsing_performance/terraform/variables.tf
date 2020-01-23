@@ -1,18 +1,18 @@
 variable "consumer_instance_type" {
-  type = "string"
+  type = string
 }
 
 
 variable "consumer_port" {
-  type = "string"
+  type = string
 }
 
 variable "producer_instance_count" {
-  type = "string"
+  type = string
 }
 
 variable "producer_instance_type" {
-  type = "string"
+  type = string
 }
 
 variable "pub_key" {
@@ -20,21 +20,21 @@ variable "pub_key" {
 }
 
 variable "subject_instance_type" {
-  type = "string"
+  type = string
 }
 
 variable "subject_port" {
-  type = "string"
+  type = string
 }
 
 variable "test_configuration" {
-  type = "string"
+  type = string
 }
 
 variable "test_name" {
-  type = "string"
+  type = string
 }
 
 variable "user_id" {
-  type = "string"
+  type = string
 }

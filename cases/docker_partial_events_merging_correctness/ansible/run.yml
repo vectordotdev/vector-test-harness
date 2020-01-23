@@ -1,0 +1,44 @@
+---
+- import_playbook: reset.yml
+
+- hosts: '{{ test_namespace }}:&tag_TestRole_subject'
+  become: true
+  tasks:
+    - include_role:
+        name: test_servers
+      vars:
+        action: start
+        http_server_port: "{{ http_consumer_port }}"
+        tcp_server_port: "{{ tcp_consumer_port }}"
+
+    - include_role:
+        name: docker
+      vars:
+        action: start
+
+    # We delegate testing to subject specific files to delegate, entirely, the
+    # process of verifying behavior. The method used is irrelevant to the result
+    # and it could differ across subjects.
+    - name: "Test {{ test_subject }}"
+      include: "run/{{ test_subject }}.yml"
+
+    - include_role:
+        name: test_servers
+      vars:
+        action: stop
+
+    - include_role:
+        name: docker
+      vars:
+        action: stop
+
+    - set_fact:
+        expected_message: '{{ lookup("file", "assets/expected_output.json") }}'
+
+    - name: Capture last_message
+      include: "capture_last_message/{{ test_subject }}.yml"
+
+    - assert:
+        that:
+          - last_message == expected_message
+        fail_msg: Last message did not match the expectation

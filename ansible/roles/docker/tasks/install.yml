@@ -1,0 +1,37 @@
+---
+- name: Ensure old docker versions are not installed on the system
+  apt:
+    name:
+      - docker
+      - docker-engine
+      - docker.io
+    state: absent
+
+- name: Ensure dependencies are installed
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+    state: present
+
+- name: Ensure repo key is installed
+  apt_key:
+    id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+    url: 'https://download.docker.com/linux/ubuntu/gpg'
+    state: present
+
+- name: Ensure docker repo is configured
+  apt_repository:
+    repo: '{{ docker_apt_repository }}'
+    state: present
+    filename: docker
+
+- name: Ensure docker in installed
+  package:
+    name: '{{ docker_package }}'
+    state: '{{ docker_package_state }}'
+
+- name: Ensure docker is configured to not start on boot
+  service:
+    name: docker
+    enabled: no

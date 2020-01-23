@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+require 'json'
+
+REQURED_LENGTH = 16*1024
+
+message = ('aaa'..'bzz').each_with_object({ message: 'Log text' }) do |key, hash|
+  hash[key] = "#{key}_value"
+end
+
+message = JSON.generate(message)
+
+raise 'Message is too short, you need to make it longer to trigger the splitting' if message.length < REQURED_LENGTH
+
+# Print a single long message.
+puts message
