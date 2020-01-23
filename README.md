@@ -51,7 +51,7 @@ test framework used to generate the [performance] and [correctness] results disp
 
 ## Setup
 
-1. Ensure you have [Ansible][ansible] and [Terraform][terraform] installed.
+1. Ensure you have [Ansible][ansible] (2.7+) and [Terraform][terraform] (0.12+) installed.
 2. This step is optional, but highly recommended. Setup a [`vector`][vector] specific
    [AWS profile][aws_profile] in your `~/.aws/credentials` file. We highly recommend running the
    Vector test harness in a separate AWS sandbox account if possible.
