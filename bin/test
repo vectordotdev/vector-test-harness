@@ -240,9 +240,9 @@ $divider
 MSG
 
   cd terraform
-  terraform init
-  terraform plan -out current.plan -var results-s3-bucket-name=$results_s3_bucket_name
-  terraform apply current.plan
+  terraform init -input=false
+  terraform plan -input=false -out current.plan -var results-s3-bucket-name=$results_s3_bucket_name
+  terraform apply -input=false current.plan
   cd ..
 fi
 
@@ -266,9 +266,9 @@ $divider
 MSG
 
   cd terraform
-  terraform init
-  terraform plan -out current.plan -var pub_key=$pub_key -var test_name=$test_name -var test_configuration=$test_configuration -var user_id=$user_id -var-file=../configurations/$test_configuration/terraform.tfvars
-  terraform apply current.plan
+  terraform init -input=false
+  terraform plan -input=false -out current.plan -var pub_key=$pub_key -var test_name=$test_name -var test_configuration=$test_configuration -var user_id=$user_id -var-file=../configurations/$test_configuration/terraform.tfvars
+  terraform apply -input=false current.plan
   cd ..
 else
   echo "Bootstrap is disabled, skipping terraform bootstrap process"
