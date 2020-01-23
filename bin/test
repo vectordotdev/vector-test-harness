@@ -36,7 +36,7 @@ EXAMPLE
 # Functions
 #
 
-error() { echo "\033[0;31m$1\033[0m"; }
+error() { echo -e "\033[0;31m$1\033[0m"; }
 usage() { echo "$usage" 1>&2; }
 
 #
