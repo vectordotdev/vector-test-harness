@@ -12,8 +12,10 @@ OPTS=(
 )
 
 if [[ -n "${VECTOR_TEST_PRIV_KEY:-""}" ]]; then
-  OPTS+=(-o "IdentityFile=$VECTOR_TEST_PRIV_KEY")
-  OPTS+=(-o "IdentitiesOnly=yes")
+  OPTS+=(
+    -o "IdentityFile=$VECTOR_TEST_PRIV_KEY"
+    -o "IdentitiesOnly=yes"
+  )
 fi
 
 # Execute
