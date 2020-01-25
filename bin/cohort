@@ -67,7 +67,7 @@ print_divider
 # Execute
 #
 
-EXECUTION_ID="$(execute_query "$(cat << EOF
+EXECUTION_ID="$(athena_execute_query "$(cat << EOF
 SELECT
   name,
   configuration,
