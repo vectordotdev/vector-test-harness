@@ -15,7 +15,7 @@ athena_execute_query() {
   local EXECUTION_ID
   EXECUTION_ID="$(echo "$RESULT" | jq -r ".QueryExecutionId")"
 
-  athena_wait_for_query "$EXECUTION_ID"
+  athena_wait_for_query "$EXECUTION_ID" > /dev/null
 
   echo "$EXECUTION_ID"
 }
@@ -28,8 +28,7 @@ athena_wait_for_query() {
     [ "$QUERY_STATUS" == "FAILED" ] ||
     [ "$QUERY_STATUS" == "CANCELLED" ]; do
 
-    local temp="${spinstr#?}"
-    echo "$temp"
+    printf "." >&2
     sleep 0.25
 
     local RESULT
@@ -37,6 +36,7 @@ athena_wait_for_query() {
     RESULT="$(echo "$RESULT" | tr '\n' ' ')"
     QUERY_STATUS="$(echo "$RESULT" | jq -r ".QueryExecution.Status.State")"
   done
+  printf "\n" >&2
 }
 
 athena_get_results() {
