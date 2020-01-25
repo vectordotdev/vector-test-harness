@@ -227,16 +227,20 @@ test_timestamp=$TEST_TIMESTAMP \
 user_id=$USER_ID \
 $ANSIBLE_VERSION_VARS"
 
+ANSIBLE_COMMON_ARGS_ARRAY=(
+  -u ubuntu
+  -i "../../../ansible/ec2.py"
+  --extra-vars "@../configurations/$TEST_CONFIGURATION/ansible.yml"
+  --extra-vars "$EXTRA_VARS"
+)
+
 if [ "$BOOTSTRAP" == 'true' ]; then
   print_section_header "Bootstrapping test resources"
 
   set -x
 
   ansible-playbook \
-    -u ubuntu \
-    -i ../../../ansible/ec2.py \
-    --extra-vars "@../configurations/$TEST_CONFIGURATION/ansible.yml" \
-    --extra-vars "$EXTRA_VARS" \
+    "${ANSIBLE_COMMON_ARGS_ARRAY[@]}" \
     "${ANSIBLE_EXTRA_ARGS_ARRAY[@]}" \
     bootstrap.yml
 
@@ -254,10 +258,8 @@ run() {
     set -x
 
     ansible-playbook \
-      -u ubuntu \
-      -i ../../../ansible/ec2.py \
-      --extra-vars "@../configurations/$TEST_CONFIGURATION/ansible.yml" \
-      --extra-vars "$EXTRA_VARS test_subject=$RUN_SUBJECT" \
+      "${ANSIBLE_COMMON_ARGS_ARRAY[@]}" \
+      --extra-vars "test_subject=$RUN_SUBJECT" \
       "${ANSIBLE_EXTRA_ARGS_ARRAY[@]}" \
       run.yml
 
