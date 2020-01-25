@@ -52,7 +52,7 @@ fi
 # Setup
 
 OPTS=()
-if [[ -z "${VECTOR_TEST_PRIV_KEY:-""}" ]]; then
+if [[ -n "${VECTOR_TEST_PRIV_KEY:-""}" ]]; then
   OPTS+=(-o "IdentityFile=$VECTOR_TEST_PRIV_KEY")
   OPTS+=(-o "IdentitiesOnly=yes")
 fi
