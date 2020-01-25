@@ -1,19 +1,15 @@
 #!/bin/bash
+set -euo pipefail
 
-#
-# Setup
-#
-
-set -e
-
-# saner programming env: these switches turn some bugs into errors
-set -o errexit -o pipefail -o noclobber -o nounset
+# Init lib.
+# shellcheck source=SCRIPTDIR/../lib/vector-test-harness/init.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd)/../lib/vector-test-harness/init.sh"
 
 #
 # Usage
 #
 
-usage="
+register_usage <<END
 USAGE
    ssh -h host
 
@@ -25,31 +21,23 @@ OPTIONS
 
 EXAMPLES
    ./ssh -h 2.76.231.121
-"
-
-#
-# Functions
-#
-
-error() { echo "\033[0;31m$1\033[0m"; }
-usage() { echo "$usage" 1>&2; }
+END
 
 #
 # Flags
 #
 
-host=''
+HOST=''
 
 while getopts "h:" o; do
-    case "${o}" in
-        h)
-            host=${OPTARG}
-            ;;
-        *)
-            error "Invalid option detected: $1"
-            exit 3
-            ;;
-    esac
+  case "${o}" in
+    h)
+      HOST=${OPTARG}
+      ;;
+    *)
+      fail_arg_invalid "Invalid option detected: $1"
+      ;;
+  esac
 done
 shift $((OPTIND-1))
 
@@ -57,12 +45,18 @@ shift $((OPTIND-1))
 # Requirements
 #
 
-if [ -z "$host" ]
-  then
-    error "Error: you must supply a host via the -h flag"
-    usage
-    exit 3
+if [ -z "$HOST" ]; then
+  fail_arg_invalid "Error: you must supply a host via the -h flag"
 fi
 
-ssh  -o "IdentityFile=\"$VECTOR_TEST_PRIV_KEY\"" ubuntu@$host
+# Setup
 
+OPTS=()
+if [[ -z "${VECTOR_TEST_PRIV_KEY:-""}" ]]; then
+  OPTS+=(-o "IdentityFile=$VECTOR_TEST_PRIV_KEY")
+  OPTS+=(-o "IdentitiesOnly=yes")
+fi
+
+# Execute
+
+exec ssh "${OPTS[@]}" "ubuntu@$HOST"

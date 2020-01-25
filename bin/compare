@@ -1,19 +1,15 @@
 #!/bin/bash
+set -euo pipefail
 
-#
-# Setup
-#
-
-set -e
-
-# saner programming env: these switches turn some bugs into errors
-set -o errexit -o pipefail -o noclobber -o nounset
+# Init lib.
+# shellcheck source=SCRIPTDIR/../lib/vector-test-harness/init.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd)/../lib/vector-test-harness/init.sh"
 
 #
 # Usage
 #
 
-usage="
+register_usage <<END
 USAGE
    compare -t test [-c configuration] [-p]
 
@@ -28,133 +24,96 @@ OPTIONS
 
 EXAMPLES
    ./compare -t tcp_to_tcp_performance
-"
-
-#
-# Functions
-#
-
-error() { echo "\033[0;31m$1\033[0m"; }
-usage() { echo "$usage" 1>&2; }
+END
 
 #
 # Dependencies
 #
 
-# This is required for flag parsing, specifically the posix style: --flag
-! getopt --test > /dev/null
-if [[ ${PIPESTATUS[0]} -ne 4 ]]; then
-    error 'Error: enhanced getopt is not installed. (brew install gnu-getopt)'
-    exit 1
-fi
-
-#
-# Helpers
-#
-
-my_dir="$(dirname "$0")"
-. "$my_dir/helpers/athena.sh"
+ensure_echanced_getopt_available
 
 #
 # Defaults
 #
 
-percentages='false'
-test_configuration='default'
-test_name=''
+PERCENTAGES="false"
+TEST_CONFIGURATION="default"
+TEST_NAME=""
 
 #
 # Flags
 #
 
-OPTIONS=c:t:
-LONGOPTS=configuration:,percentage,test:
-
-! PARSED=$(getopt --options=$OPTIONS --longoptions=$LONGOPTS --name "$0" -- "$@")
-if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
-    exit 2
-fi
+OPTIONS="c:t:"
+LONGOPTS="configuration:,percentage,test:"
+PARSED="$(parse_arguments "$OPTIONS" "$LONGOPTS" "$0" "$@")"
 eval set -- "$PARSED"
 
 while true; do
-    case "$1" in
-        -c|--configuration)
-            test_configuration="$2"
-            shift 2
-            ;;
-        -p|--percentages)
-            percentages="true"
-            shift
-            ;;
-        -t|--test)
-            test_name="$2"
-            shift 2
-            ;;
-        --)
-            shift
-            break
-            ;;
-        *)
-            error "Invalid option detected: $1"
-            exit 3
-            ;;
-    esac
+  case "$1" in
+    -c|--configuration)
+      TEST_CONFIGURATION="$2"
+      shift 2
+      ;;
+    -p|--percentages)
+      PERCENTAGES="true"
+      shift
+      ;;
+    -t|--test)
+      TEST_NAME="$2"
+      shift 2
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *)
+      fail_arg_invalid "Invalid option detected: $1"
+      ;;
+  esac
 done
 
 #
 # Requirements
 #
 
-if [ -z "$test_name" ]
-  then
-    error "Error: you must supply a test name via the -t flag"
-    usage
-    exit 3
+if [ -z "$TEST_NAME" ]; then
+  fail_arg_invalid "Error: you must supply a test name via the -t flag"
 fi
 
 #
 # Header
 #
 
-divider=$(seq -s- 109|tr -d '[:digit:]')
-
-cat << END
-
-                                                  __   __  __
-                                                  \\ \\ / / / /
-                                                   \\ V / / /
-                                                    \\_/  \\/
-
-                                                  V E C T O R
-
-$divider
+print_vector_logo
+print_divider
+cat <<END
 Test Comparison
-Test name: $test_name
-Test configuration: $test_configuration
-$divider
+Test name: $TEST_NAME
+Test configuration: $TEST_CONFIGURATION
 END
+print_divider
+print_spacer
 
 #
 # Execute
 #
 
-execution_id=$(execute_query "MSCK REPAIR TABLE vector_tests")
+EXECUTION_ID=$(athena_execute_query "MSCK REPAIR TABLE vector_tests")
 
-test_name_condition='1 = 1'
-
-if [ -n "$test_name" ]
-then
-  test_name_condition="name = '$test_name' AND configuration='$test_configuration'"
+TEST_NAME_CONDITION='1 = 1'
+if [ -n "$TEST_NAME" ]; then
+  TEST_NAME_CONDITION="name = '$TEST_NAME' AND configuration='$TEST_CONFIGURATION'"
 fi
 
-execution_id=$(execute_query "$(cat << EOF
+EXECUTION_ID="$(athena_execute_query "$(cat << EOF
 WITH
 latest_versions AS (
   SELECT
     subject,
     MAX(version) AS latest_version
   FROM vector_tests
-  WHERE $test_name_condition
+  WHERE $TEST_NAME_CONDITION
   GROUP BY subject
 )
 
@@ -216,19 +175,18 @@ FROM (
   INNER JOIN latest_versions ON
     latest_versions.subject = v.subject
     AND latest_versions.latest_version = v.version
-  WHERE $test_name_condition
+  WHERE $TEST_NAME_CONDITION
   GROUP BY v.name, v.configuration, v.subject, v.version, v.timestamp
 )
 GROUP BY name, configuration, subject, version
 ORDER BY subject ASC
 EOF
-)")
+)")"
 
-results=$(get_results $execution_id)
+RESULTS=$(athena_get_results "$EXECUTION_ID")
 
-if [ -z "$test_name" ]
-then
-  $my_dir/helpers/print_compare_all "$results"
+if [ -z "$TEST_NAME" ]; then
+  "$VECTOR_TEST_HARNESS_UTILS_DIR/print_compare_all" "$RESULTS"
 else
-  $my_dir/helpers/print_compare_test "$results" "$percentages"
+  "$VECTOR_TEST_HARNESS_UTILS_DIR/print_compare_test" "$RESULTS" "$PERCENTAGES"
 fi

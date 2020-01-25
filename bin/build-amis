@@ -1,19 +1,15 @@
 #!/bin/bash
+set -euo pipefail
 
-#
-# Setup
-#
-
-set -e
-
-# saner programming env: these switches turn some bugs into errors
-set -o errexit -o pipefail -o noclobber -o nounset
+# Init lib.
+# shellcheck source=SCRIPTDIR/../lib/vector-test-harness/init.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd)/../lib/vector-test-harness/init.sh"
 
 #
 # Usage
 #
 
-usage="
+register_usage <<END
 USAGE
    build-amis
 
@@ -21,42 +17,44 @@ DESCRIPTION
    Builds the various AMIs necessary to run the test cases. This saves quite
    a bit of time when tests are consecutively run, avoiding the need to
    install dependencies and test subjects.
-"
+
+OPTIONS
+   none
+
+EXAMPLES
+   ./build-amis
+END
 
 #
 # Dependencies
 #
 
-if ! [ -x "$(command -v ansible-playbook)" ]; then
-  echo 'Error: ansible-playbook is not installed. (sudo pip install ansible)' >&2
-  exit 1
-fi
-
-if ! [ -x "$(command -v packer)" ]; then
-  echo 'Error: packer is not installed. (brew install packer)' >&2
-  exit 1
-fi
+ensure_commad_available "ansible-playbook" "sudo pip install ansible"
+ensure_commad_available "packer" "brew install packer"
 
 #
 # Variables
 #
 
-test_subjects=$VECTOR_TEST_SUBJECTS
+TEST_SUBJECTS="$VECTOR_TEST_SUBJECTS"
+prepare_ansible_version_vars "$TEST_SUBJECTS"
 
-ansible_version_vars=""
+#
+# Header
+#
 
-while read -d, -r pair; do
-  IFS='=' read -r subject version <<<"$pair"
-  declare "$subject"_version=$version
-  ansible_version_vars="$ansible_version_vars "$subject"_version=$version"
-done <<<"$test_subjects,"
-
-export ansible_version_vars
+print_vector_logo
+print_divider
+cat <<END
+Test subjects: $TEST_SUBJECTS
+END
+print_divider
+print_spacer
 
 #
 # Build AMIs
 #
 
 cd packer
-
+export ANSIBLE_VERSION_VARS
 packer build ami.json

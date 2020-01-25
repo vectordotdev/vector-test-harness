@@ -234,7 +234,7 @@ def filesize(size)
 
   return '0.0 B' if size == 0
   exp = (Math.log(size) / Math.log(1024)).to_i
-  exp = 6 if exp > 6 
+  exp = 6 if exp > 6
 
   ('%.1f %s' % [size.to_f / 1024 ** exp, units[exp]]).gsub('.0', '')
 end
