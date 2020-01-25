@@ -33,7 +33,6 @@ athena_wait_for_query() {
 
     local RESULT
     RESULT="$(aws athena get-query-execution --query-execution-id "$EXECUTION_ID")"
-    RESULT="$(echo "$RESULT" | tr '\n' ' ')"
     QUERY_STATUS="$(echo "$RESULT" | jq -r ".QueryExecution.Status.State")"
   done
   printf "\n" >&2
