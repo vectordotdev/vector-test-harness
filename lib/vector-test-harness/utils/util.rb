@@ -219,7 +219,7 @@ def fetch_subject_meta!(slug)
 end
 
 def fetch_test_meta!(slug)
-  content = File.read("#{File.dirname(__FILE__)}/../../cases/#{slug}/README.md")
+  content = File.read("#{File.dirname(__FILE__)}/../../../cases/#{slug}/README.md")
   sections = content.split(/\n\n/)
 
   meta = TEST_META.fetch(slug)
