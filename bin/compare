@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Init lib.
 # shellcheck source=SCRIPTDIR/../lib/vector-test-harness/init.sh
-source "$(cd "$(dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd)/../lib/vector-test-harness/init.sh"
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)/../lib/vector-test-harness/init.sh"
 
 #
 # Usage
@@ -51,25 +51,25 @@ eval set -- "$PARSED"
 
 while true; do
   case "$1" in
-    -c|--configuration)
-      TEST_CONFIGURATION="$2"
-      shift 2
-      ;;
-    -p|--percentages)
-      PERCENTAGES="true"
-      shift
-      ;;
-    -t|--test)
-      TEST_NAME="$2"
-      shift 2
-      ;;
-    --)
-      shift
-      break
-      ;;
-    *)
-      fail_arg_invalid "Invalid option detected: $1"
-      ;;
+  -c | --configuration)
+    TEST_CONFIGURATION="$2"
+    shift 2
+    ;;
+  -p | --percentages)
+    PERCENTAGES="true"
+    shift
+    ;;
+  -t | --test)
+    TEST_NAME="$2"
+    shift 2
+    ;;
+  --)
+    shift
+    break
+    ;;
+  *)
+    fail_arg_invalid "Invalid option detected: $1"
+    ;;
   esac
 done
 
@@ -106,7 +106,7 @@ if [ -n "$TEST_NAME" ]; then
   TEST_NAME_CONDITION="name = '$TEST_NAME' AND configuration='$TEST_CONFIGURATION'"
 fi
 
-EXECUTION_ID="$(athena_execute_query "$(cat << EOF
+EXECUTION_ID="$(athena_execute_query "$(cat <<EOF
 WITH
 latest_versions AS (
   SELECT

@@ -8,7 +8,6 @@ VECTOR_TEST_HARNESS_ANSIBLE_DIR="$VECTOR_TEST_HARNESS_ROOT/ansible"
 # shellcheck disable=SC2034
 VECTOR_TEST_HARNESS_UTILS_DIR="$VECTOR_TEST_HARNESS_LIB_ROOT/utils"
 
-
 # shellcheck source=SCRIPTDIR/load_dotenv.sh
 source "${VECTOR_TEST_HARNESS_LIB_ROOT}/load_dotenv.sh"
 
@@ -22,7 +21,6 @@ source "${VECTOR_TEST_HARNESS_LIB_ROOT}/usage.sh"
 
 # shellcheck source=SCRIPTDIR/athena.sh
 source "${VECTOR_TEST_HARNESS_LIB_ROOT}/athena.sh"
-
 
 # shellcheck source=SCRIPTDIR/visual.sh
 source "${VECTOR_TEST_HARNESS_LIB_ROOT}/visual.sh"

@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Init lib.
 # shellcheck source=SCRIPTDIR/../lib/vector-test-harness/init.sh
-source "$(cd "$(dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd)/../lib/vector-test-harness/init.sh"
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)/../lib/vector-test-harness/init.sh"
 
 #
 # Usage
@@ -38,15 +38,15 @@ SUBJECT=''
 
 while getopts "s:" o; do
   case "${o}" in
-    s)
-        SUBJECT=${OPTARG}
-        ;;
-    *)
-      fail_arg_invalid "Invalid option detected: $1"
-      ;;
+  s)
+    SUBJECT=${OPTARG}
+    ;;
+  *)
+    fail_arg_invalid "Invalid option detected: $1"
+    ;;
   esac
 done
-shift $((OPTIND-1))
+shift $((OPTIND - 1))
 
 #
 # Requirements
@@ -67,7 +67,7 @@ print_divider
 # Execute
 #
 
-EXECUTION_ID="$(athena_execute_query "$(cat << EOF
+EXECUTION_ID="$(athena_execute_query "$(cat <<EOF
 SELECT
   name,
   configuration,

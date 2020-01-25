@@ -3,7 +3,7 @@
 
 error() {
   local MESSAGE="$1"
-  echo -e "\033[0;31m$MESSAGE\033[0m";
+  echo -e "\033[0;31m$MESSAGE\033[0m"
 }
 
 fail_with_code() {
@@ -40,9 +40,9 @@ ensure_commad_available() {
 
 # This is required for flag parsing, specifically the posix style: --flag
 ensure_echanced_getopt_available() {
-  ! getopt --test > /dev/null
+  ! getopt --test >/dev/null
   if [[ ${PIPESTATUS[0]} -ne 4 ]]; then
-      error 'Error: enhanced getopt is not installed. (brew install gnu-getopt)'
-      exit 1
+    error 'Error: enhanced getopt is not installed. (brew install gnu-getopt)'
+    exit 1
   fi
 }

@@ -15,14 +15,14 @@ athena_execute_query() {
   local EXECUTION_ID
   EXECUTION_ID="$(echo "$RESULT" | jq -r ".QueryExecutionId")"
 
-  athena_wait_for_query "$EXECUTION_ID" > /dev/null
+  athena_wait_for_query "$EXECUTION_ID" >/dev/null
 
   echo "$EXECUTION_ID"
 }
 
 athena_wait_for_query() {
   local EXECUTION_ID="$1"
-  local QUERY_STATUS=''
+  local QUERY_STATUS=""
 
   until [ "$QUERY_STATUS" == "SUCCEEDED" ] ||
     [ "$QUERY_STATUS" == "FAILED" ] ||
