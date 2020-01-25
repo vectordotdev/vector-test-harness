@@ -42,6 +42,5 @@ athena_get_results() {
   local EXECUTION_ID="$1"
   local RESULT
   RESULT="$(aws athena get-query-results --query-execution-id "$EXECUTION_ID")"
-  RESULT="$(echo "$RESULT" | tr '\n' ' ')"
   echo "$RESULT" | jq -r
 }
