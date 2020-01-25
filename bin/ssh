@@ -14,8 +14,8 @@ USAGE
    ssh host
 
 DESCRIPTION
-   SSHs onto the provided host using the same vector test harness
-   credentials that ansible would use.
+   SSHs onto the provided host using the same credentials that
+   vector test harness ansible would use.
 
 OPTIONS
    This command does not any specific options.
