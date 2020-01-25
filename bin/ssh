@@ -5,26 +5,6 @@ set -euo pipefail
 # shellcheck source=SCRIPTDIR/../lib/vector-test-harness/init.sh
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)/../lib/vector-test-harness/init.sh"
 
-#
-# Usage
-#
-
-register_usage <<END
-USAGE
-   ssh host
-
-DESCRIPTION
-   SSHs onto the provided host using the same credentials that
-   vector test harness ansible would use.
-
-OPTIONS
-   This command does not any specific options.
-   All options are passed through to the ssh command.
-
-EXAMPLES
-   ./ssh 2.76.231.121
-END
-
 # Setup
 
 OPTS=(
