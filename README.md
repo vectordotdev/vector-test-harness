@@ -131,11 +131,11 @@ Where:
 * `ubuntu` = the default root username for the instance.
 * `51.5.210.84` = the _public_ IP address of the instance.
 
-We provide a helper command to simplify pulling connection options from the
-environment:
+We provide a command that wraps the system `ssh` and provides the same
+credentials that ansible uses when connecting to the VM:
 
 ```bash
-./bin/ssh -h 51.5.210.84
+./bin/ssh 51.5.210.84
 ```
 
 #### Viewing logs

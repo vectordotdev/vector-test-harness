@@ -11,47 +11,26 @@ source "$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)/../lib/vec
 
 register_usage <<END
 USAGE
-   ssh -h host
+   ssh host
 
 DESCRIPTION
-   SSHs onto the provided host.
+   SSHs onto the provided host using the same vector test harness
+   credentials that ansible would use.
 
 OPTIONS
-   -h  The IP address of the target host
+   This command does not any specific options.
+   All options are passed through to the ssh command.
 
 EXAMPLES
-   ./ssh -h 2.76.231.121
+   ./ssh 2.76.231.121
 END
-
-#
-# Flags
-#
-
-HOST=''
-
-while getopts "h:" o; do
-  case "${o}" in
-  h)
-    HOST=${OPTARG}
-    ;;
-  *)
-    fail_arg_invalid "Invalid option detected: $1"
-    ;;
-  esac
-done
-shift $((OPTIND - 1))
-
-#
-# Requirements
-#
-
-if [ -z "$HOST" ]; then
-  fail_arg_invalid "Error: you must supply a host via the -h flag"
-fi
 
 # Setup
 
-OPTS=()
+OPTS=(
+  -o "User=ubuntu"
+)
+
 if [[ -n "${VECTOR_TEST_PRIV_KEY:-""}" ]]; then
   OPTS+=(-o "IdentityFile=$VECTOR_TEST_PRIV_KEY")
   OPTS+=(-o "IdentitiesOnly=yes")
@@ -59,4 +38,4 @@ fi
 
 # Execute
 
-exec ssh "${OPTS[@]}" "ubuntu@$HOST"
+exec ssh "${OPTS[@]}" "$@"
