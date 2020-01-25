@@ -46,12 +46,3 @@ athena_get_results() {
   RESULT="$(echo "$RESULT" | tr '\n' ' ')"
   echo "$RESULT" | jq -r
 }
-
-athena_invoke() {
-  local COMMAND="$1"
-  local RESULT
-  RESULT="$($COMMAND)"
-  RESULT="$(echo "$RESULT" | tr '\n' ' ')"
-  echo "$RESULT" | jq -r
-
-}
