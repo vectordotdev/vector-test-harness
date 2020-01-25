@@ -114,10 +114,12 @@ Simply delete the folder and any data in the [s3 bucket][s3_bucket].
 
 ## Debugging
 
+### On a VM end
+
 If you encounter an error it's likely you'll need to SSH onto the server to
 investigate.
 
-### SSHing
+#### SSHing
 
 ```bash
 ssh  -o 'IdentityFile="~/.ssh/vector_management"' ubuntu@51.5.210.84
@@ -129,31 +131,43 @@ Where:
 * `ubuntu` = the default root username for the instance.
 * `51.5.210.84` = the _public_ IP address of the instance.
 
-### Viewing logs
-
-All services are configured with systemd where their logs can be access with
-`journalctl`:
+We provide a helper command to simplify pulling connection options from the
+environment:
 
 ```bash
+./bin/ssh -h 51.5.210.84
+```
+
+#### Viewing logs
+
+All services are configured with systemd where their logs can be accessed with
+`journalctl`:
+
+```shell
 sudo journactl -fu <service>
 ```
 
-### Failed servies
+#### Failed services
 
 If you find that the service failed to start, I find it helpful to manually
 attempt to start the service by inspecting the command in the `.service` file:
 
-```bash
+```shell
 cat /etc/systemd/system/<name>.service
 ```
 
 Then copy the command specified in `ExecStart` and run it manually. Ex:
 
-```bash
+```shell
 /usr/bin/vector
 ```
 
-### Ansible Task Debugger
+### On your end
+
+Things can go wrong on your end (i.e. on the local system you're running the
+test harness) too.
+
+#### Ansible Task Debugger
 
 ```bash
 export ANSIBLE_ENABLE_TASK_DEBUGGER=True
@@ -165,11 +179,11 @@ See Ansible documentation on [Playbook Debugger](https://docs.ansible.com/ansibl
 
 Some useful commands:
 
-```
+```python
 pprint task_vars['hostvars'][str(host)]['last_message']
 ```
 
-### Ansible Verbose
+#### Verbose Ansible Execution
 
 ```bash
 export ANSIBLE_EXTRA_ARGS=-vvv
@@ -185,7 +199,7 @@ information for every task it executes.
 The Vector test harness is a mix of [bash][bin], [Terraform][terraform], and [Ansible][ansible]
 scripts. Each test case lives in the [`/cases`][cases] directory and has full reign of it's
 bootstrap and test process via it's own [Terraform][terraform] and [Ansible][ansible] scripts.
-The location of these scripts is dicated by the [`test`][test] script and is outlined in more
+The location of these scripts is dictated by the [`test`][test] script and is outlined in more
 detail in the [Adding a test][adding_a_test] section. Each test falls into one of 2 categories:
 performance tests and correctness tests:
 
@@ -195,15 +209,15 @@ Performance tests measure performance and MUST capture detailed performance data
 in the [Performance Data][performance_data] and [Rules][rules] sections.
 
 In addition to the `test` script, there are [`compare`][compare] and [`cohort`][cohort] scripts.
-Each of these scripts analyze the performance data captured when executing a test. More information
+Each of these scripts analyzes the performance data captured when executing a test. More information
 on this data and how it's captured and analyzed can be found in the
 [Performance Data][performance_data] section. Finally, each [script][bin] includes a usage
 overview that you can access with the `--help` flag.
 
 ##### Performance data
 
-Performance test data is captured via [`dstat`][dstat], which is a light weight utility that
-captures a variety of system statistics in 1 second snapshot intervals. The final result is a CSV
+Performance test data is captured via [`dstat`][dstat], which is a lightweight utility that
+captures a variety of system statistics in 1-second snapshot intervals. The final result is a CSV
 where each row represents a snapshot. You can see the [`dstat` command][dstat_command] used in the
 [`ansible/roles/profiling/start.yml`][profiling_start] file.
 
@@ -261,6 +275,16 @@ variable names in the path. For example:
 name=tcp_to_tcp_performance/configuration=default/subject=vector/version=v0.2.0-dev.1-20-gae8eba2/timestamp=1559073720
 ```
 
+And the same in a tree form:
+
+```
+name=tcp_to_tcp_performance/
+  configuration=default/
+    subject=vector/
+      version=v0.2.0-dev.1-20-gae8eba2/
+        timestamp=1559073720
+```
+
 * `name` = the test name.
 * `configuration` = refers to the test's specific configuration (tests can have multiple configurations
   if necessary).
@@ -276,7 +300,7 @@ the queries ran in the [`compare`][compare] and [`cohort`][cohort] scripts.
 
 #### Correctness tests
 
-Correctness tests simply verify behavior. These tests are not required to capture or persist
+Correctness tests simply verify behavior. These tests are not required to capture or to persist
 any data. The results can be manually verified and placed in the test's README.
 
 ##### Correctness data
@@ -286,7 +310,7 @@ running of the test.
 
 ##### Correctness output
 
-Generally, correctness tests verify output. Because of the various test subjects, we use a variety
+Generally, correctness tests verify the output. Because of the various test subjects, we use a variety
 of output methods to capture output (tcp, http, and file). This is highly dependent on the test
 subject and the methods available. For example, the Splunk Forwarders only support TCP and
 Splunk specific outputs.
@@ -298,20 +322,21 @@ that spins up various test servers and provides a simple way to capture summary 
 
 Tests must operate in isolated reproducible environments, they must _never_ run locally.
 The obvious benefit is that it removes variables across tests, but it also improves collaboration
-since remote environments are easily accessible and reproducible by oother engineers.
+since remote environments are easily accessible and reproducible by other engineers.
 
 ### Rules
 
 1. ALWAYS filter to resources specific to your `test_name`, `test_configuration`, and
    `user_id` (ex: ansible host targeting)
-2. ALWAYS make sure initial instance state is identical across test subjects. We recommend explicitly
-   stopping all test subjects in the case of previous failure and a subject was not cleanly shutdown.
+2. ALWAYS make sure the initial instance state is identical across test subjects. We recommend explicitly
+   stopping all test subjects to properly handle the case of preceding failure and the situation where a
+   subject was not cleanly shutdown.
 3. ALWAYS use the [`profile` ansible role][profiling_role] to capture data. This ensures a consistent
    data structure across tests.
 4. ALWAYS run performance tests for at least 1 minute to calculate a 1m CPU load average.
 5. Use [ansible roles][roles] whenever possible.
 6. If you are not testing local data collection we recommend using TCP as a data source since
-   it is a light weight source that is more likely to be consistent, performance wise, across
+   it is a lightweight source that is more likely to be consistent, performance wise, across
    subjects.
 
 
