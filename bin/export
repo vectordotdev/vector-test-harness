@@ -122,8 +122,10 @@ EOF
 )")"
 
 RESULTS="$(athena_get_results "$EXECUTION_ID")"
-FILE_NAME="results.json"
 
+print_spacer
+
+FILE_NAME="results.json"
 "$VECTOR_TEST_HARNESS_UTILS_DIR/export_json" "$RESULTS" "$FILE_NAME"
 
 aws s3 cp "$FILE_NAME" "s3://$VECTOR_TEST_RESULTS_S3_BUCKET_NAME/summaries/latest.json"

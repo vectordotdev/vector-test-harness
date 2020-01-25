@@ -91,4 +91,6 @@ EOF
 
 RESULTS=$(athena_get_results "$EXECUTION_ID")
 
+print_spacer
+
 "$VECTOR_TEST_HARNESS_UTILS_DIR/print_cohort" "$RESULTS"

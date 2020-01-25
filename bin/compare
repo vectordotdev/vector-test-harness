@@ -185,6 +185,8 @@ EOF
 
 RESULTS=$(athena_get_results "$EXECUTION_ID")
 
+print_spacer
+
 if [ -z "$TEST_NAME" ]; then
   "$VECTOR_TEST_HARNESS_UTILS_DIR/print_compare_all" "$RESULTS"
 else
