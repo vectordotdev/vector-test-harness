@@ -153,6 +153,7 @@ END
 print_divider
 print_spacer
 
+prepare_terraform_params true
 prepare_ansible_config true
 prepare_ansible_extra_args_array true
 print_spacer
@@ -172,7 +173,7 @@ if [ "$BOOTSTRAP" == 'true' ] && [ "$SKIP_TERRAFORM" != 'true' ]; then
 
   cd terraform
 
-  terraform init -input=false
+  terraform init -input=false "${TERRAFORM_INIT_EXTRA_ARGS[@]}"
 
   terraform apply -input=false -auto-approve \
     -var results-s3-bucket-name="$TEST_RESULTS_S3_BUCKET_NAME"
@@ -195,7 +196,7 @@ if [ "$BOOTSTRAP" == 'true' ] && [ "$SKIP_TERRAFORM" != 'true' ]; then
 
   cd terraform
 
-  terraform init -input=false
+  terraform init -input=false "${TERRAFORM_INIT_EXTRA_ARGS[@]}"
 
   terraform apply -input=false -auto-approve \
     -var pub_key="$TEST_SSH_PUBLIC_KEY" \

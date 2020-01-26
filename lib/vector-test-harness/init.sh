@@ -30,3 +30,6 @@ source "${VECTOR_TEST_HARNESS_LIB_ROOT}/ansible.sh"
 
 # shellcheck source=SCRIPTDIR/argparse.sh
 source "${VECTOR_TEST_HARNESS_LIB_ROOT}/argparse.sh"
+
+# shellcheck source=SCRIPTDIR/terraform.sh
+source "${VECTOR_TEST_HARNESS_LIB_ROOT}/terraform.sh"
