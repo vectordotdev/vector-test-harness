@@ -158,6 +158,12 @@ prepare_ansible_extra_args_array true
 print_spacer
 
 #
+# Execute
+#
+
+export TF_IN_AUTOMATION=true
+
+#
 # Prepare global environment
 #
 
