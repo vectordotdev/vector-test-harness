@@ -51,5 +51,8 @@ RUN set -x \
 WORKDIR /vector-test-harness
 COPY . .
 
+# Set the entrypoint.
+ENTRYPOINT [ "/vector-test-harness/docker/entrypoint" ]
+
 # By default, print usage hint, and force users to specify command manually.
 CMD [ "echo", "Usage: bin/test ..." ]
