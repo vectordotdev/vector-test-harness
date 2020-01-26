@@ -49,4 +49,5 @@ RUN ls -la / \
 WORKDIR /vector-test-harness
 COPY . .
 
-CMD ["bin/test"]
+# By default, print usage hint, and force users to specify command manually.
+CMD [ "echo", "Usage: bin/test ..." ]
