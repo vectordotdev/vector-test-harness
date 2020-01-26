@@ -41,7 +41,8 @@ RUN curl -fsSL https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux6
   && jq --version
 
 # Print the state after the installation to simplify troubleshooting.
-RUN ls -la / \
+RUN set -x \
+  && ls -la / \
   && ls -la /usr/local/bin \
   && ls -la "$TF_PLUGIN_DIR"
 
