@@ -11,9 +11,9 @@ OPTS=(
   -o "User=ubuntu"
 )
 
-if [[ -n "${VECTOR_TEST_PRIV_KEY:-""}" ]]; then
+if [[ -n "${VECTOR_TEST_SSH_PRIVATE_KEY:-""}" ]]; then
   OPTS+=(
-    -o "IdentityFile=$VECTOR_TEST_PRIV_KEY"
+    -o "IdentityFile=$VECTOR_TEST_SSH_PRIVATE_KEY"
     -o "IdentitiesOnly=yes"
   )
 fi
