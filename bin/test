@@ -174,10 +174,8 @@ if [ "$BOOTSTRAP" == 'true' ] && [ "$SKIP_TERRAFORM" != 'true' ]; then
 
   terraform init -input=false
 
-  terraform plan -input=false \
-    -out current.plan \
+  terraform apply -input=false -auto-approve \
     -var results-s3-bucket-name="$TEST_RESULTS_S3_BUCKET_NAME"
-  terraform apply -input=false current.plan
 
   cd ..
 fi
@@ -199,14 +197,12 @@ if [ "$BOOTSTRAP" == 'true' ] && [ "$SKIP_TERRAFORM" != 'true' ]; then
 
   terraform init -input=false
 
-  terraform plan -input=false \
-    -out current.plan \
+  terraform apply -input=false -auto-approve \
     -var pub_key="$TEST_SSH_PUBLIC_KEY" \
     -var test_name="$TEST_NAME" \
     -var test_configuration="$TEST_CONFIGURATION" \
     -var user_id="$TEST_USER_ID" \
     -var-file="../configurations/$TEST_CONFIGURATION/terraform.tfvars"
-  terraform apply -input=false current.plan
 
   cd ..
 else
