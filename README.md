@@ -60,6 +60,9 @@ test framework used to generate the [performance] and [correctness] results disp
 4. Run `cp .envrc.example .envrc`. Read through the file, update as necessary.
 5. Run `source .envrc` to prepare the environment. Alternatively install [direnv] to do this
    automatically.
+   Note that the `.env` file, if it exists, will be automatically sourced into
+   the scripts environment - so it's another option to set the environment
+   variables for the `bin/*` commands of this repo.
 6. Run:
 
    ```bash
