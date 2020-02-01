@@ -18,10 +18,11 @@ DESCRIPTION
 
 OPTIONS
    -b, --bootstrap-only  Bootstrap the test only, do not test any subjects
-   -c, --configuration   The test configuration (default: default, env: VECTOR_TEST_CONFIGURATION)
    -r, --run-only        Don't run the bootstrap task, just run the test. This is helpful for repeated runs.
-   -s, --subjects        The test subjects (ex: vector=1.0.0,fluentbit=1.0.0, env: VECTOR_TEST_SUBJECTS)
-   -t, --test            The test to run (ex: tcp_to_blackhole)
+       --skip-terraform  Skip all terraform commands. This is helpful for repeated runs.
+   -c, --configuration   The test configuration (default: default, env: VECTOR_TEST_CONFIGURATION)
+   -s, --subject         The test subject (ex: vector, env: VECTOR_TEST_SUBJECT)
+   -t, --test            The test to run (ex: tcp_to_blackhole, env: VECTOR_TEST_NAME)
    -u, --user-id         Your user ID (ex: ben, env: VECTOR_TEST_USER_ID)
 
 EXAMPLE
@@ -45,16 +46,17 @@ BOOTSTRAP='true'
 RUN='true'
 SKIP_TERRAFORM='false'
 
-# Execution parameters
-SSH_PUBLIC_KEY="$VECTOR_TEST_PUB_KEY"
-RESULTS_S3_BUCKET_NAME=$VECTOR_TEST_RESULTS_S3_BUCKET_NAME
-USER_ID="$VECTOR_TEST_USER_ID"
-TEST_TIMESTAMP="$(date -u +%s)"
+# Required from the environment.
+TEST_SSH_PUBLIC_KEY="${VECTOR_TEST_SSH_PUBLIC_KEY:-""}"
+TEST_RESULTS_S3_BUCKET_NAME="${VECTOR_TEST_RESULTS_S3_BUCKET_NAME:-""}"
+TEST_SUBJECTS="${VECTOR_TEST_SUBJECTS:-""}"
+TEST_TIMESTAMP="${VECTOR_TEST_TIMESTAMP:-"$(date -u +%s)"}"
 
-TEST_CONFIGURATION="default"
-TEST_NAME=""
-TEST_SUBJECTS="$VECTOR_TEST_SUBJECTS"
-TEST_SUBJECT=""
+# Configurable via cli flags
+TEST_CONFIGURATION="${VECTOR_TEST_CONFIGURATION:-"default"}"
+TEST_NAME="${VECTOR_TEST_NAME:-""}"
+TEST_SUBJECT="${VECTOR_TEST_SUBJECT:-""}"
+TEST_USER_ID="${VECTOR_TEST_USER_ID:-""}"
 
 #
 # Flags
@@ -85,10 +87,6 @@ while true; do
     TEST_CONFIGURATION="$2"
     shift 2
     ;;
-  -k | --key-path)
-    SSH_PUBLIC_KEY="$2"
-    shift 2
-    ;;
   -s | --subject)
     TEST_SUBJECT="$2"
     shift 2
@@ -98,7 +96,7 @@ while true; do
     shift 2
     ;;
   -u | --user-id)
-    USER_ID="$2"
+    TEST_USER_ID="$2"
     shift 2
     ;;
   --)
@@ -123,11 +121,7 @@ if [ -z "$TEST_NAME" ]; then
   fail_arg_invalid "Error: you must supply a test name via the -t flag:"
 fi
 
-if [ -z "$TEST_SUBJECTS" ]; then
-  fail_arg_invalid "Error: you must supply test subjects via the -s flag:"
-fi
-
-if [ -z "$USER_ID" ]; then
+if [ -z "$TEST_USER_ID" ]; then
   fail_arg_invalid "Error: you must supply a user ID via the -u flag or VECTOR_TEST_USER_ID env var:"
 fi
 
@@ -150,7 +144,7 @@ prepare_test_subjects_array "$TEST_SUBJECTS"
 print_vector_logo
 print_divider
 cat <<END
-User ID: $USER_ID
+User ID: $TEST_USER_ID
 Test name: $TEST_NAME
 Test configuration: $TEST_CONFIGURATION
 Test subjects: $TEST_SUBJECTS
@@ -159,9 +153,16 @@ END
 print_divider
 print_spacer
 
+prepare_terraform_params true
 prepare_ansible_config true
 prepare_ansible_extra_args_array true
 print_spacer
+
+#
+# Execute
+#
+
+export TF_IN_AUTOMATION=true
 
 #
 # Prepare global environment
@@ -172,12 +173,10 @@ if [ "$BOOTSTRAP" == 'true' ] && [ "$SKIP_TERRAFORM" != 'true' ]; then
 
   cd terraform
 
-  terraform init -input=false
+  terraform init -input=false "${TERRAFORM_INIT_EXTRA_ARGS[@]}"
 
-  terraform plan -input=false \
-    -out current.plan \
-    -var results-s3-bucket-name="$RESULTS_S3_BUCKET_NAME"
-  terraform apply -input=false current.plan
+  terraform apply -input=false -auto-approve \
+    -var results-s3-bucket-name="$TEST_RESULTS_S3_BUCKET_NAME"
 
   cd ..
 fi
@@ -197,16 +196,14 @@ if [ "$BOOTSTRAP" == 'true' ] && [ "$SKIP_TERRAFORM" != 'true' ]; then
 
   cd terraform
 
-  terraform init -input=false
+  terraform init -input=false "${TERRAFORM_INIT_EXTRA_ARGS[@]}"
 
-  terraform plan -input=false \
-    -out current.plan \
-    -var pub_key="$SSH_PUBLIC_KEY" \
+  terraform apply -input=false -auto-approve \
+    -var pub_key="$TEST_SSH_PUBLIC_KEY" \
     -var test_name="$TEST_NAME" \
     -var test_configuration="$TEST_CONFIGURATION" \
-    -var user_id="$USER_ID" \
+    -var user_id="$TEST_USER_ID" \
     -var-file="../configurations/$TEST_CONFIGURATION/terraform.tfvars"
-  terraform apply -input=false current.plan
 
   cd ..
 else
@@ -218,13 +215,13 @@ fi
 #
 
 cd ansible
-TEST_NAMESPACE="tag_TestName_$TEST_NAME:&tag_TestConfiguration_$TEST_CONFIGURATION:&tag_TestUserID_$USER_ID"
+TEST_NAMESPACE="tag_TestName_$TEST_NAME:&tag_TestConfiguration_$TEST_CONFIGURATION:&tag_TestUserID_$TEST_USER_ID"
 EXTRA_VARS="\
 test_name=$TEST_NAME \
 test_configuration=$TEST_CONFIGURATION \
 test_namespace=$TEST_NAMESPACE \
 test_timestamp=$TEST_TIMESTAMP \
-user_id=$USER_ID \
+user_id=$TEST_USER_ID \
 $ANSIBLE_VERSION_VARS"
 
 ANSIBLE_COMMON_ARGS_ARRAY=(

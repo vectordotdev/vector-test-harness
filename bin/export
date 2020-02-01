@@ -25,6 +25,13 @@ EXAMPLES
 END
 
 #
+# Dependencies
+#
+
+ensure_athena_dependencies_available
+ensure_commad_available "ruby"
+
+#
 # Header
 #
 

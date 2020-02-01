@@ -19,17 +19,17 @@ data "aws_ami" "ami" {
 }
 
 resource "aws_spot_instance_request" "default" {
-  count = "${var.instance_count}"
+  count = var.instance_count
 
   ami                         = data.aws_ami.ami.id
   associate_public_ip_address = true
-  availability_zone           = "${var.availability_zone}"
-  iam_instance_profile        = "${var.instance_profile_name}"
-  instance_type               = "${var.instance_type}"
-  key_name                    = "${var.key_name}"
+  availability_zone           = var.availability_zone
+  iam_instance_profile        = var.instance_profile_name
+  instance_type               = var.instance_type
+  key_name                    = var.key_name
   monitoring                  = false
   spot_type                   = "one-time"
-  subnet_id                   = "${var.subnet_id}"
+  subnet_id                   = var.subnet_id
   vpc_security_group_ids      = var.security_group_ids
   wait_for_fulfillment        = true
 
@@ -37,7 +37,7 @@ resource "aws_spot_instance_request" "default" {
     volume_type           = "gp2"
     volume_size           = "30"
     delete_on_termination = true
-  } 
+  }
 
   tags = {
     Name              = "vector-test-${var.user_id}-${var.test_name}-${var.test_configuration}-${var.role_name}"
@@ -54,7 +54,7 @@ resource "aws_spot_instance_request" "default" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "terminate" {
-  count = "${var.instance_count}"
+  count = var.instance_count
 
   alarm_name          = "vector-test-${var.user_id}-${var.test_name}-${var.role_name}-${count.index}"
   namespace           = "AWS/EC2"

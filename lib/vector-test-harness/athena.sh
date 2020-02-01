@@ -1,8 +1,10 @@
 # vi: syntax=bash
 # shellcheck shell=bash
 
-ensure_commad_available "aws" "sudo pip install awscli"
-ensure_commad_available "jq" "brew install jq"
+ensure_athena_dependencies_available() {
+  ensure_commad_available "aws" "sudo pip install awscli"
+  ensure_commad_available "jq" "brew install jq"
+}
 
 athena_execute_query() {
   local RESULT

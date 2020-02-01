@@ -8,8 +8,8 @@ export AWS_PROFILE=vector
 
 # An AWS compatible key pair. This is used for SSH access to all test machines:
 # https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair
-export VECTOR_TEST_PRIV_KEY=~/.ssh/vector_tests
-export VECTOR_TEST_PUB_KEY=~/.ssh/vector_tests.pub
+export VECTOR_TEST_SSH_PRIVATE_KEY=~/.ssh/vector_tests
+export VECTOR_TEST_SSH_PUBLIC_KEY=~/.ssh/vector_tests.pub
 
 # Test subjects. Update as necessary. If a test does not support a subject Vector
 # will skip it.
