@@ -130,7 +130,7 @@ ssh  -o 'IdentityFile="~/.ssh/vector_management"' ubuntu@51.5.210.84
 
 Where:
 
-* `vector_management` = the `VECTOR_TEST_PRIV_KEY` value provided in your `.envrc` file.
+* `~/.ssh/vector_management` = the `VECTOR_TEST_SSH_PRIVATE_KEY` value provided in your `.envrc` file.
 * `ubuntu` = the default root username for the instance.
 * `51.5.210.84` = the _public_ IP address of the instance.
 
