@@ -54,10 +54,13 @@
     #       dest: props.conf
     #     - src: config_files/splunk.transforms.conf
     #       dest: transforms.conf
-    
+
     # - role: telegraf
     #   action: configure
     #   configuration_file: "config_files/telegraf.conf"
+
+    - role: vector
+      action: install_custom_version
 
     - role: vector
       action: configure
@@ -69,4 +72,3 @@
     - role: tcp_test_server
       action: configure
       server_address: "0.0.0.0:{{ consumer_port }}"
-

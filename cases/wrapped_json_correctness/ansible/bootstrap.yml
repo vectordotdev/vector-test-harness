@@ -35,8 +35,10 @@
       action: configure
       configuration_file: "config_files/logstash.settings.yml"
       pipeline_file: "config_files/logstash.pipeline.conf"
-      
+
+    - role: vector
+      action: install_custom_version
+
     - role: vector
       action: configure
       configuration_file: "config_files/vector.toml"
-

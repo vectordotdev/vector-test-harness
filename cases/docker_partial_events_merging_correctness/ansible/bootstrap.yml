@@ -32,5 +32,8 @@
       action: stop
 
     - role: vector
+      action: install_custom_version
+
+    - role: vector
       action: configure
       configuration_file: "config_files/vector.toml"

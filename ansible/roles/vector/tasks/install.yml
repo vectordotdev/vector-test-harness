@@ -1,7 +1,7 @@
 ---
 - name: Install Vector
   apt:
-    deb: "https://packages.timber.io/vector/{{ version }}/vector-amd64.deb"
+    deb: "{{ vector_package }}"
 
 # This ensures that the process is not running. Each test is responsible
 # for starting and stopping the relevant services.

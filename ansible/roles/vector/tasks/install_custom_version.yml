@@ -1,0 +1,25 @@
+---
+- name: Install a custom version of vector
+  when: local_vector_package_path is defined
+  block:
+    - name: Prepare temporary directory
+      tempfile:
+        state: directory
+      register: temp_deb
+
+    - name: Override vector_package
+      set_fact:
+        vector_package: '{{ temp_deb.path }}/vector.deb'
+
+    - name: Copy local vector .deb file to remote machine
+      copy:
+        src: '{{ local_vector_package_path }}'
+        dest: '{{ vector_package }}'
+
+    - include: "install.yml"
+
+    - name: Clear temp dir
+      file:
+        path: "{{ temp_deb.path }}"
+        state: absent
+      when: temp_deb.path is defined

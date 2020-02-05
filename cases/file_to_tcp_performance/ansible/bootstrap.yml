@@ -53,6 +53,9 @@
           dest: outputs.conf
 
     - role: vector
+      action: install_custom_version
+
+    - role: vector
       action: configure
       configuration_file: "config_files/vector.toml"
 
@@ -66,7 +69,7 @@
       shell: |
         flog --format apache_common --bytes {{ test_file_bytes }} \
         > {{ test_files_root }}{{ item }}.log
-      with_sequence: count={{ test_file_count }} 
+      with_sequence: count={{ test_file_count }}
 
 - hosts: '{{ test_namespace }}:&tag_TestRole_consumer'
   become: true
