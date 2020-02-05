@@ -12,11 +12,17 @@
   include_role:
     name: test_docker_container
   vars:
-    action: run_and_remove
+    action: start
 
 - name: sleep for 15 seconds to let docker and {{ test_subject }} catch up
   wait_for:
     timeout: 15
+
+- name: Remove test container
+  include_role:
+    name: test_docker_container
+  vars:
+    action: remove
 
 - include_role:
     name: "{{ test_subject }}"
