@@ -4,6 +4,8 @@ set -euo pipefail
 if [[ -n "${GENERATE_SSH_KEY:-""}" ]]; then
   export VECTOR_TEST_SSH_PRIVATE_KEY="$HOME/.ssh/id_rsa"
   export VECTOR_TEST_SSH_PUBLIC_KEY="$VECTOR_TEST_SSH_PRIVATE_KEY.pub"
+  mkdir -p "$HOME/.ssh"
+  chmod 0700 "$HOME/.ssh"
   ssh-keygen -b 4096 -t rsa -N "" -C "generated-in-docker" -f "$VECTOR_TEST_SSH_PRIVATE_KEY"
   export SSH_KEY_GENERATED=true
 fi
