@@ -41,7 +41,10 @@
     - role: logstash
       action: configure
       pipeline_file: "config_files/logstash.conf"
-      
+
+    - role: vector
+      action: install_custom_version
+
     - role: vector
       action: configure
       configuration_file: "config_files/vector.toml"
@@ -52,4 +55,3 @@
     - role: http_test_server
       action: configure
       server_address: "0.0.0.0:{{ consumer_port }}"
-

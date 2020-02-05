@@ -61,7 +61,10 @@
           dest: inputs.conf
         - src: config_files/splunk.outputs.conf
           dest: outputs.conf
-      
+
+    - role: vector
+      action: install_custom_version
+
     - role: vector
       action: configure
       configuration_file: "config_files/vector.toml"
@@ -76,4 +79,3 @@
     - role: tcp_test_server
       action: configure
       server_address: "0.0.0.0:{{ consumer_port }}"
-
