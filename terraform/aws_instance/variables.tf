@@ -32,11 +32,11 @@ The type / class of instance.
 EOF
 }
 
-variable "key_name" {
+variable "public_key" {
   type = string
 
   description = <<EOF
-Name of the key pair to use.
+SSH public key to use at authorized_keys.
 EOF
 }
 

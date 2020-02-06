@@ -27,11 +27,6 @@ module "vpc" {
   user_id           = local.user_id
 }
 
-resource "aws_key_pair" "default" {
-  key_name   = "vector-test-${local.user_id}-${local.test_name}"
-  public_key = file(var.pub_key)
-}
-
 resource "aws_security_group" "subject" {
   name        = "vector-test-${local.user_id}-${local.test_name}-subject"
   description = "Security group for members of the Vector ${local.user_id}-${local.test_name} test subject group"
@@ -103,7 +98,7 @@ module "aws_instance_subject" {
   availability_zone     = local.availability_zone
   instance_profile_name = module.aws_instance_profile.name
   instance_type         = var.subject_instance_type
-  key_name              = aws_key_pair.default.key_name
+  public_key            = file(var.pub_key)
   role_name             = "subject"
   security_group_ids    = [module.vpc.default_security_group_id, aws_security_group.subject.id]
   subnet_id             = module.vpc.default_subnet_id
@@ -122,7 +117,7 @@ module "aws_instance_consumer" {
   availability_zone     = local.availability_zone
   instance_profile_name = module.aws_instance_profile.name
   instance_type         = var.consumer_instance_type
-  key_name              = aws_key_pair.default.key_name
+  public_key            = file(var.pub_key)
   role_name             = "consumer"
   security_group_ids    = [module.vpc.default_security_group_id, aws_security_group.consumer.id]
   subnet_id             = module.vpc.default_subnet_id

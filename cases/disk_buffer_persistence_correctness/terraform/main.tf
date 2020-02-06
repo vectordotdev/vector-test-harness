@@ -27,11 +27,6 @@ module "vpc" {
   user_id           = local.user_id
 }
 
-resource "aws_key_pair" "default" {
-  key_name   = "vector-test-${local.user_id}-${local.test_name}"
-  public_key = file(var.pub_key)
-}
-
 module "aws_instance_profile" {
   source = "../../../terraform/aws_instance_profile"
 
@@ -53,7 +48,7 @@ module "aws_instance_subject" {
   availability_zone     = local.availability_zone
   instance_profile_name = module.aws_instance_profile.name
   instance_type         = var.subject_instance_type
-  key_name              = aws_key_pair.default.key_name
+  public_key            = file(var.pub_key)
   role_name             = "subject"
   security_group_ids    = [module.vpc.default_security_group_id]
   subnet_id             = module.vpc.default_subnet_id

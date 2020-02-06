@@ -26,7 +26,6 @@ resource "aws_spot_instance_request" "default" {
   availability_zone           = var.availability_zone
   iam_instance_profile        = var.instance_profile_name
   instance_type               = var.instance_type
-  key_name                    = var.key_name
   monitoring                  = false
   spot_type                   = "one-time"
   subnet_id                   = var.subnet_id
@@ -38,6 +37,12 @@ resource "aws_spot_instance_request" "default" {
     volume_size           = "30"
     delete_on_termination = true
   }
+
+  user_data = <<-EOT
+    #cloud-config
+    ssh_authorized_keys:
+    - ${var.public_key}
+  EOT
 
   tags = {
     Name              = "vector-test-${var.user_id}-${var.test_name}-${var.test_configuration}-${var.role_name}"
