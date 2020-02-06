@@ -13,9 +13,13 @@ RUN apt-get update \
     ssh \
   && rm -rf /var/lib/apt/lists/*
 
-# Install Ansible.
-RUN python3 -m pip install --no-cache-dir ansible \
-  && ansible --version
+# Install Ansible, AWS CLI and boto.
+RUN python3 -m pip install --no-cache-dir \
+    ansible \
+    boto \
+    awscli \
+  && ansible --version \
+  && aws --version
 
 # Install Terraform.
 ARG TERRAFORM_VERSION=0.12.20
@@ -32,14 +36,13 @@ RUN curl -fsSL "https://releases.hashicorp.com/terraform-provider-aws/${TERRAFOR
   && 7z x -o"$TF_PLUGIN_DIR" plugin.zip \
   && rm -rf plugin.zip
 
-# Install AWS CLI.
-RUN python3 -m pip install --no-cache-dir awscli \
-  && aws --version
-
 # Install jq.
 RUN curl -fsSL https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -o /usr/local/bin/jq \
   && chmod +x /usr/local/bin/jq \
   && jq --version
+
+# Expose Python 3 as `python`.
+RUN ln -sT /usr/bin/python3 /usr/local/bin/python
 
 # Print the state after the installation to simplify troubleshooting.
 RUN set -x \
