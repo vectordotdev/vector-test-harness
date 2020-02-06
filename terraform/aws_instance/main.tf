@@ -68,6 +68,6 @@ resource "aws_cloudwatch_metric_alarm" "terminate" {
   metric_name         = "CPUUtilization"
 
   dimensions = {
-    InstanceId = "${aws_spot_instance_request.default[count.index].spot_instance_id}"
+    InstanceId = aws_spot_instance_request.default[count.index].spot_instance_id
   }
 }
