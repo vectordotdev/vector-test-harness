@@ -12,14 +12,15 @@ terraform {
   }
 }
 
-data "aws_caller_identity" "current" {}
+data "aws_caller_identity" "current" {
+}
 
 locals {
-  availability_zone = "us-east-1b"
-  cidr_block = "10.0.0.0/16"
+  availability_zone  = "us-east-1b"
+  cidr_block         = "10.0.0.0/16"
   test_configuration = var.test_configuration
-  test_name = var.test_name
-  user_id = var.user_id
+  test_name          = var.test_name
+  user_id            = var.user_id
 }
 
 module "vpc" {
