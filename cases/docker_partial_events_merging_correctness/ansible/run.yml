@@ -32,13 +32,10 @@
       vars:
         action: stop
 
-    - set_fact:
-        expected_message: '{{ lookup("file", "assets/expected_output.json") }}'
-
     - name: Capture last_message
       include: "capture_last_message/{{ test_subject }}.yml"
 
     - assert:
         that:
-          - last_message == expected_message
+          - last_message == 'Log text\n'
         fail_msg: Last message did not match the expectation
