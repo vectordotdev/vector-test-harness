@@ -1,0 +1,66 @@
+#!/bin/bash
+set -euo pipefail
+
+# Init lib.
+# shellcheck source=SCRIPTDIR/../lib/vector-test-harness/init.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)/../lib/vector-test-harness/init.sh"
+
+#
+# Usage
+#
+
+register_usage <<END
+USAGE
+   global-bootstrap
+
+DESCRIPTION
+   Prepares global resources. Normally this would only be required to run once
+   to setup an AWS account that test harness will run at, or after the global
+   resource definition changes.
+
+OPTIONS
+   None
+
+EXAMPLE
+   global-bootstrap
+END
+
+#
+# Dependencies
+#
+
+ensure_commad_available "terraform" "brew install terraform"
+
+#
+# Variables
+#
+
+# Required from the environment.
+TEST_RESULTS_S3_BUCKET_NAME="${VECTOR_TEST_RESULTS_S3_BUCKET_NAME:-""}"
+
+#
+# Header
+#
+
+print_vector_logo
+print_divider
+cat <<END
+Bootstrapping global resources
+Test results S3 bucket name: $TEST_RESULTS_S3_BUCKET_NAME
+END
+print_divider
+
+prepare_terraform_params true
+
+#
+# Execute
+#
+
+export TF_IN_AUTOMATION=true
+
+cd terraform
+
+terraform init -input=false "${TERRAFORM_INIT_EXTRA_ARGS[@]}"
+
+terraform apply -input=false -auto-approve \
+  -var results-s3-bucket-name="$TEST_RESULTS_S3_BUCKET_NAME"

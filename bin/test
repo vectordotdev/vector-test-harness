@@ -48,7 +48,6 @@ SKIP_TERRAFORM='false'
 
 # Required from the environment.
 TEST_SSH_PUBLIC_KEY="${VECTOR_TEST_SSH_PUBLIC_KEY:-""}"
-TEST_RESULTS_S3_BUCKET_NAME="${VECTOR_TEST_RESULTS_S3_BUCKET_NAME:-""}"
 TEST_SUBJECTS="${VECTOR_TEST_SUBJECTS:-""}"
 TEST_TIMESTAMP="${VECTOR_TEST_TIMESTAMP:-"$(date -u +%s)"}"
 TEST_CUSTOM_VECTOR_DEB_PATH="${VECTOR_TEST_CUSTOM_VECTOR_DEB_PATH:-""}"
@@ -157,35 +156,12 @@ print_spacer
 prepare_terraform_params true
 prepare_ansible_config true
 prepare_ansible_extra_args_array true
-print_spacer
 
 #
 # Execute
 #
 
 export TF_IN_AUTOMATION=true
-
-#
-# Prepare global environment
-#
-
-if [ "$BOOTSTRAP" == 'true' ] && [ "$SKIP_TERRAFORM" != 'true' ]; then
-  print_section_header "Provisioning global resources"
-
-  cd terraform
-
-  terraform init -input=false "${TERRAFORM_INIT_EXTRA_ARGS[@]}"
-
-  terraform apply -input=false -auto-approve \
-    -var results-s3-bucket-name="$TEST_RESULTS_S3_BUCKET_NAME"
-
-  cd ..
-fi
-
-#
-# Begin testing
-#
-
 cd "$TEST_CASE_DIR"
 
 #
