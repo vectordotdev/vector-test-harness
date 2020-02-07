@@ -2,6 +2,7 @@
 - hosts: default
   become: true
   roles:
+    - no_auto_update
     - utilities
     - python3
     - awscli

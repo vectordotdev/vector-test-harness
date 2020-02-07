@@ -1,0 +1,9 @@
+- name: Ensure system doesn't do update checks in the background
+  systemd:
+    enabled: false
+    state: stopped
+    name: "{{ item }}"
+  with_items:
+    - 'unattended-upgrades'
+    - 'apt-daily'
+    - 'apt-daily-upgrade'
