@@ -58,7 +58,7 @@ prepare_terraform_params true
 
 export TF_IN_AUTOMATION=true
 
-cd terraform
+cd global
 
 terraform init -input=false "${TERRAFORM_INIT_EXTRA_ARGS[@]}"
 

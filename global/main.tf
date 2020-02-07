@@ -3,8 +3,9 @@ provider "aws" {
   version = "~> 2.12"
 }
 
-# Comment this out if you'd like
 terraform {
+  required_version = ">= 0.12"
+
   backend "s3" {
     bucket         = "vector-state"
     key            = "tests.tfstate"
