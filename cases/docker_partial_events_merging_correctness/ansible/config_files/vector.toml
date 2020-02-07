@@ -10,6 +10,7 @@
 
 [sinks.out]
   inputs   = ["parse_json"]
-  type     = "tcp"
+  type     = "socket"
+  mode     = "tcp"
   address  = "127.0.0.1:{{ tcp_consumer_port }}"
-  encoding = "text"
+  encoding = "json"
