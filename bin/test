@@ -173,7 +173,9 @@ if [ "$BOOTSTRAP" == 'true' ] && [ "$SKIP_TERRAFORM" != 'true' ]; then
 
   cd terraform
 
-  terraform init -input=false "${TERRAFORM_INIT_EXTRA_ARGS[@]}"
+  terraform init -input=false \
+    -backend-config="key=vector-test-case/$TEST_NAME/$TEST_CONFIGURATION/$TEST_USER_ID.tfstate" \
+    "${TERRAFORM_INIT_EXTRA_ARGS[@]}"
 
   terraform apply -input=false -auto-approve \
     -var pub_key="$TEST_SSH_PUBLIC_KEY" \
