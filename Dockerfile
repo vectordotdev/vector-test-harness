@@ -11,6 +11,7 @@ RUN apt-get update \
     ca-certificates \
     p7zip-full \
     ssh \
+    ruby \
   && rm -rf /var/lib/apt/lists/*
 
 # Install Ansible, AWS CLI and boto.
@@ -40,6 +41,10 @@ RUN curl -fsSL "https://releases.hashicorp.com/terraform-provider-aws/${TERRAFOR
 RUN curl -fsSL https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -o /usr/local/bin/jq \
   && chmod +x /usr/local/bin/jq \
   && jq --version
+
+# Install ruby gems.
+RUN gem install \
+  table_print
 
 # Expose Python 3 as `python`.
 RUN ln -sT /usr/bin/python3 /usr/local/bin/python
