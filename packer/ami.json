@@ -29,7 +29,10 @@
     {
       "type": "ansible",
       "playbook_file": "../ansible/ami.yml",
-      "extra_arguments": [ "--extra-vars", "{{user `ansible_version_vars`}}" ]
+      "extra_arguments": [
+        "--extra-vars", "{{user `ansible_version_vars`}}",
+        "--extra-vars", "ansible_python_interpreter=/usr/bin/python3"
+      ]
     }
   ]
 }
