@@ -31,7 +31,7 @@
           print(docker.__path__[0])
 - command:
     argv:
-      - '{{ ansible_python_interpreter }}'
+      - '{{ ansible_python.executable }}'
       - '{{ init_fix_script.path }}'
   register: docker_py_path
 - name: Ensure the docker/__init__.py exists
