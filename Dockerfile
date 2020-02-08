@@ -43,7 +43,7 @@ RUN curl -fsSL https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux6
   && jq --version
 
 # Install ruby gems.
-RUN gem install \
+RUN gem install --no-rdoc --no-ri \
   table_print
 
 # Expose Python 3 as `python`.
