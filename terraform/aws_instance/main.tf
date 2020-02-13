@@ -53,6 +53,7 @@ resource "aws_spot_instance_request" "default" {
     TestUserID        = var.user_id
   }
 
+  # See https://github.com/terraform-providers/terraform-provider-aws/issues/174
   provisioner "local-exec" {
     command = "aws ec2 create-tags --resources ${self.spot_instance_id} --tags Key=Name,Value=${self.tags.Name} Key=Test,Value=${self.tags.Test} Key=TestName,Value=${self.tags.TestName} Key=TestConfiguration,Value=${self.tags.TestConfiguration} Key=TestRole,Value=${self.tags.TestRole} Key=TestUserID,Value=${self.tags.TestUserID} --region ${data.aws_region.current.name}"
   }
