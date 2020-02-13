@@ -37,6 +37,7 @@ ensure_commad_available "terraform" "brew install terraform"
 
 # Required from the environment.
 TEST_RESULTS_S3_BUCKET_NAME="${VECTOR_TEST_RESULTS_S3_BUCKET_NAME:-""}"
+TEST_HARNESS_AWS_ACCOUNT_ID="${VECTOR_TEST_HARNESS_AWS_ACCOUNT_ID:-""}"
 
 #
 # Header
@@ -47,6 +48,7 @@ print_divider
 cat <<END
 Bootstrapping global resources
 Test results S3 bucket name: $TEST_RESULTS_S3_BUCKET_NAME
+Test harness AWS account ID: $TEST_HARNESS_AWS_ACCOUNT_ID
 END
 print_divider
 
@@ -63,4 +65,5 @@ cd global
 terraform init -input=false "${TERRAFORM_INIT_EXTRA_ARGS[@]}"
 
 terraform apply -input=false -auto-approve \
-  -var results-s3-bucket-name="$TEST_RESULTS_S3_BUCKET_NAME"
+  -var results-s3-bucket-name="$TEST_RESULTS_S3_BUCKET_NAME" \
+  -var test-harness-aws-account-ids="[\"$TEST_HARNESS_AWS_ACCOUNT_ID\"]"

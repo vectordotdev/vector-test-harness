@@ -6,6 +6,9 @@ export ANSIBLE_CONFIG=./ansible/ansible.cfg
 # README.
 export AWS_PROFILE=vector-test-harness
 
+# Test Harness AWS account ID.
+export VECTOR_TEST_HARNESS_AWS_ACCOUNT_ID=192797422531
+
 # An AWS compatible key pair. This is used for SSH access to all test machines:
 # https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair
 export VECTOR_TEST_SSH_PRIVATE_KEY=~/.ssh/vector_tests

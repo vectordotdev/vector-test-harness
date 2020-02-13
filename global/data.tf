@@ -87,6 +87,23 @@ data "aws_iam_policy_document" "vector-tests" {
       aws_s3_bucket.vector-tests.arn,
     ]
   }
+
+  statement {
+    sid = "AllowTestHarnessToWriteObjects"
+
+    actions = [
+      "s3:PutObject",
+    ]
+
+    principals {
+      type        = "AWS"
+      identifiers = var.test-harness-aws-account-ids
+    }
+
+    resources = [
+      "${aws_s3_bucket.vector-tests.arn}/*",
+    ]
+  }
 }
 
 resource "aws_s3_bucket_policy" "vector-tests" {
