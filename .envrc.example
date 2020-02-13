@@ -4,7 +4,7 @@ export ANSIBLE_CONFIG=./ansible/ansible.cfg
 
 # Specifying which AWS credentials set to use. See the "Setup" section in the
 # README.
-export AWS_PROFILE=vector
+export AWS_PROFILE=vector-test-harness
 
 # An AWS compatible key pair. This is used for SSH access to all test machines:
 # https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair
