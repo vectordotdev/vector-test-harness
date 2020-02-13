@@ -4,12 +4,7 @@ provider "aws" {
 }
 
 terraform {
-  backend "s3" {
-    bucket         = "vector-test-case-state"
-    region         = "us-east-1"
-    encrypt        = true
-    dynamodb_table = "TerraformLocks"
-  }
+  backend "s3" {}
 }
 
 data "aws_caller_identity" "current" {
