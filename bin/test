@@ -35,6 +35,7 @@ END
 
 ensure_commad_available "ansible-playbook" "sudo pip install ansible"
 ensure_commad_available "terraform" "brew install terraform"
+ensure_commad_available "aws" "pip install awscli"
 ensure_echanced_getopt_available
 
 #
