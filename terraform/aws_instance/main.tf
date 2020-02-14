@@ -15,7 +15,7 @@ data "aws_ami" "ami" {
     values = ["hvm"]
   }
 
-  owners = ["071959437513"]
+  owners = ["192797422531"]
 }
 
 resource "aws_spot_instance_request" "default" {
