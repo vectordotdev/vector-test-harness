@@ -14,11 +14,6 @@ resource "aws_iam_role" "default" {
   assume_role_policy = data.aws_iam_policy_document.allow_ec2_assume.json
 }
 
-resource "aws_iam_role_policy_attachment" "default" {
-  role       = aws_iam_role.default.name
-  policy_arn = aws_iam_policy.default.arn
-}
-
 data "aws_iam_policy_document" "allow_ec2_assume" {
   statement {
     sid = "AllowEC2Assume"
@@ -34,11 +29,9 @@ data "aws_iam_policy_document" "allow_ec2_assume" {
   }
 }
 
-resource "aws_iam_policy" "default" {
-  name        = "VectorTest${title(var.user_id)}${title(var.test_name)}InstanceProfile"
-  path        = "/vector-test/${var.user_id}/${var.test_name}/"
-  description = "Instance profile policy for the ${var.user_id}/${var.test_name} test"
-  policy      = data.aws_iam_policy_document.default.json
+resource "aws_iam_role_policy" "default" {
+  role   = aws_iam_role.default.name
+  policy = data.aws_iam_policy_document.default.json
 }
 
 data "aws_iam_policy_document" "default" {
