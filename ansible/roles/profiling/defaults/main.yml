@@ -1,2 +1,2 @@
 ---
-profiling_results_s3_bucket: vector-tests
+profiling_results_s3_bucket: '{{ results_s3_bucket_name | mandatory }}'
