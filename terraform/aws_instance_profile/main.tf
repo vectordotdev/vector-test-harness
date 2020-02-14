@@ -1,13 +1,5 @@
-data "terraform_remote_state" "global" {
-  backend = "s3"
-
-  config = {
-    bucket         = "vector-state"
-    key            = "tests.tfstate"
-    region         = "us-east-1"
-    encrypt        = true
-    dynamodb_table = "TerraformLocks"
-  }
+data "aws_arn" "results_s3_bucket" {
+  arn = "arn:aws:s3:::${var.results_s3_bucket_name}"
 }
 
 resource "aws_iam_instance_profile" "default" {
@@ -58,7 +50,7 @@ data "aws_iam_policy_document" "default" {
     ]
 
     resources = [
-      "${data.terraform_remote_state.global.outputs.aws_s3_bucket-vector-tests-arn}/name=${var.test_name}/*"
+      "${data.aws_arn.results_s3_bucket.arn}/name=${var.test_name}/*"
     ]
   }
 }
