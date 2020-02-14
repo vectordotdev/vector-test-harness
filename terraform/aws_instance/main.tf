@@ -2,6 +2,8 @@ provider "aws" {}
 
 data "aws_region" "current" {}
 
+data "aws_caller_identity" "current" {}
+
 data "aws_ami" "ami" {
   most_recent = true
 
@@ -15,7 +17,7 @@ data "aws_ami" "ami" {
     values = ["hvm"]
   }
 
-  owners = ["192797422531"]
+  owners = [data.aws_caller_identity.current.account_id]
 }
 
 resource "aws_spot_instance_request" "default" {
