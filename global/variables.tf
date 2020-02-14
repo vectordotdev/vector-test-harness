@@ -1,7 +1,7 @@
-variable "results-s3-bucket-name" {
+variable "results_s3_bucket_name" {
   type = string
 }
 
-variable "test-harness-aws-account-ids" {
+variable "test_harness_aws_account_ids" {
   type = list(string)
 }

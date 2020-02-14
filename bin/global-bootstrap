@@ -66,5 +66,5 @@ cd global
 terraform init -input=false "${TERRAFORM_INIT_EXTRA_ARGS[@]}"
 
 terraform apply -input=false -auto-approve \
-  -var results-s3-bucket-name="$TEST_RESULTS_S3_BUCKET_NAME" \
-  -var test-harness-aws-account-ids="[\"$TEST_HARNESS_AWS_ACCOUNT_ID\"]"
+  -var results_s3_bucket_name="$TEST_RESULTS_S3_BUCKET_NAME" \
+  -var test_harness_aws_account_ids="[\"$TEST_HARNESS_AWS_ACCOUNT_ID\"]"

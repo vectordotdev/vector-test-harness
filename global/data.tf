@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "vector-tests" {
-  bucket = var.results-s3-bucket-name
+  bucket = var.results_s3_bucket_name
   acl    = "public-read"
 
   tags = {
@@ -97,7 +97,7 @@ data "aws_iam_policy_document" "vector-tests" {
 
     principals {
       type        = "AWS"
-      identifiers = var.test-harness-aws-account-ids
+      identifiers = var.test_harness_aws_account_ids
     }
 
     resources = [
