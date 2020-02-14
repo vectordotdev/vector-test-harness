@@ -13,3 +13,11 @@ variable "user_id" {
 The current user ID.
 EOF
 }
+
+variable "results_s3_bucket_name" {
+  type = string
+
+  description = <<EOF
+The name of the S3 bucket to upload the results to.
+EOF
+}

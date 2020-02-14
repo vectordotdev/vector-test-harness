@@ -11,11 +11,12 @@ data "aws_caller_identity" "current" {
 }
 
 locals {
-  availability_zone  = "us-east-1b"
-  cidr_block         = "10.0.0.0/16"
-  test_configuration = var.test_configuration
-  test_name          = var.test_name
-  user_id            = var.user_id
+  availability_zone      = "us-east-1b"
+  cidr_block             = "10.0.0.0/16"
+  test_configuration     = var.test_configuration
+  test_name              = var.test_name
+  user_id                = var.user_id
+  results_s3_bucket_name = var.results_s3_bucket_name
 }
 
 module "vpc" {
@@ -104,8 +105,9 @@ module "aws_instance_profile" {
     aws = aws
   }
 
-  test_name = local.test_name
-  user_id   = local.user_id
+  test_name              = local.test_name
+  user_id                = local.user_id
+  results_s3_bucket_name = local.results_s3_bucket_name
 }
 
 module "aws_instance_subject" {
