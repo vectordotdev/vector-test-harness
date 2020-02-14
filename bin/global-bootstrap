@@ -14,9 +14,10 @@ USAGE
    global-bootstrap
 
 DESCRIPTION
-   Prepares global resources. Normally this would only be required to run once
-   to setup an AWS account that test harness will run at, or after the global
-   resource definition changes.
+   Prepares global resources required for gathering test results.
+   Normally this would only be required to run once to setup an AWS account that
+   Vector Test Harness will collect results at, or after the resource definition
+   changes.
 
 OPTIONS
    None
