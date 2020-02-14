@@ -175,7 +175,7 @@ if [ "$BOOTSTRAP" == 'true' ] && [ "$SKIP_TERRAFORM" != 'true' ]; then
   cd terraform
 
   terraform init -input=false \
-    -backend-config="bucket=vector-test-case-state" \
+    -backend-config="bucket=vector-test-harness-state" \
     -backend-config="region=us-east-1" \
     -backend-config="encrypt=true" \
     -backend-config="dynamodb_table=TerraformLocks" \
