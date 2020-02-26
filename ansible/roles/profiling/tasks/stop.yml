@@ -4,4 +4,4 @@
 
 - name: Upload dstat CSV to S3
   shell: |
-    aws s3 cp /tmp/dstat.csv s3://{{ profiling_results_s3_bucket }}/name={{ test_name }}/configuration={{ test_configuration }}/subject={{ test_subject }}/version={{ lookup('vars', test_subject + '_version') }}/timestamp={{ test_timestamp }}/hostname={{ inventory_hostname }}/dstat.csv
+    aws s3 cp /tmp/dstat.csv s3://{{ profiling_results_s3_bucket }}/{{ profiling_results_s3_dir }}/dstat.csv
