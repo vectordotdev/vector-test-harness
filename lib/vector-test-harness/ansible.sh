@@ -47,14 +47,3 @@ prepare_ansible_version_vars() {
     ANSIBLE_VERSION_VARS="$ANSIBLE_VERSION_VARS ${SUBJECT}_version=$VERSION"
   done <<<"$COMMA_SEPARATED_LIST,"
 }
-
-prepare_test_subjects_array() {
-  local COMMA_SEPARATED_LIST="$1"
-
-  TEST_SUBJECTS_ARRAY=()
-
-  while read -d, -r PAIR; do
-    IFS='=' read -r SUBJECT VERSION <<<"$PAIR"
-    TEST_SUBJECTS_ARRAY+=("$SUBJECT")
-  done <<<"$COMMA_SEPARATED_LIST,"
-}

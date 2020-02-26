@@ -137,7 +137,6 @@ fi
 #
 
 prepare_ansible_version_vars "$TEST_SUBJECTS"
-prepare_test_subjects_array "$TEST_SUBJECTS"
 
 #
 # Header
@@ -265,7 +264,7 @@ if [ "$RUN" == 'true' ]; then
   if [ -z "$TEST_SUBJECT" ]; then
     echo "No test subject specified, running them all..."
 
-    for SUBJECT in "${TEST_SUBJECTS_ARRAY[@]}"; do
+    for SUBJECT in "${TEST_SUBJECT_NAMES[@]}"; do
       run "$SUBJECT"
     done
   else

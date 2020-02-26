@@ -33,3 +33,6 @@ source "${VECTOR_TEST_HARNESS_LIB_ROOT}/argparse.sh"
 
 # shellcheck source=SCRIPTDIR/terraform.sh
 source "${VECTOR_TEST_HARNESS_LIB_ROOT}/terraform.sh"
+
+# shellcheck source=SCRIPTDIR/test_subjects.sh
+source "${VECTOR_TEST_HARNESS_LIB_ROOT}/test_subjects.sh"
