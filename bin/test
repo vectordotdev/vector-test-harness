@@ -133,6 +133,10 @@ if [[ ! -d "$TEST_CASE_DIR" ]]; then
   fail_arg_invalid "Test $TEST_NAME does not exist"
 fi
 
+if [[ -n "$TEST_CUSTOM_VECTOR_DEB_PATH" && -z "$TEST_CUSTOM_VECTOR_VERSION" ]]; then
+  fail_arg_invalid "TEST_CUSTOM_VECTOR_DEB_PATH is set, but TEST_CUSTOM_VECTOR_VERSION is not set"
+fi
+
 #
 # Parse flags
 #
