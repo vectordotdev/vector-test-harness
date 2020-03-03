@@ -1,0 +1,68 @@
+#!/bin/bash
+set -euo pipefail
+
+# Init lib.
+# shellcheck source=SCRIPTDIR/../lib/vector-test-harness/init.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)/../lib/vector-test-harness/init.sh"
+
+#
+# Usage
+#
+
+register_usage <<END
+USAGE
+   meta [mode] [options]
+
+DESCRIPTION
+   Provides metadata for the test harness. Useful for scripting.
+
+MODES
+   test-cases            Print test cases
+   test-subjects         Print test subjects
+
+OPTIONS
+   none
+
+EXAMPLE
+   meta test-cases
+   meta test-subjects
+END
+
+#
+# Implementation
+#
+
+dispatch_execution() {
+  local MODE="${1:-""}"
+  case "$MODE" in
+  test-cases)
+    print_test_cases
+    ;;
+  test-subjects)
+    print_test_subjects
+    ;;
+  "" | -h | --help)
+    usage
+    ;;
+  *)
+    fail_arg_invalid "Invalid mode: $MODE"
+    ;;
+  esac
+}
+
+print_test_cases() {
+  (
+    cd cases;
+    for TEST_CASE in *; do
+      echo "$TEST_CASE"
+    done
+  )
+}
+
+print_test_subjects() {
+  for TEST_SUBJECT in "${TEST_SUBJECT_NAMES[@]}"; do
+    echo "$TEST_SUBJECT"
+  done
+}
+
+dispatch_execution "$@"
