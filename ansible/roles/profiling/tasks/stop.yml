@@ -1,8 +1,10 @@
 ---
 - name: Stop dstat
-  # We use command instead of shell because shell returns a non zero exit code
-  # which fails this step.
-  command: pkill -f "dstat"
+  command:
+    argv:
+      - pkill
+      - -f
+      - dstat
 
 - name: Upload dstat CSV to S3
   command:
