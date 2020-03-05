@@ -20,7 +20,7 @@
     mode: 0700
 
 - name: Add td-agent apt-key
-  apt_key: 
+  apt_key:
     url: https://packages.treasuredata.com/GPG-KEY-td-agent
     state: present
 
@@ -32,7 +32,7 @@
     update_cache: yes
 
 - name: Install td-agent
-  apt: 
+  apt:
     name: td-agent={{ version }}
     state: present
 

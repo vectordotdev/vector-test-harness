@@ -37,7 +37,7 @@
     dest: '/opt/sumocollector/config/user.properties'
     owner: root
     group: sumocollector
-  become: yes  
+  become: yes
 
 - name: Put sources file in place
   template:
@@ -45,7 +45,7 @@
     dest: '/opt/sumocollector/config/sources.json'
     owner: root
     group: sumocollector
-  become: yes  
+  become: yes
 
 - name: Install sumocollector daemon systemd script
   copy:

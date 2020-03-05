@@ -2,7 +2,7 @@
 # Disabled until we can get the conditionals to worl. Fortunately,
 # all subjects can be verified through other means.
 # - name: check if output file exists
-#   stat: 
+#   stat:
 #     path: "{{ test_file_path }}"
 #   register: output_file
 

@@ -62,4 +62,3 @@ module "aws_instance_subject" {
   test_name             = local.test_name
   user_id               = local.user_id
 }
-

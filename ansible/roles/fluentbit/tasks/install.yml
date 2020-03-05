@@ -20,7 +20,7 @@
     mode: 0700
 
 - name: Add td-agent-bit apt-key
-  apt_key: 
+  apt_key:
     url: https://packages.fluentbit.io/fluentbit.key
     state: present
 
@@ -32,7 +32,7 @@
     update_cache: yes
 
 - name: Install td-agent-bit
-  apt: 
+  apt:
     name: td-agent-bit={{ version }}
     state: present
 

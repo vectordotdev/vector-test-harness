@@ -340,4 +340,3 @@ resource "aws_glue_catalog_table" "vector_tests" {
     }
   }
 }
-

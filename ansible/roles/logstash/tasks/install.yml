@@ -15,17 +15,17 @@
     state: directory
 
 - name: Install apt-transport-https
-  apt: 
+  apt:
     name: apt-transport-https
     state: present
 
 - name: Install ca-certificates
-  apt: 
+  apt:
     name: ca-certificates
     state: present
 
 - name: Add logstash apt-key
-  apt_key: 
+  apt_key:
     url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
     state: present
 
@@ -37,7 +37,7 @@
     update_cache: yes
 
 - name: Install logstash
-  apt: 
+  apt:
     name: logstash
     state: present
 
