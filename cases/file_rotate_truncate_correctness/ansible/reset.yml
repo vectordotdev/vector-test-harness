@@ -1,19 +1,7 @@
 - hosts: '{{ test_namespace }}:&tag_TestRole_subject'
   become: true
   roles:
-    - role: filebeat
-      action: stop
-    - role: fluentbit
-      action: reset
-    - role: fluentd
-      action: stop
-    - role: logstash
-      action: reset
-    - role: splunk_heavy_forwarder
-      action: reset
-    - role: splunk_universal_forwarder
+    - role: subjects
       action: reset
     - role: test_servers
-      action: stop
-    - role: vector
       action: reset

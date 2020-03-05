@@ -1,15 +1,7 @@
 - hosts: '{{ test_namespace }}:&tag_TestRole_subject'
   become: true
   roles:
-    - role: filebeat
-      action: stop
-    - role: fluentbit
-      action: reset
-    - role: fluentd
-      action: stop
-    - role: logstash
+    - role: subjects
       action: reset
     - role: test_servers
-      action: stop
-    - role: vector
       action: reset

@@ -1,5 +1,5 @@
 - hosts: '{{ test_namespace }}:&tag_TestRole_subject'
   become: true
   roles:
-    - role: vector
+    - role: subjects
       action: reset

@@ -1,15 +1,7 @@
 - hosts: '{{ test_namespace }}:&tag_TestRole_subject'
   become: true
   roles:
-    - role: filebeat
-      action: stop
-    - role: fluentbit
-      action: reset
-    - role: fluentd
-      action: stop
-    - role: logstash
-      action: reset
-    - role: vector
+    - role: subjects
       action: reset
 
 - hosts: '{{ test_namespace }}:&tag_TestRole_consumer'
@@ -18,4 +10,4 @@
     - role: logstash
       action: reset
     - role: tcp_test_server
-      action: stop
+      action: reset
