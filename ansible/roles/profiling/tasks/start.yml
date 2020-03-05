@@ -16,23 +16,25 @@
 #            backwards compatible. Changing the structure of this file makes it
 #            very difficult to compare results across time with tools like Athena.
 - name: Start dstat profiling
-  shell: |
-    dstat \
-      --epoch \
-      --cpu \
-      --disk \
-      --io \
-      --load \
-      --mem \
-      --net \
-      --proc \
-      --proc-count \
-      --sys \
-      --socket \
-      --tcp \
-      --udp \
-      --vm \
-      --output /tmp/dstat.csv
+  command:
+    argv: [
+      "dstat",
+      "--epoch",
+      "--cpu",
+      "--disk",
+      "--io",
+      "--load",
+      "--mem",
+      "--net",
+      "--proc",
+      "--proc-count",
+      "--sys",
+      "--socket",
+      "--tcp",
+      "--udp",
+      "--vm",
+      "--output", "/tmp/dstat.csv",
+    ]
   async: 1000
   poll: 0
   register: dstat
