@@ -9,45 +9,23 @@
     - journald-rate-limits
     - flog
 
-    - role: filebeat
-      action: install
-      version: "{{ filebeat_version }}"
-
     - role: file_test_server
       action: install
-
-    - role: fluentbit
-      action: install
-      version: "{{ fluentbit_version }}"
-
-    - role: fluentd
-      action: install
-      version: "{{ fluentd_version }}"
 
     - role: http_test_server
       action: install
 
-    - role: logstash
-      action: install
-      version: "{{ logstash_version }}"
-
     - role: profiling
       action: install
 
-    - role: splunk_heavy_forwarder
+    - role: subjects
       action: install
-      version_with_hash: "{{ splunk_heavy_forwarder_version }}"
 
-    - role: splunk_universal_forwarder
-      action: install
-      version_with_hash: "{{ splunk_universal_forwarder_version }}"
+    - role: subjects
+      action: save_facts
 
     - role: tcp_test_server
       action: install
-
-    - role: vector
-      action: install
-      version: "{{ vector_version }}"
 
     - role: docker
       action: install

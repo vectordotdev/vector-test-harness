@@ -1,3 +1,5 @@
 ---
+- include: "stop.yml"
+
 - name: Reset tcp test server state
   shell: rm -rf /tmp/tcp_test_server_summary.json

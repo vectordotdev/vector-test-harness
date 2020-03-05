@@ -1,0 +1,28 @@
+---
+- include_role: filebeat
+  vars:
+    action: reset
+
+- include_role: fluentbit
+  vars:
+    action: reset
+
+- include_role: fluentd
+  vars:
+    action: reset
+
+- include_role: logstash
+  vars:
+    action: reset
+
+- include_role: splunk_heavy_forwarder
+  vars:
+    action: reset
+
+- include_role: splunk_universal_forwarder
+  vars:
+    action: reset
+
+- include_role: vector
+  vars:
+    action: reset
