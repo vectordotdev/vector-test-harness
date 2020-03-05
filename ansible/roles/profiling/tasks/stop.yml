@@ -5,5 +5,10 @@
   command: pkill -f "dstat"
 
 - name: Upload dstat CSV to S3
-  shell: |
-    aws s3 cp /tmp/dstat.csv s3://{{ profiling_results_s3_bucket }}/{{ profiling_results_s3_dir }}/dstat.csv
+  command:
+    argv:
+      - aws
+      - s3
+      - cp
+      - /tmp/dstat.csv
+      - '{{ profiling_results_s3_url }}'
