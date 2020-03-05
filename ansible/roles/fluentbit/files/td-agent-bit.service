@@ -6,7 +6,7 @@ Requires=network-online.target
 [Service]
 User=td-agent-bit
 Group=td-agent-bit
-ExecStart=/opt/td-agent-bit/bin/td-agent-bit -c /etc/td-agent-bit/td-agent-bit.conf 
+ExecStart=/opt/td-agent-bit/bin/td-agent-bit -c /etc/td-agent-bit/td-agent-bit.conf
 Restart=no
 StandardOutput=syslog
 StandardError=syslog

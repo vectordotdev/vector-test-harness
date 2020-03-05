@@ -32,7 +32,7 @@
 
 - set_fact:
     first_message: "{{ output.stdout_lines[0]|from_json }}"
-    
+
 - assert:
     that:
       - first_message.message == "Hello world"

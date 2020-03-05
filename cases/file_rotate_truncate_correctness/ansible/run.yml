@@ -24,7 +24,7 @@
         name: test_servers
       vars:
         action: start
-        
+
     - name: Start {{ test_subject }}
       include_role:
         name: "{{ test_subject }}"

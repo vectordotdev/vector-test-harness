@@ -131,4 +131,3 @@ module "aws_instance_consumer" {
   test_name             = local.test_name
   user_id               = local.user_id
 }
-

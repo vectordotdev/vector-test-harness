@@ -21,4 +21,3 @@ variable "user_id" {
 variable "results_s3_bucket_name" {
   type = string
 }
-

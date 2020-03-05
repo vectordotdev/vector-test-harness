@@ -32,4 +32,3 @@
 - name: Install sccache
   shell: |
     /home/{{ ansible_user }}/.cargo/bin/cargo install sccache
-    
