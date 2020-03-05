@@ -1,7 +1,3 @@
-# Global Ansible configuration. You should not change this unless you know what
-# you are doing.
-export ANSIBLE_CONFIG=./ansible/ansible.cfg
-
 # Specifying which AWS credentials set to use. See the "Setup" section in the
 # README.
 export AWS_PROFILE=vector-test-harness
