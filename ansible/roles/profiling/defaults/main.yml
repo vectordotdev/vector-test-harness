@@ -1,4 +1,4 @@
 ---
 profiling_results_s3_bucket: '{{ results_s3_bucket_name | mandatory }}'
 profiling_results_s3_dir: |
-  name={{ test_name }}/configuration={{ test_configuration }}/subject={{ test_subject }}/version={{ lookup('vars', 'profiling_custom_' + test_subject + '_version') | default(lookup('vars', test_subject + '_version')) }}/timestamp={{ test_timestamp }}/hostname={{ inventory_hostname }}
+  name={{ test_name }}/configuration={{ test_configuration }}/subject={{ test_subject }}/version={{ lookup('vars', 'profiling_custom_' + test_subject + '_version', errors='ignore') | default(lookup('vars', test_subject + '_version')) }}/timestamp={{ test_timestamp }}/hostname={{ inventory_hostname }}
