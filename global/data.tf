@@ -93,6 +93,7 @@ data "aws_iam_policy_document" "vector-tests" {
 
     actions = [
       "s3:PutObject",
+      "s3:PutObjectAcl",
     ]
 
     principals {
