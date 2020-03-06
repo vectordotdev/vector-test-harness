@@ -6,12 +6,12 @@ filebeat.inputs:
   host: "127.0.0.1:{{ subject_port }}"
 
 processors:
- - decode_json_fields:
-  fields: ["log"]
-  process_array: false
-  max_depth: 1
-  target: ""
-  overwrite_keys: true
+  - decode_json_fields:
+    fields: ["log"]
+    process_array: false
+    max_depth: 1
+    target: ""
+    overwrite_keys: true
 
 # Due to filebeat's limited outputs, we choose logstash since it uses TCP.
 # This is the simplest of outputs that lets us take the service down to
