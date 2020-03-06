@@ -6,6 +6,11 @@
       - -f
       - dstat
 
+- include_role:
+    name: subjects
+  vars:
+    action: load_facts
+
 - name: Upload dstat CSV to S3
   command:
     argv:
