@@ -1,35 +1,42 @@
 ---
-- include_role: filebeat
+- include_role:
+    name: filebeat
   vars:
     action: install
     version: "{{ filebeat_version }}"
 
-- include_role: fluentbit
+- include_role:
+    name: fluentbit
   vars:
     action: install
     version: "{{ fluentbit_version }}"
 
-- include_role: fluentd
+- include_role:
+    name: fluentd
   vars:
     action: install
     version: "{{ fluentd_version }}"
 
-- include_role: logstash
+- include_role:
+    name: logstash
   vars:
     action: install
     version: "{{ logstash_version }}"
 
-- include_role: splunk_heavy_forwarder
+- include_role:
+    name: splunk_heavy_forwarder
   vars:
     action: install
     version_with_hash: "{{ splunk_heavy_forwarder_version }}"
 
-- include_role: splunk_universal_forwarder
+- include_role:
+    name: splunk_universal_forwarder
   vars:
     action: install
     version_with_hash: "{{ splunk_universal_forwarder_version }}"
 
-- include_role: vector
+- include_role:
+    name: vector
   vars:
     action: install
     version: "{{ vector_version }}"
