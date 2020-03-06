@@ -36,8 +36,7 @@ ensure_commad_available "packer" "brew install packer"
 # Variables
 #
 
-TEST_SUBJECTS="$VECTOR_TEST_SUBJECTS"
-prepare_ansible_version_vars "$TEST_SUBJECTS"
+prepare_ansible_version_vars
 
 #
 # Header
@@ -46,8 +45,9 @@ prepare_ansible_version_vars "$TEST_SUBJECTS"
 print_vector_logo
 print_divider
 cat <<END
-Test subjects: $TEST_SUBJECTS
+Test subject versions:
 END
+print_test_subject_versions "- "
 print_divider
 print_spacer
 

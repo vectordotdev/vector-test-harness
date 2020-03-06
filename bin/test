@@ -50,7 +50,6 @@ SKIP_TERRAFORM='false'
 # Required from the environment.
 TEST_RESULTS_S3_BUCKET_NAME="${VECTOR_TEST_RESULTS_S3_BUCKET_NAME:-""}"
 TEST_SSH_PUBLIC_KEY="${VECTOR_TEST_SSH_PUBLIC_KEY:-""}"
-TEST_SUBJECTS="${VECTOR_TEST_SUBJECTS:-""}"
 TEST_TIMESTAMP="${VECTOR_TEST_TIMESTAMP:-"$(date -u +%s)"}"
 TEST_CUSTOM_VECTOR_DEB_PATH="${VECTOR_TEST_CUSTOM_VECTOR_DEB_PATH:-""}"
 TEST_CUSTOM_VECTOR_VERSION="${VECTOR_TEST_CUSTOM_VECTOR_VERSION:-""}"
@@ -141,7 +140,7 @@ fi
 # Parse flags
 #
 
-prepare_ansible_version_vars "$TEST_SUBJECTS"
+prepare_ansible_version_vars
 
 #
 # Header
@@ -153,7 +152,6 @@ cat <<END
 User ID: $TEST_USER_ID
 Test name: $TEST_NAME
 Test configuration: $TEST_CONFIGURATION
-Test subjects: $TEST_SUBJECTS
 Test timestamp: $TEST_TIMESTAMP
 Test results S3 bucket name: $TEST_RESULTS_S3_BUCKET_NAME
 END

@@ -36,14 +36,3 @@ prepare_ansible_extra_args_array() {
     fi
   fi
 }
-
-prepare_ansible_version_vars() {
-  local COMMA_SEPARATED_LIST="$1"
-
-  ANSIBLE_VERSION_VARS=""
-
-  while read -d, -r PAIR; do
-    IFS='=' read -r SUBJECT VERSION <<<"$PAIR"
-    ANSIBLE_VERSION_VARS="$ANSIBLE_VERSION_VARS ${SUBJECT}_version=$VERSION"
-  done <<<"$COMMA_SEPARATED_LIST,"
-}
