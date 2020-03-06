@@ -1,0 +1,20 @@
+[filebeat]
+version={{ filebeat_version }}
+
+[fluentbit]
+version={{ fluentbit_version }}
+
+[fluentd]
+version={{ fluentd_version }}
+
+[logstash]
+version={{ logstash_version }}
+
+[splunk_heavy_forwarder]
+version={{ splunk_heavy_forwarder_version }}
+
+[splunk_universal_forwarder]
+version={{ splunk_universal_forwarder_version }}
+
+[vector]
+version={{ vector_version }}

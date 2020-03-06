@@ -1,8 +1,0 @@
-[subjects]
-filebeat_version={{ filebeat_version }}
-fluentbit_version={{ fluentbit_version }}
-fluentd_version={{ fluentd_version }}
-logstash_version={{ logstash_version }}
-splunk_heavy_forwarder_version={{ splunk_heavy_forwarder_version }}
-splunk_universal_forwarder_version={{ splunk_universal_forwarder_version }}
-vector_version={{ vector_version }}
