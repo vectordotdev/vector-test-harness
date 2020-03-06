@@ -137,12 +137,6 @@ if [[ -n "$TEST_CUSTOM_VECTOR_DEB_PATH" && -z "$TEST_CUSTOM_VECTOR_VERSION" ]]; 
 fi
 
 #
-# Parse flags
-#
-
-prepare_ansible_version_vars
-
-#
 # Header
 #
 
@@ -211,8 +205,7 @@ test_configuration=$TEST_CONFIGURATION \
 test_namespace=$TEST_NAMESPACE \
 test_timestamp=$TEST_TIMESTAMP \
 user_id=$TEST_USER_ID \
-results_s3_bucket_name=$TEST_RESULTS_S3_BUCKET_NAME \
-$ANSIBLE_VERSION_VARS"
+results_s3_bucket_name=$TEST_RESULTS_S3_BUCKET_NAME"
 
 ANSIBLE_COMMON_ARGS_ARRAY=(
   -u ubuntu
