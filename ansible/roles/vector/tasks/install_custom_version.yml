@@ -16,6 +16,11 @@
         src: '{{ local_vector_package_path }}'
         dest: '{{ vector_package }}'
 
+    - name: Ensure package is removed before installing an override version
+      apt:
+        name: vector
+        state: absent
+
     - include: "install.yml"
 
     - name: Clear temp dir
