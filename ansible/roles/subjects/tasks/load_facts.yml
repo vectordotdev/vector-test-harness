@@ -1,0 +1,4 @@
+---
+- name: load local facts
+  setup:
+    filter: ansible_local
