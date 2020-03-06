@@ -6,9 +6,9 @@
     path: /etc/ansible/facts.d
 
 - name: install subject facts
-  copy:
-    src: subjects.fact
-    dest: /etc/ansible/facts.d
+  template:
+    src: subjects.fact.j2
+    dest: /etc/ansible/facts.d/subjects.fact
 
 - name: re-read facts after adding custom fact
   setup:
