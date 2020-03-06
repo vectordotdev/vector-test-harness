@@ -19,3 +19,5 @@
       - cp
       - /tmp/dstat.csv
       - '{{ profiling_results_s3_url }}'
+      - --acl
+      - bucket-owner-full-control
