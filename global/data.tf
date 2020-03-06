@@ -103,6 +103,15 @@ data "aws_iam_policy_document" "vector-tests" {
     resources = [
       "${aws_s3_bucket.vector-tests.arn}/*",
     ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "s3:x-amz-acl"
+
+      values = [
+        "bucket-owner-full-control",
+      ]
+    }
   }
 }
 
