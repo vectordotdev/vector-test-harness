@@ -1,4 +1,5 @@
 [sinks.out]
   inputs  = ["{{ input_id }}"]
-  type    = "tcp"
+  type    = "socket"
+  mode    = "tcp"
   address = "127.0.0.1:{{ tcp_consumer_port }}"
