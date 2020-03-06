@@ -24,6 +24,7 @@ OPTIONS
    -s, --subject         The test subject (ex: vector, env: VECTOR_TEST_SUBJECT)
    -t, --test            The test to run (ex: tcp_to_blackhole, env: VECTOR_TEST_NAME)
    -u, --user-id         Your user ID (ex: ben, env: VECTOR_TEST_USER_ID)
+   -h, --help            Print this message
 
 EXAMPLE
    test -t tcp_to_blackhole -s vector
@@ -64,8 +65,8 @@ TEST_USER_ID="${VECTOR_TEST_USER_ID:-""}"
 # Flags
 #
 
-OPTIONS="bc:rs:t:u:"
-LONGOPTS="bootstrap-only,configuration:,run-only,subjects:,test:,user-id:,skip-terraform"
+OPTIONS="bc:rs:t:u:h"
+LONGOPTS="bootstrap-only,configuration:,run-only,subjects:,test:,user-id:,skip-terraform,help"
 PARSED="$(parse_arguments "$OPTIONS" "$LONGOPTS" "$0" "$@")"
 eval set -- "$PARSED"
 
@@ -100,6 +101,10 @@ while true; do
   -u | --user-id)
     TEST_USER_ID="$2"
     shift 2
+    ;;
+  -h | --help)
+    usage
+    exit 0
     ;;
   --)
     shift
