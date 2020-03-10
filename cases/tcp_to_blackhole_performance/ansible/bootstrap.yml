@@ -24,22 +24,15 @@
   roles:
     - role: fluentbit
       action: configure
-      configuration_files:
-        - src: config_files/td-agent-bit.conf
-          dest: td-agent-bit.conf
-      configuration_file: "config_files/td-agent-bit.conf"
 
     - role: fluentd
       action: configure
-      configuration_file: "config_files/td-agent.conf"
 
     - role: logstash
       action: configure
-      pipeline_file: "config_files/logstash.conf"
 
     - role: vector
       action: install
 
     - role: vector
       action: configure
-      configuration_file: "config_files/vector.toml"

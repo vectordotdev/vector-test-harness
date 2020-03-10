@@ -1,2 +1,2 @@
 ---
-vector_package: https://packages.timber.io/vector/{{ version }}/vector-amd64.deb
+configuration_file: config_files/vector.toml

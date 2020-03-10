@@ -3,6 +3,3 @@
     name: fluentbit
   vars:
     action: configure
-    configuration_files:
-      - src: config_files/td-agent-bit.conf
-        dest: td-agent-bit.conf

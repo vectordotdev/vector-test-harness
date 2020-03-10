@@ -3,4 +3,3 @@
     name: fluentd
   vars:
     action: configure
-    configuration_file: config_files/td-agent.conf

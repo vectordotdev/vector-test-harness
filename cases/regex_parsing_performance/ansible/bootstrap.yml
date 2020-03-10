@@ -29,19 +29,15 @@
     # - role: fluentbit
     #   action: configure
     #   configuration_files:
-    #     - src: config_files/td-agent-bit.conf
-    #       dest: td-agent-bit.conf
-    #     - src: config_files/td-agent-bit.parsers.conf
-    #       dest: parsers.conf
+    #     - config_files/td-agent-bit.conf
+    #     - config_files/td-agent-bit.parsers.conf
 
     # - role: fluentd
     #   action: configure
-    #   configuration_file: "config_files/td-agent.conf"
 
     # - role: logstash
     #   action: configure
     #   version: "{{ logstash_version }}"
-    #   pipeline_file: "config_files/logstash.conf"
 
     # - role: splunk_heavy_forwarder
     #   action: configure
@@ -55,16 +51,11 @@
     #     - src: config_files/splunk.transforms.conf
     #       dest: transforms.conf
 
-    # - role: telegraf
-    #   action: configure
-    #   configuration_file: "config_files/telegraf.conf"
-
     - role: vector
       action: install
 
     - role: vector
       action: configure
-      configuration_file: "config_files/vector.toml"
 
 - hosts: '{{ test_namespace }}:&tag_TestRole_consumer'
   become: true

@@ -3,4 +3,3 @@
     name: vector
   vars:
     action: configure
-    configuration_file: config_files/vector.toml

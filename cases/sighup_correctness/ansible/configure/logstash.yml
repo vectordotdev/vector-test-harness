@@ -3,4 +3,3 @@
     name: logstash
   vars:
     action: configure
-    pipeline_file: config_files/logstash.conf

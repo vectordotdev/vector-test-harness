@@ -18,38 +18,21 @@
 
     - role: filebeat
       action: configure
-      configuration_file: "config_files/filebeat.yml"
 
     - role: fluentbit
       action: configure
-      configuration_files:
-        - src: config_files/td-agent-bit.conf
-          dest: td-agent-bit.conf
 
     - role: fluentd
       action: configure
-      configuration_file: "config_files/td-agent.conf"
 
     - role: logstash
       action: configure
-      configuration_file: "config_files/logstash.settings.yml"
-      pipeline_file: "config_files/logstash.pipeline.conf"
 
     - role: splunk_heavy_forwarder
       action: configure
-      configuration_files:
-        - src: config_files/splunk.inputs.conf
-          dest: inputs.conf
-        - src: config_files/splunk.outputs.conf
-          dest: outputs.conf
 
     - role: splunk_universal_forwarder
       action: configure
-      configuration_files:
-        - src: config_files/splunk.inputs.conf
-          dest: inputs.conf
-        - src: config_files/splunk.outputs.conf
-          dest: outputs.conf
 
     - role: vector
       action: install
