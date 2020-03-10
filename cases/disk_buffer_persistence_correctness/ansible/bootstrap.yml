@@ -49,7 +49,7 @@
       tcp_server_address: "127.0.0.1:{{ tcp_consumer_port }}"
 
     - role: vector
-      action: install_custom_version
+      action: install
 
     - role: vector
       action: configure

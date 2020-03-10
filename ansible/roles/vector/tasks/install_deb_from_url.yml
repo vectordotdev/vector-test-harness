@@ -1,0 +1,4 @@
+---
+- name: Install Vector .deb package from URL
+  apt:
+    deb: "{{ deb }}"

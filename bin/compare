@@ -20,11 +20,12 @@ DESCRIPTION
 OPTIONS
    -c, --configuration  The test configuration (default: default)
    -p, --percentages    To include percentage increase from test winner (default: false)
-   -s, --s              The subject name (ex: vector,fluentbit,etc)
+   -s, --subject        The subject name (ex: vector,fluentbit,etc)
    -t, --test           The test name (ex: tcp_to_blackhole,etc)
 
 EXAMPLES
    ./compare -t tcp_to_tcp_performance
+   ./compare -t tcp_to_tcp_performance -s vector
 END
 
 #

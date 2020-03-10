@@ -1,6 +1,12 @@
 # vi: syntax=bash
 # shellcheck shell=bash
 
+# WARNING!
+#
+# This file should only be loaded when building the AMI. Test subject versions
+# are baked into the AMI via the /etc/ansible/facts.d/subjects.fact file.
+# And the fact file should be used to determine local subject versions.
+
 TEST_SUBJECT_NAMES=(
   filebeat
   fluentbit

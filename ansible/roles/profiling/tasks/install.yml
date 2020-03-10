@@ -1,5 +1,25 @@
 ---
-- name: Install dstat
+- name: Ensure dstat is removed before installing
   apt:
     name: dstat
-    state: present
+    state: absent
+
+- name: Prepare temporary directory
+  tempfile:
+    state: directory
+  register: temp_deb
+
+- name: Copy local dstat.deb file to remote machine
+  copy:
+    src: dstat_0.7.2-4_all.deb
+    dest: '{{ temp_deb.path }}/dstat_0.7.2-4_all.deb'
+
+- name: Install dstat
+  apt:
+    deb: '{{ temp_deb.path }}/dstat_0.7.2-4_all.deb'
+
+- name: Clear temp dir
+  file:
+    path: "{{ temp_deb.path }}"
+    state: absent
+  when: temp_deb.path is defined

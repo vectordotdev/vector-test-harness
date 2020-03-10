@@ -1,13 +1,29 @@
 ---
 - name: Install Vector
-  apt:
-    deb: "{{ vector_package }}"
+  when: vector_version is defined
+  block:
+    - name: Ensure vector is removed before installing
+      apt:
+        name: vector
+        state: absent
 
-# This ensures that the process is not running. Each test is responsible
-# for starting and stopping the relevant services.
-- name: Ensure the vector service is stopped
-  systemd:
-    name: vector
-    daemon_reload: yes
-    enabled: no
-    state: stopped
+    - name: Install Vector .deb package from URL
+      when: vector_version is not regex('^dev-')
+      include: "install_deb_from_url.yml"
+      vars:
+        deb: https://packages.timber.io/vector/{{ vector_version }}/vector-amd64.deb
+
+    - name: Install Vector .deb package from local file
+      when: vector_version is regex('^dev-')
+      include: "install_deb_from_file.yml"
+      vars:
+        local_deb: "{{ local_vector_deb_path }}"
+
+    # This ensures that the process is not running. Each test is responsible
+    # for starting and stopping the relevant services.
+    - name: Ensure the vector service is stopped
+      systemd:
+        name: vector
+        daemon_reload: yes
+        enabled: no
+        state: stopped

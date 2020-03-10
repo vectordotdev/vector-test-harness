@@ -24,10 +24,14 @@ OPTIONS
    -s, --subject         The test subject (ex: vector, env: VECTOR_TEST_SUBJECT)
    -t, --test            The test to run (ex: tcp_to_blackhole, env: VECTOR_TEST_NAME)
    -u, --user-id         Your user ID (ex: ben, env: VECTOR_TEST_USER_ID)
+   -v, --version         Test a custom subject version (ex: v0.9.0, env: VECTOR_TEST_SUBJECT_VERSION)
    -h, --help            Print this message
 
 EXAMPLE
    test -t tcp_to_blackhole -s vector
+   test -t tcp_to_blackhole -s vector -v 0.9.0
+   test -t tcp_to_blackhole -s vector -v nightly-2020-03-07
+   test -t tcp_to_blackhole -s vector -v dev-branch-9-g4bc2c024
 END
 
 #
@@ -52,7 +56,7 @@ SKIP_TERRAFORM='false'
 TEST_RESULTS_S3_BUCKET_NAME="${VECTOR_TEST_RESULTS_S3_BUCKET_NAME:-""}"
 TEST_SSH_PUBLIC_KEY="${VECTOR_TEST_SSH_PUBLIC_KEY:-""}"
 TEST_TIMESTAMP="${VECTOR_TEST_TIMESTAMP:-"$(date -u +%s)"}"
-TEST_CUSTOM_VECTOR_DEB_PATH="${VECTOR_TEST_CUSTOM_VECTOR_DEB_PATH:-""}"
+TEST_VECTOR_DEB_PATH="${VECTOR_TEST_VECTOR_DEB_PATH:-""}"
 TEST_CUSTOM_VECTOR_VERSION="${VECTOR_TEST_CUSTOM_VECTOR_VERSION:-""}"
 
 # Configurable via cli flags
@@ -65,8 +69,8 @@ TEST_USER_ID="${VECTOR_TEST_USER_ID:-""}"
 # Flags
 #
 
-OPTIONS="bc:rs:t:u:h"
-LONGOPTS="bootstrap-only,configuration:,run-only,subjects:,test:,user-id:,skip-terraform,help"
+OPTIONS="bc:rs:t:u:v:h"
+LONGOPTS="bootstrap-only,configuration:,run-only,skip-terraform,subjects:,test:,user-id:,version:,help"
 PARSED="$(parse_arguments "$OPTIONS" "$LONGOPTS" "$0" "$@")"
 eval set -- "$PARSED"
 
@@ -102,6 +106,10 @@ while true; do
     TEST_USER_ID="$2"
     shift 2
     ;;
+  -v | --version)
+    TEST_SUBJECT_VERSION="$2"
+    shift 2
+    ;;
   -h | --help)
     usage
     exit 0
@@ -134,11 +142,15 @@ fi
 
 TEST_CASE_DIR="cases/$TEST_NAME"
 if [[ ! -d "$TEST_CASE_DIR" ]]; then
-  fail_arg_invalid "Test $TEST_NAME does not exist"
+  fail_arg_invalid "Error: Test $TEST_NAME does not exist"
 fi
 
-if [[ -n "$TEST_CUSTOM_VECTOR_DEB_PATH" && -z "$TEST_CUSTOM_VECTOR_VERSION" ]]; then
-  fail_arg_invalid "TEST_CUSTOM_VECTOR_DEB_PATH is set, but TEST_CUSTOM_VECTOR_VERSION is not set"
+if [[ -n "$TEST_SUBJECT_VERSION" && "$TEST_SUBJECT" != "vector" ]]; then
+  fail_arg_invalid "Error: Custom subject versions are only supported for the 'vector' subject"
+fi
+
+if [[ "$TEST_SUBJECT" == "vector" ]] && [[ "$TEST_SUBJECT_VERSION" == dev-* ]] && [[ -z "$TEST_VECTOR_DEB_PATH" ]]; then
+  fail_arg_invalid "Error: You must supply a \$TEST_VECTOR_DEB_PATH when specifying a development Vector version"
 fi
 
 #
@@ -219,14 +231,15 @@ ANSIBLE_COMMON_ARGS_ARRAY=(
   --extra-vars "$EXTRA_VARS"
 )
 
-if [[ -n "$TEST_CUSTOM_VECTOR_DEB_PATH" ]]; then
+if [[ -n "$TEST_SUBJECT_VERSION" ]]; then
   ANSIBLE_COMMON_ARGS_ARRAY+=(
-    --extra-vars "local_vector_package_path=$TEST_CUSTOM_VECTOR_DEB_PATH"
+    --extra-vars "${TEST_SUBJECT}_version=$TEST_SUBJECT_VERSION"
   )
 fi
-if [[ -n "$TEST_CUSTOM_VECTOR_VERSION" ]]; then
+
+if [[ -n "$TEST_VECTOR_DEB_PATH" ]]; then
   ANSIBLE_COMMON_ARGS_ARRAY+=(
-    --extra-vars "profiling_custom_vector_version=$TEST_CUSTOM_VECTOR_VERSION"
+    --extra-vars "local_vector_deb_path=$TEST_VECTOR_DEB_PATH"
   )
 fi
 

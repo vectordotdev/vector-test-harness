@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Init lib.
+#
+# Init
+#
+
 # shellcheck source=SCRIPTDIR/../lib/vector-test-harness/init.sh
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)/../lib/vector-test-harness/init.sh"
+
+# shellcheck source=SCRIPTDIR/test_subjects.sh
+source "${VECTOR_TEST_HARNESS_LIB_ROOT}/test_subjects.sh"
 
 #
 # Usage

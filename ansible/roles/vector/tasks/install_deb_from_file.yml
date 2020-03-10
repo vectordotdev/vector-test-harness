@@ -1,0 +1,24 @@
+---
+- name: Prepare temporary directory
+  tempfile:
+    state: directory
+  register: temp_deb
+
+- name: Override deb
+  set_fact:
+    deb: '{{ temp_deb.path }}/vector.deb'
+
+- name: Copy local vector .deb file to remote machine
+  copy:
+    src: '{{ local_deb }}'
+    dest: '{{ deb }}'
+
+- name: Install Vector .deb package from local file
+  apt:
+    deb: "{{ deb }}"
+
+- name: Clear temp dir
+  file:
+    path: "{{ temp_deb.path }}"
+    state: absent
+  when: temp_deb.path is defined

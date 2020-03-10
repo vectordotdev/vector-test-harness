@@ -60,7 +60,7 @@
           dest: outputs.conf
 
     - role: vector
-      action: install_custom_version
+      action: install
 
     - role: vector
       action: configure
