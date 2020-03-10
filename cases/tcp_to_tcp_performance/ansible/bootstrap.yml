@@ -27,50 +27,51 @@
 
 - hosts: '{{ test_namespace }}:&tag_TestRole_subject'
   become: true
+  strategy: free
   roles:
-    - role: filebeat
-      action: configure
-      configuration_file: "config_files/filebeat.yml"
-
-    - role: fluentbit
-      action: configure
-      configuration_files:
-        - src: config_files/td-agent-bit.conf
-          dest: td-agent-bit.conf
-
-    - role: fluentd
-      action: configure
-      configuration_file: "config_files/td-agent.conf"
-
-    - role: logstash
-      action: configure
-      pipeline_file: "config_files/logstash.subject.pipeline.conf"
-
-    - role: splunk_heavy_forwarder
-      action: configure
-      configuration_files:
-        - src: config_files/splunk.inputs.conf
-          dest: inputs.conf
-        - src: config_files/splunk.outputs.conf
-          dest: outputs.conf
-
-    - role: splunk_universal_forwarder
-      action: configure
-      configuration_files:
-        - src: config_files/splunk.inputs.conf
-          dest: inputs.conf
-        - src: config_files/splunk.outputs.conf
-          dest: outputs.conf
-
     - role: profiling
       action: install
 
     - role: vector
       action: install
 
-    - role: vector
-      action: configure
-      configuration_file: "config_files/vector.toml"
+  tasks:
+    - include_role:
+        name: filebeat
+      vars:
+        action: configure
+
+    - include_role:
+        name: fluentbit
+      vars:
+        action: configure
+
+    - include_role:
+        name: fluentd
+      vars:
+        action: configure
+
+    - include_role:
+        name: logstash
+      vars:
+        action: configure
+        configuration_file: ""
+        pipeline_file: config_files/logstash.subject.pipeline.conf
+
+    - include_role:
+        name: splunk_heavy_forwarder
+      vars:
+        action: configure
+
+    - include_role:
+        name: splunk_universal_forwarder
+      vars:
+        action: configure
+
+    - include_role:
+        name: vector
+      vars:
+        action: configure
 
 - hosts: '{{ test_namespace }}:&tag_TestRole_consumer'
   become: true

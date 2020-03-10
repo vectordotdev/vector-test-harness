@@ -3,8 +3,3 @@
     name: splunk_heavy_forwarder
   vars:
     action: configure
-    configuration_files:
-      - src: config_files/splunk.inputs.conf
-        dest: inputs.conf
-      - src: config_files/splunk.outputs.conf
-        dest: outputs.conf

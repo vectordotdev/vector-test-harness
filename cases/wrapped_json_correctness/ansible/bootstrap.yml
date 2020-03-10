@@ -17,28 +17,21 @@
 
     - role: filebeat
       action: configure
-      configuration_file: "config_files/filebeat.yml"
 
     - role: fluentbit
       action: configure
       configuration_files:
-        - src: config_files/td-agent-bit.conf
-          dest: td-agent-bit.conf
-        - src: config_files/td-agent-bit.parsers.conf
-          dest: parsers.conf
+        - config_files/td-agent-bit.conf
+        - config_files/td-agent-bit.parsers.conf
 
     - role: fluentd
       action: configure
-      configuration_file: "config_files/td-agent.conf"
 
     - role: logstash
       action: configure
-      configuration_file: "config_files/logstash.settings.yml"
-      pipeline_file: "config_files/logstash.pipeline.conf"
 
     - role: vector
       action: install
 
     - role: vector
       action: configure
-      configuration_file: "config_files/vector.toml"
