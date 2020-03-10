@@ -1,9 +1,11 @@
 [sources.in]
-  type    = "tcp"
+  type    = "socket"
+  mode    = "tcp"
   address = "0.0.0.0:{{ subject_port }}"
 
 [sinks.out]
   inputs   = ["in"]
-  type     = "tcp"
+  type     = "socket"
+  mode     = "tcp"
   address  = "{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
   encoding = "text"

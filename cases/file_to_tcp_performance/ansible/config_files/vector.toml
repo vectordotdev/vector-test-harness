@@ -5,5 +5,6 @@
 
 [sinks.out]
   inputs  = ["in"]
-  type    = "tcp"
+  type    = "socket"
+  mode    = "tcp"
   address = "{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
