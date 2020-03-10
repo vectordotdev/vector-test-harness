@@ -62,8 +62,11 @@
         - src: config_files/splunk.outputs.conf
           dest: outputs.conf
 
+    - role: profiling
+      action: install
+
     - role: vector
-      action: install_custom_version
+      action: install
 
     - role: vector
       action: configure

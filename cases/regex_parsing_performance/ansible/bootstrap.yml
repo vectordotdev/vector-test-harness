@@ -60,7 +60,7 @@
     #   configuration_file: "config_files/telegraf.conf"
 
     - role: vector
-      action: install_custom_version
+      action: install
 
     - role: vector
       action: configure
