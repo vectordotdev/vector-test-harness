@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-# This script print a table of cohort results.
+# This script prints a table of comparisons across all subjects.
 #
 # We use Ruby since we have to mangle with a complex data structure.
 # Trying to print this table using bash utilities such as jq was
