@@ -55,7 +55,6 @@
         name: logstash
       vars:
         action: configure
-        configuration_file: ""
         pipeline_file: config_files/logstash.subject.pipeline.conf
 
     - include_role:
