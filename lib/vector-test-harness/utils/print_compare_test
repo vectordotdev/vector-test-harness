@@ -12,7 +12,8 @@ require_relative "athena"
 require_relative "table_print"
 
 $results_json = ARGV[0]
-$percentages = ARGV[1] != "false"
+$subject_name = ARGV[1]
+$percentages = ARGV[2] != "false"
 
 if $results_json.nil?
   raise "You must pass the query results JSON as the first argument"
@@ -38,7 +39,13 @@ def metric_row(hashes, name, key, options = {})
   end
 
   hashes.each do |hash|
-    name = "#{hash.fetch("short_subject")}"
+    name =
+      if $subject_name != ""
+        "#{hash.fetch("short_subject")} (#{hash.fetch("version")})"
+      else
+        "#{hash.fetch("short_subject")}"
+      end
+
     metric = hash[key]
 
     if metric != nil
