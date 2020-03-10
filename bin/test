@@ -294,6 +294,8 @@ print_divider
 cat <<END
 Done!
 
-Compare: bin/compare -t $TEST_NAME -c $TEST_CONFIGURATION
-Cohort: bin/cohort -t $TEST_NAME -c $TEST_CONFIGURATION -s vector
+To see results, run:
+
+  bin/compare -t $TEST_NAME -c $TEST_CONFIGURATION
+
 END

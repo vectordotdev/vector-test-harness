@@ -74,7 +74,6 @@ test framework used to generate the [performance] and [correctness] results disp
 ## Usage
 
 * [`bin/build-amis`][build-amis] - builds AMIs for use in test cases
-* [`bin/cohort`][cohort] - perform a cohort analysis of test results across a subject's versions
 * [`bin/compare`][compare] - compare of test results across all subjects
 * [`bin/ssh`][test] - utility script to SSH into a test server
 * [`bin/test`][test] - run a specific test
@@ -211,8 +210,8 @@ performance tests and correctness tests:
 Performance tests measure performance and MUST capture detailed performance data as outlined
 in the [Performance Data][performance_data] and [Rules][rules] sections.
 
-In addition to the `test` script, there are [`compare`][compare] and [`cohort`][cohort] scripts.
-Each of these scripts analyzes the performance data captured when executing a test. More information
+In addition to the `test` script, there is a [`compare`][compare] scripts.
+This script analyzes the performance data captured when executing a test. More information
 on this data and how it's captured and analyzed can be found in the
 [Performance Data][performance_data] section. Finally, each [script][bin] includes a usage
 overview that you can access with the `--help` flag.
@@ -299,7 +298,7 @@ name=tcp_to_tcp_performance/
 
 Analysis of this data is performed through the [AWS Athena service][aws_athena]. This allows us
 to execute complex queries on the [performance data][performance_data] stored in S3. You can see
-the queries ran in the [`compare`][compare] and [`cohort`][cohort] scripts.
+the queries ran in the [`compare`][compare] script.
 
 #### Correctness tests
 
@@ -352,7 +351,6 @@ since remote environments are easily accessible and reproducible by other engine
 [bin]: /bin
 [build-amis]: bin/build-amis
 [cases]: /cases
-[cohort]: bin/cohort
 [compare]: bin/compare
 [correctness]: https://docs.vector.dev/correctness
 [create_keys]: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html

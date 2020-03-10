@@ -11,7 +11,7 @@ source "$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)/../lib/vec
 
 register_usage <<END
 USAGE
-   compare -t test [-c configuration] [-p]
+   compare -t test [-s subject] [-c configuration] [-p]
 
 DESCRIPTION
    Prints a simple table that compares the average test times
@@ -20,6 +20,7 @@ DESCRIPTION
 OPTIONS
    -c, --configuration  The test configuration (default: default)
    -p, --percentages    To include percentage increase from test winner (default: false)
+   -s, --s              The subject name (ex: vector,fluentbit,etc)
    -t, --test           The test name (ex: tcp_to_blackhole,etc)
 
 EXAMPLES
@@ -39,6 +40,7 @@ ensure_echanced_getopt_available
 #
 
 PERCENTAGES="false"
+SUBJECT_NAME=""
 TEST_CONFIGURATION="default"
 TEST_NAME=""
 
@@ -46,8 +48,8 @@ TEST_NAME=""
 # Flags
 #
 
-OPTIONS="c:t:"
-LONGOPTS="configuration:,percentage,test:"
+OPTIONS="c:s:t:"
+LONGOPTS="configuration:,percentage,subject:,test:"
 PARSED="$(parse_arguments "$OPTIONS" "$LONGOPTS" "$0" "$@")"
 eval set -- "$PARSED"
 
@@ -60,6 +62,10 @@ while true; do
   -p | --percentages)
     PERCENTAGES="true"
     shift
+    ;;
+  -s | --subject)
+    SUBJECT_NAME="$2"
+    shift 2
     ;;
   -t | --test)
     TEST_NAME="$2"
@@ -93,6 +99,7 @@ cat <<END
 Test Comparison
 Test name: $TEST_NAME
 Test configuration: $TEST_CONFIGURATION
+Subject: $SUBJECT_NAME
 END
 print_divider
 print_spacer
@@ -105,7 +112,14 @@ EXECUTION_ID=$(athena_execute_query "MSCK REPAIR TABLE vector_tests")
 
 TEST_NAME_CONDITION='1 = 1'
 if [ -n "$TEST_NAME" ]; then
-  TEST_NAME_CONDITION="name = '$TEST_NAME' AND configuration='$TEST_CONFIGURATION'"
+  TEST_NAME_CONDITION="v.name = '$TEST_NAME' AND v.configuration='$TEST_CONFIGURATION'"
+fi
+
+SUBJECT_NAME_CONDITION='1 = 1'
+SUBJECT_GROUP_CONDITION='subject'
+if [ -n "$SUBJECT_NAME" ]; then
+  SUBJECT_NAME_CONDITION="v.subject = '$SUBJECT_NAME'"
+  SUBJECT_GROUP_CONDITION='v.subject, v.version'
 fi
 
 EXECUTION_ID="$(athena_execute_query "$(cat <<EOF
@@ -114,9 +128,9 @@ latest_versions AS (
   SELECT
     subject,
     MAX(version) AS latest_version
-  FROM vector_tests
-  WHERE $TEST_NAME_CONDITION
-  GROUP BY subject
+  FROM vector_tests v
+  WHERE ($TEST_NAME_CONDITION) and ($SUBJECT_NAME_CONDITION)
+  GROUP BY $SUBJECT_GROUP_CONDITION
 )
 
 SELECT
@@ -177,7 +191,7 @@ FROM (
   INNER JOIN latest_versions ON
     latest_versions.subject = v.subject
     AND latest_versions.latest_version = v.version
-  WHERE $TEST_NAME_CONDITION
+  WHERE ($TEST_NAME_CONDITION) AND ($SUBJECT_NAME_CONDITION)
   GROUP BY v.name, v.configuration, v.subject, v.version, v.timestamp
 )
 GROUP BY name, configuration, subject, version
@@ -192,5 +206,5 @@ print_spacer
 if [ -z "$TEST_NAME" ]; then
   "$VECTOR_TEST_HARNESS_UTILS_DIR/print_compare_all" "$RESULTS"
 else
-  "$VECTOR_TEST_HARNESS_UTILS_DIR/print_compare_test" "$RESULTS" "$PERCENTAGES"
+  "$VECTOR_TEST_HARNESS_UTILS_DIR/print_compare_test" "$RESULTS" "$SUBJECT_NAME" "$PERCENTAGES"
 fi
