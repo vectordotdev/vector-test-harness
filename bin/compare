@@ -196,7 +196,7 @@ FROM (
   GROUP BY v.name, v.configuration, v.subject, v.version, v.timestamp
 )
 GROUP BY name, configuration, subject, version
-ORDER BY subject ASC
+ORDER BY subject, version ASC
 EOF
 )")"
 
