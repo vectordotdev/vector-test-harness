@@ -107,7 +107,7 @@ def pivot(hashes)
   pivoted_hashes << metric_row(hashes, "Net recv (sum)", "net_recv_sum", unit: "b", compare: :to_largest)
   pivoted_hashes << metric_row(hashes, "Net send (sum)", "net_send_sum", unit: "b")
   pivoted_hashes << metric_row(hashes, "TCP estab (avg)", "tcp_act_sum")
-  pivoted_hashes << metric_row(hashes, "TCP sync (avg)", "tcp_syn_sum")
+  pivoted_hashes << metric_row(hashes, "TCP syn (avg)", "tcp_syn_sum")
   pivoted_hashes << metric_row(hashes, "TCP close (avg)", "tcp_clo_sum")
   pivoted_hashes
 end
