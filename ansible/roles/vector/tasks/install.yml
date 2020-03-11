@@ -19,6 +19,12 @@
       vars:
         local_deb: "{{ local_vector_deb_path }}"
 
+    - name: Ensure vector user is in docker group
+      user:
+        name: vector
+        groups: docker
+        append: yes
+
     # This ensures that the process is not running. Each test is responsible
     # for starting and stopping the relevant services.
     - name: Ensure the vector service is stopped

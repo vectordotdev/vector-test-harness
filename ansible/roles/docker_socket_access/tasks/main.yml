@@ -1,5 +1,0 @@
-- name: Ensure vector user is in docker group
-  user:
-    name: vector
-    groups: docker
-    append: yes

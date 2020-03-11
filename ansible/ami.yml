@@ -18,16 +18,14 @@
     - role: profiling
       action: install
 
-    - role: subjects
-      action: install
-
-    - role: tcp_test_server
-      action: install
-
     - role: docker
       action: install
 
     - role: python-docker
       action: install
 
-    - role: docker_socket_access
+    - role: subjects
+      action: install
+
+    - role: tcp_test_server
+      action: install
