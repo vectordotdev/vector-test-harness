@@ -46,3 +46,13 @@ ensure_echanced_getopt_available() {
     exit 1
   fi
 }
+
+join() {
+  d="$1"
+  shift
+  arr=("$@")
+  last=${arr[${#arr[@]}-1]}
+  unset arr[${#arr[@]}-1]
+  printf -v str "%s$d" "${arr[@]}"
+  printf "%s%s" "$str" "$last"
+}

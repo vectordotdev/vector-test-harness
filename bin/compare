@@ -22,10 +22,12 @@ OPTIONS
    -p, --percentages    To include percentage increase from test winner (default: false)
    -s, --subject        The subject name (ex: vector,fluentbit,etc)
    -t, --test           The test name (ex: tcp_to_blackhole,etc)
+   -v, --version        The subject version(s) to compare (ex: tcp_to_blackhole,etc)
 
 EXAMPLES
    ./compare -t tcp_to_tcp_performance
    ./compare -t tcp_to_tcp_performance -s vector
+   ./compare -t tcp_to_tcp_performance -s vector -v latest-nightly -v dev-branch-count-sha
 END
 
 #
@@ -42,6 +44,7 @@ ensure_echanced_getopt_available
 
 PERCENTAGES="false"
 SUBJECT_NAME=""
+SUBJECT_VERSIONS=()
 TEST_CONFIGURATION="default"
 TEST_NAME=""
 
@@ -49,8 +52,8 @@ TEST_NAME=""
 # Flags
 #
 
-OPTIONS="c:s:t:"
-LONGOPTS="configuration:,percentage,subject:,test:"
+OPTIONS="c:ps:t:v:"
+LONGOPTS="configuration:,percentage,subject:,test:,version:"
 PARSED="$(parse_arguments "$OPTIONS" "$LONGOPTS" "$0" "$@")"
 eval set -- "$PARSED"
 
@@ -70,6 +73,10 @@ while true; do
     ;;
   -t | --test)
     TEST_NAME="$2"
+    shift 2
+    ;;
+  -v | --version)
+    SUBJECT_VERSIONS+=("$2")
     shift 2
     ;;
   --)
@@ -98,9 +105,10 @@ print_vector_logo
 print_divider
 cat <<END
 Test Comparison
-Test name: $TEST_NAME
-Test configuration: $TEST_CONFIGURATION
-Subject: $SUBJECT_NAME
+Test name: ${TEST_NAME}
+Test configuration: ${TEST_CONFIGURATION}
+Subject: ${SUBJECT_NAME}
+Versions: ${SUBJECT_VERSIONS[*]}
 END
 print_divider
 print_spacer
@@ -109,11 +117,9 @@ print_spacer
 # Execute
 #
 
-EXECUTION_ID=$(athena_execute_query "MSCK REPAIR TABLE vector_tests")
-
 TEST_NAME_CONDITION='1 = 1'
 if [ -n "$TEST_NAME" ]; then
-  TEST_NAME_CONDITION="v.name = '$TEST_NAME' AND v.configuration='$TEST_CONFIGURATION'"
+  TEST_NAME_CONDITION="v.name = '$TEST_NAME' AND v.configuration = '$TEST_CONFIGURATION'"
 fi
 
 SUBJECT_NAME_CONDITION='1 = 1'
@@ -123,6 +129,17 @@ if [ -n "$SUBJECT_NAME" ]; then
   SUBJECT_GROUP_CONDITION='v.subject, v.version'
 fi
 
+SUBJECT_VERSION_CONDITIONS=()
+for version in "${SUBJECT_VERSIONS[@]}"
+do
+  SUBJECT_VERSION_CONDITIONS+=("v.version = '${version}'")
+done
+SUBJECT_VERSION_CONDITION=$(join " OR " "${SUBJECT_VERSION_CONDITIONS[@]}")
+
+WHERE_CLAUSE="(${TEST_NAME_CONDITION}) AND (${SUBJECT_NAME_CONDITION}) AND (${SUBJECT_VERSION_CONDITION})"
+
+EXECUTION_ID=$(athena_execute_query "MSCK REPAIR TABLE vector_tests")
+
 EXECUTION_ID="$(athena_execute_query "$(cat <<EOF
 WITH
 latest_versions AS (
@@ -130,7 +147,7 @@ latest_versions AS (
     subject,
     MAX(version) AS latest_version
   FROM vector_tests v
-  WHERE ($TEST_NAME_CONDITION) and ($SUBJECT_NAME_CONDITION)
+  WHERE ${WHERE_CLAUSE}
   GROUP BY $SUBJECT_GROUP_CONDITION
 )
 
@@ -192,7 +209,7 @@ FROM (
   INNER JOIN latest_versions ON
     latest_versions.subject = v.subject
     AND latest_versions.latest_version = v.version
-  WHERE ($TEST_NAME_CONDITION) AND ($SUBJECT_NAME_CONDITION)
+  WHERE ${WHERE_CLAUSE}
   GROUP BY v.name, v.configuration, v.subject, v.version, v.timestamp
 )
 GROUP BY name, configuration, subject, version
