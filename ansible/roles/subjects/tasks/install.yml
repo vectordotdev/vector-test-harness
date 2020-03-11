@@ -3,40 +3,39 @@
     name: filebeat
   vars:
     action: install
-    version: "{{ filebeat_version }}"
+    version: "{{ preinstalled_filebeat_version }}"
 
 - include_role:
     name: fluentbit
   vars:
     action: install
-    version: "{{ fluentbit_version }}"
+    version: "{{ preinstalled_fluentbit_version }}"
 
 - include_role:
     name: fluentd
   vars:
     action: install
-    version: "{{ fluentd_version }}"
+    version: "{{ preinstalled_fluentd_version }}"
 
 - include_role:
     name: logstash
   vars:
     action: install
-    version: "{{ logstash_version }}"
+    version: "{{ preinstalled_logstash_version }}"
 
 - include_role:
     name: splunk_heavy_forwarder
   vars:
     action: install
-    version_with_hash: "{{ splunk_heavy_forwarder_version }}"
+    version_with_hash: "{{ preinstalled_splunk_heavy_forwarder_version }}"
 
 - include_role:
     name: splunk_universal_forwarder
   vars:
     action: install
-    version_with_hash: "{{ splunk_universal_forwarder_version }}"
+    version_with_hash: "{{ preinstalled_splunk_universal_forwarder_version }}"
 
 - include_role:
-    name: vector
+    name: subjects
   vars:
-    action: install
-    version: "{{ vector_version }}"
+    action: save_facts

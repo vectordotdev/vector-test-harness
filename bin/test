@@ -57,7 +57,7 @@ TEST_RESULTS_S3_BUCKET_NAME="${VECTOR_TEST_RESULTS_S3_BUCKET_NAME:-""}"
 TEST_SSH_PUBLIC_KEY="${VECTOR_TEST_SSH_PUBLIC_KEY:-""}"
 TEST_TIMESTAMP="${VECTOR_TEST_TIMESTAMP:-"$(date -u +%s)"}"
 TEST_VECTOR_DEB_PATH="${VECTOR_TEST_VECTOR_DEB_PATH:-""}"
-TEST_CUSTOM_VECTOR_VERSION="${VECTOR_TEST_CUSTOM_VECTOR_VERSION:-""}"
+TEST_SUBJECT_VERSION="${VECTOR_TEST_SUBJECT_VERSION:-""}"
 
 # Configurable via cli flags
 TEST_CONFIGURATION="${VECTOR_TEST_CONFIGURATION:-"default"}"
@@ -150,7 +150,7 @@ if [[ -n "$TEST_SUBJECT_VERSION" && "$TEST_SUBJECT" != "vector" ]]; then
 fi
 
 if [[ "$TEST_SUBJECT" == "vector" ]] && [[ "$TEST_SUBJECT_VERSION" == dev-* ]] && [[ -z "$TEST_VECTOR_DEB_PATH" ]]; then
-  fail_arg_invalid "Error: You must supply a \$TEST_VECTOR_DEB_PATH when specifying a development Vector version"
+  fail_arg_invalid "Error: You must supply a \$VECTOR_TEST_VECTOR_DEB_PATH when specifying a development Vector version"
 fi
 
 #

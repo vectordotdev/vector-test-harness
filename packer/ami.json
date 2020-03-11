@@ -1,7 +1,7 @@
 {
   "min_packer_version": "1.5.0",
   "variables": {
-    "ansible_version_vars": "{{env `ANSIBLE_VERSION_VARS`}}"
+    "preinstalled_test_subject_versions_ansible_vars": "{{env `PREINSTALLED_TEST_SUBJECT_VERSIONS_ANSIBLE_VARS`}}"
   },
   "builders": [
     {
@@ -30,8 +30,9 @@
       "type": "ansible",
       "playbook_file": "../ansible/ami.yml",
       "extra_arguments": [
-        "--extra-vars", "{{user `ansible_version_vars`}}",
-        "--extra-vars", "ansible_python_interpreter=/usr/bin/python3"
+        "--extra-vars", "{{user `preinstalled_test_subject_versions_ansible_vars`}}",
+        "--extra-vars", "ansible_python_interpreter=/usr/bin/python3",
+        "-vv"
       ]
     }
   ]

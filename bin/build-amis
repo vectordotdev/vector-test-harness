@@ -1,15 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-#
-# Init
-#
+INIT_LIB_LOAD_PREINSTALLED_TEST_SUBJECT_VERSIONS=true
 
+# Init lib.
 # shellcheck source=SCRIPTDIR/../lib/vector-test-harness/init.sh
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)/../lib/vector-test-harness/init.sh"
-
-# shellcheck source=SCRIPTDIR/test_subjects.sh
-source "${VECTOR_TEST_HARNESS_LIB_ROOT}/test_subjects.sh"
 
 #
 # Usage
@@ -42,7 +38,7 @@ ensure_commad_available "packer" "brew install packer"
 # Variables
 #
 
-prepare_ansible_version_vars
+prepare_preinstalled_test_subject_versions_ansible_vars
 
 #
 # Header
@@ -51,9 +47,9 @@ prepare_ansible_version_vars
 print_vector_logo
 print_divider
 cat <<END
-Test subject versions:
+Test subject versions to bake into the AMI:
 END
-print_test_subject_versions "- "
+print_preinstalled_test_subject_versions "- "
 print_divider
 print_spacer
 
@@ -62,5 +58,5 @@ print_spacer
 #
 
 cd packer
-export ANSIBLE_VERSION_VARS
+export PREINSTALLED_TEST_SUBJECT_VERSIONS_ANSIBLE_VARS
 packer build ami.json

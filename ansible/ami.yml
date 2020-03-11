@@ -21,9 +21,6 @@
     - role: subjects
       action: install
 
-    - role: subjects
-      action: save_facts
-
     - role: tcp_test_server
       action: install
 
