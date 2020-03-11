@@ -6,14 +6,6 @@
 - hosts: '{{ test_namespace }}:&tag_TestRole_subject'
   become: true
   roles:
-    # TODO: rebuild AMI, until then we keep those here.
-    - role: gather_facts
-    - role: python-docker
-      action: install
-    - role: docker
-      action: install
-    - role: docker_socket_access
-
     # We include a TCP server in case the test subject needs it. This
     # is useful for subjects that do not include simpler output means.
     - role: test_servers
