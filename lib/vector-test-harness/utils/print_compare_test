@@ -41,7 +41,7 @@ def metric_row(hashes, name, key, options = {})
   hashes.each do |hash|
     name =
       if $subject_name != ""
-        "#{hash.fetch("short_subject")} (#{hash.fetch("version")})"
+        "#{hash.fetch("version")}"
       else
         "#{hash.fetch("short_subject")}"
       end
