@@ -1,0 +1,12 @@
+---
+- name: "Sending data to {{ ip_address }}:{{ port }} for {{ timeout }} seconds"
+  shell: |
+    timeout {{ timeout }} bash -c "
+      while true
+      do
+        cat {{ file }} | \
+        socat -u - {{ address }};
+      done
+    "
+  register: timeout
+  failed_when: timeout.rc != 124

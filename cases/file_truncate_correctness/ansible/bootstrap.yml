@@ -13,8 +13,8 @@
   roles:
     - role: test_servers
       action: configure
-      http_server_address: "127.0.0.1:{{ http_consumer_port }}"
-      tcp_server_address: "127.0.0.1:{{ tcp_consumer_port }}"
+      http_address: "127.0.0.1:{{ http_consumer_port }}"
+      tcp_address: "127.0.0.1:{{ tcp_consumer_port }}"
 
     - role: fluentbit
       action: configure

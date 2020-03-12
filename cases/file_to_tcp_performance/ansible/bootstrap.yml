@@ -44,15 +44,14 @@
       action: configure
 
   tasks:
-    - name: Remove previous test log file
-      shell: rm -rf {{ test_files_root }}*
-      args:
-        warn: no
-
     - name: "Create {{ test_file_count }} test log files"
-      shell: |
-        flog --format apache_common --bytes {{ test_file_bytes }} \
-        > {{ test_files_root }}{{ item }}.log
+      include_role:
+        name: flog
+      vars:
+        action: create_test_file
+        bytes: {{ test_file_bytes }}
+        location: "{{ test_files_root }}{{ item }}.log"
+        format: text
       with_sequence: count={{ test_file_count }}
 
 - hosts: '{{ test_namespace }}:&tag_TestRole_consumer'
@@ -60,7 +59,7 @@
   roles:
     - role: tcp_test_server
       action: configure
-      server_address: "0.0.0.0:{{ consumer_port }}"
+      address: "0.0.0.0:{{ consumer_port }}"
 
     # We install logstash as a consumer since Filebeat has limited output
     # support. Unsurprisingly, it does not support generic HTTP or TCP outputs

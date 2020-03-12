@@ -6,7 +6,7 @@ Requires=network-online.target
 [Service]
 User=tcp_test_server
 Group=tcp_test_server
-ExecStart=/usr/local/bin/tcp_test_server --address={{ server_address }}
+ExecStart=/usr/local/bin/tcp_test_server --address={{ address }}
 Restart=no
 StandardOutput=syslog
 StandardError=syslog

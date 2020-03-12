@@ -7,3 +7,4 @@
 bytes_per_consumer: 104857600 # 100MiB
 subject_port: 9000
 consumer_port: 9000
+test_file: "/tmp/flog-100MiB.log"
