@@ -4,22 +4,14 @@
 - hosts: '{{ test_namespace }}:&tag_TestRole_subject'
   become: true
   tasks:
-    - name: Remove previous test log file
-      file:
-        path: "{{ test_file_location }}"
-        state: absent
-
-    - name: Create a test log file
-      shell: |
-        flog --format apache_common --bytes 104857600 \
-        > {{ test_file_location }}
-
-    - name: Change test file permissions
-      file:
-        path: "{{ test_file_location }}"
-        owner: root
-        group: root
-        mode: '0774'
+    - name: "Create {{ test_file_count }} test log files"
+      include_role:
+        name: flog
+      vars:
+        action: create_test_file
+        bytes: 104857600
+        location: "{{ test_file_location }}"
+        format: text
 
     - name: Start test servers
       include_role:

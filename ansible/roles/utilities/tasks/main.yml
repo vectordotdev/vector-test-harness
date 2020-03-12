@@ -39,10 +39,10 @@
 
 # socat is a utility for talking directly to sockets.
 # This is useful, e.g., when interacting with the HAProxy stats socket.
-- name: Install socat
-  apt:
+- include_role:
     name: socat
-    state: present
+  vars:
+    action: "install"
 
 # tree is a utility for showing a directory structure as a tree;
 # it's useful when trying to understand the locations of files

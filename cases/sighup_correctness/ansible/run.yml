@@ -8,7 +8,7 @@
         name: tcp_test_server
       vars:
         action: start_and_wait
-        server_port: "{{ consumer_port }}"
+        port: "{{ consumer_port }}"
 
 - hosts: '{{ test_namespace }}:&tag_TestRole_subject'
   become: true

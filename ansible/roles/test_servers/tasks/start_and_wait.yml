@@ -8,10 +8,10 @@
     name: tcp_test_server
   vars:
     action: start_and_wait
-    server_port: "{{ tcp_server_port }}"
+    port: "{{ tcp_port }}"
 
 - include_role:
     name: http_test_server
   vars:
     action: start_and_wait
-    server_port: "{{ http_server_port }}"
+    port: "{{ http_port }}"

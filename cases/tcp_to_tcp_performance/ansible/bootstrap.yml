@@ -13,17 +13,12 @@
 
 - hosts: '{{ test_namespace }}:&tag_TestRole_producer'
   become: true
-  tasks:
-    - name: Remove previous test log file
-      file:
-        path: /tmp/flog-100MiB.log
-        state: absent
-
-    - name: Create 100MiB test log file
-      shell: |
-        flog --format apache_common --bytes 104857600 | \
-          jq -c --raw-input '{msg: .}' \
-          > /tmp/flog-100MiB.log
+  roles:
+    - role: flog
+      action: create_test_file
+      location: "{{ test_file }}"
+      bytes: 104857600
+      format: json
 
 - hosts: '{{ test_namespace }}:&tag_TestRole_subject'
   become: true
@@ -81,4 +76,4 @@
 
     - role: tcp_test_server
       action: configure
-      server_address: "0.0.0.0:{{ consumer_port }}"
+      address: "0.0.0.0:{{ consumer_port }}"

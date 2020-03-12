@@ -40,4 +40,4 @@
   roles:
     - role: tcp_test_server
       action: configure
-      server_address: "0.0.0.0:{{ consumer_port }}"
+      address: "0.0.0.0:{{ consumer_port }}"
