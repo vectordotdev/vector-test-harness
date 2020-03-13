@@ -1,5 +1,5 @@
 ---
-- name: "Sending data to {{ ip_address }}:{{ port }} for {{ timeout }} seconds"
+- name: "Sending data to {{ address }} for {{ timeout }} seconds"
   shell: |
     timeout {{ timeout }} bash -c "
       while true

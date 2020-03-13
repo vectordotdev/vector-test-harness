@@ -82,8 +82,8 @@
 - hosts: '{{ test_namespace }}:&tag_TestRole_consumer'
   become: true
   tasks:
-    - name: Stop {{ consumer_role }}
+    - name: Stop tcp_test_server
       include_role:
-        name: "{{ consumer_role }}"
+        name: tcp_test_server
       vars:
         action: stop

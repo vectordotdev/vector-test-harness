@@ -111,7 +111,6 @@ Subject: ${SUBJECT_NAME}
 Versions: ${SUBJECT_VERSIONS[*]}
 END
 print_divider
-print_spacer
 
 #
 # Execute
@@ -143,8 +142,6 @@ else
 fi
 
 WHERE_CLAUSE="(${TEST_NAME_CONDITION}) AND (${SUBJECT_NAME_CONDITION}) AND (${SUBJECT_VERSION_CONDITION})"
-
-EXECUTION_ID=$(athena_execute_query "MSCK REPAIR TABLE vector_tests")
 
 EXECUTION_ID="$(athena_execute_query "$(cat <<EOF
 WITH
@@ -224,8 +221,6 @@ EOF
 )")"
 
 RESULTS=$(athena_get_results "$EXECUTION_ID")
-
-print_spacer
 
 if [ -z "$TEST_NAME" ]; then
   "$VECTOR_TEST_HARNESS_UTILS_DIR/print_compare_all" "$RESULTS"

@@ -51,8 +51,26 @@ join() {
   d="$1"
   shift
   arr=("$@")
-  last=${arr[${#arr[@]}-1]}
-  unset arr[${#arr[@]}-1]
-  printf -v str "%s$d" "${arr[@]}"
-  printf "%s%s" "$str" "$last"
+  if [ "${#arr[@]}" -gt 1 ]; then
+    last=${arr[${#arr[@]}-1]}
+    unset arr[${#arr[@]}-1]
+    printf -v str "%s$d" "${arr[@]}"
+    printf "%s%s" "$str" "$last"
+  else
+    echo "${arr[0]}"
+  fi
+}
+
+
+spin() {
+  spinner="/|\\-/|\\-"
+  while :
+  do
+    for i in `seq 0 7`
+    do
+      echo -n "${spinner:$i:1}" >&2
+      echo -en "\010" >&2
+      sleep 1
+    done
+  done
 }

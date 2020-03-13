@@ -122,7 +122,7 @@ pivoted_hashes = pivot(hashes)
 
 tp pivoted_hashes
 
-puts ("-" * 109)
+puts ("-" * 80)
 puts "W = winner"
 
 hashes.each do |hash|
