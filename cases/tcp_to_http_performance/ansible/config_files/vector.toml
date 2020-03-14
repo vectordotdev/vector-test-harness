@@ -6,7 +6,7 @@
 [sinks.out]
   inputs   = ["in"]
   type     = "http"
-  uri      = "http://{{ hostvars[groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_consumer'].0].ec2_private_ip_address }}:{{ consumer_port }}"
+  uri      = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
   encoding = "ndjson"
   batch_size    = 102400 # 100kib
   batch_timeout = 5 # 5 seconds

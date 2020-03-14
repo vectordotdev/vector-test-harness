@@ -51,7 +51,7 @@
         action: create_test_file
         bytes: {{ test_file_bytes }}
         location: "{{ test_files_root }}{{ item }}.log"
-        format: text
+        encoding: text
       with_sequence: count={{ test_file_count }}
 
 - hosts: '{{ test_namespace }}:&tag_TestRole_consumer'

@@ -5,13 +5,13 @@
     state: absent
 
 - name: Create 100MiB test JSON log file
-  when: format is "json"
+  when: encoding is "json"
   shell: |
-    flog --format apache_common --bytes {{ bytes }} | \
+    flog --format {{ format }} --bytes {{ bytes }} | \
       jq -c --raw-input '{msg: .}' \
       > {{ location }}
 
 - name: Create 100MiB test text log file
-  when: format is "text"
+  when: encoding is "text"
   shell: |
-    flog --format apache_common --bytes {{ bytes }} > {{ location }}
+    flog --format {{ format }} --bytes {{ bytes }} > {{ location }}

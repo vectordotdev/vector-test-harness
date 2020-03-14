@@ -1,0 +1,89 @@
+---
+- import_playbook: reset.yml
+
+- hosts: '{{ test_namespace }}'
+  become: true
+  tasks:
+    - set_fact:
+        subject_instance: "{{ hostvars[groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_subject'].0] }}"
+
+- hosts: '{{ test_namespace }}:&tag_TestRole_consumer'
+  become: true
+  tasks:
+    - include_role:
+        name: http_test_server
+      vars:
+        action: start_and_wait
+        port: "{{ consumer_port }}"
+
+- hosts: '{{ test_namespace }}:&tag_TestRole_subject'
+  become: true
+  tasks:
+    - name: Start {{ test_subject }}
+      include_role:
+        name: "{{ test_subject }}"
+      vars:
+        action: start
+
+- hosts: '{{ test_namespace }}:&tag_TestRole_producer'
+  become: true
+  tasks:
+    - name: Wait for port {{ subject_instance.ec2_private_ip_address }}:{{ subject_port }} to become available
+      wait_for:
+        host: "{{ subject_instance.ec2_private_ip_address }}"
+        port: "{{ subject_port }}"
+        delay: 1
+
+    - name: Warmup {{ test_subject }}
+      include_role:
+        name: socat
+      vars:
+        action: send
+        address: "tcp:{{ subject_instance.ec2_private_ip_address }}:{{ subject_port }}"
+        file: "{{ test_file }}"
+        timeout: 10
+
+- hosts: '{{ test_namespace }}:&tag_TestRole_subject'
+  become: true
+  tasks:
+    - name: Start profiling {{ test_subject }}
+      include_role:
+        name: profiling
+      vars:
+        action: start
+
+- hosts: '{{ test_namespace }}:&tag_TestRole_producer'
+  become: true
+  tasks:
+    - name: Pipe test data to {{ test_subject }}
+      include_role:
+        name: socat
+      vars:
+        action: send
+        address: "tcp:{{ subject_instance.ec2_private_ip_address }}:{{ subject_port }}"
+        file: "{{ test_file }}"
+        timeout: 60
+
+- hosts: '{{ test_namespace }}:&tag_TestRole_subject'
+  become: true
+  tasks:
+    - name: Stop profiling {{ test_subject }}
+      include_role:
+        name: profiling
+      vars:
+        action: stop
+
+    - name: Stop {{ test_subject }}
+      include_role:
+        name: "{{ test_subject }}"
+      vars:
+        action: stop
+
+- hosts: '{{ test_namespace }}:&tag_TestRole_consumer'
+  become: true
+  tasks:
+    - name: Stop http_test_server
+      include_role:
+        name: http_test_server
+      vars:
+        action: stop

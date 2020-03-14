@@ -11,7 +11,7 @@
         action: create_test_file
         bytes: 104857600
         location: "{{ test_file_location }}"
-        format: text
+        encoding: text
 
     - name: Start test servers
       include_role:

@@ -1,0 +1,77 @@
+---
+- hosts: '{{ test_namespace }}'
+  tasks:
+    - meta: refresh_inventory
+    - name: Wait 600 seconds for target connection to become reachable/usable
+      wait_for_connection:
+
+- hosts: '{{ test_namespace }}'
+  become: true
+  tasks:
+    - set_fact:
+        consumer_instance: "{{ hostvars[groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_consumer'].0] }}"
+
+- hosts: '{{ test_namespace }}:&tag_TestRole_producer[0]'
+  become: true
+  tasks:
+    - name: Create API logs
+      shell: |
+        for i in $(seq 1 {{ lines_per_consumer }}); do
+          echo "<118>3 2020-03-13T20:45:38.119Z my.host.com company-api 2004 ID960 - {"key": "val"}
+        done
+
+- hosts: '{{ test_namespace }}:&tag_TestRole_producer[1]'
+  become: true
+  tasks:
+    - name: Create Admin logs
+      shell: |
+        for i in $(seq 1 {{ lines_per_consumer }}); do
+          echo "<118>3 2020-03-13T20:45:38.119Z my.host.com company-admin 2004 ID960 - {"key": "val"}
+        done
+
+- hosts: '{{ test_namespace }}:&tag_TestRole_producer[2]'
+  become: true
+  tasks:
+    - name: Create Media Proxy logs
+      shell: |
+        for i in $(seq 1 {{ lines_per_consumer }}); do
+          echo "<118>3 2020-03-13T20:45:38.119Z my.host.com company-media-proxy 2004 ID960 - {"key": "val"}
+        done
+
+- hosts: '{{ test_namespace }}:&tag_TestRole_producer[3]'
+  become: true
+  tasks:
+    - name: Create Unfurler logs
+      shell: |
+        for i in $(seq 1 {{ lines_per_consumer }}); do
+          echo "<118>3 2020-03-13T20:45:38.119Z my.host.com company-unfurler 2004 ID960 - {"key": "val"}
+        done
+
+- hosts: '{{ test_namespace }}:&tag_TestRole_producer[4]'
+  become: true
+  tasks:
+    - name: Create audit logs
+      shell: |
+        for i in $(seq 1 {{ lines_per_consumer }}); do
+          echo "<118>3 2020-03-13T20:45:38.119Z my.host.com audit 2004 ID960 - not JSON
+        done
+
+- hosts: '{{ test_namespace }}:&tag_TestRole_subject'
+  become: true
+  strategy: free
+  roles:
+    - role: profiling
+      action: install
+
+    - role: vector
+      action: install
+
+    - role: vector
+      action: configure
+
+- hosts: '{{ test_namespace }}:&tag_TestRole_consumer'
+  become: true
+  roles:
+    - role: http_test_server
+      action: configure
+      address: "0.0.0.0:{{ consumer_port }}"
