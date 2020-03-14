@@ -5,7 +5,7 @@
 # configuration instead.
 producer_instance_type  = "c5.large"
 producer_instance_count = 5
-subject_instance_type   = "c5.large"
+subject_instance_type   = "c5.xlarge"
 subject_port            = 9000
 consumer_instance_type  = "c5d.2xlarge" # slighly larger to ensure it is not a bottleneck
 consumer_port           = 9000

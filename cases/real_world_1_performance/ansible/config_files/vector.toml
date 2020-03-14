@@ -64,12 +64,12 @@ host = "hostname"
 # "metadata.channel_id" = "metadata_channel_id"
 # "metadata.method" = "metadata_method"
 
-[sinks.company_api_clickhouse]
+[sinks.company_api_http]
 type = "http"
 inputs = ["company_api_rename"]
 uri = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
 
-[sinks.company_api_clickhouse.encoding]
+[sinks.company_api_http.encoding]
 except_fields = ["metadata.shard[0]", "metadata.shard[1]"]
 only_fields = [
     "time",
@@ -96,17 +96,17 @@ only_fields = [
 ]
 timestamp_format = "unix"
 
-[sinks.company_api_clickhouse.request]
+[sinks.company_api_http.request]
 in_flight_limit = 100
 rate_limit_duration_secs = 5
 rate_limit_num = 60
 
-[sinks.company_api_clickhouse.buffer]
+[sinks.company_api_http.buffer]
 type = "memory"
 max_events = 5000
 when_full = "block"
 
-[sinks.company_api_clickhouse.batch]
+[sinks.company_api_http.batch]
 max_size = 5245000
 timeout_secs = 5
 
@@ -153,12 +153,12 @@ host = "hostname"
 # "metadata.trace_id" = "metadata_trace_id"
 # "metadata.method" = "metadata_method"
 
-[sinks.company_admin_clickhouse]
+[sinks.company_admin_http]
 type = "http"
 inputs = ["company_admin_rename"]
 uri = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
 
-[sinks.company_admin_clickhouse.encoding]
+[sinks.company_admin_http.encoding]
 only_fields = [
     "time",
     "endpoint",
@@ -213,12 +213,12 @@ inputs = ["company_media_proxy_timestamp"]
 ts = "time"
 host = "hostname"
 
-[sinks.company_media_proxy_clickhouse]
-type = "clickhouse"
+[sinks.company_media_proxy_http]
+type = "http"
 inputs = ["company_media_proxy_rename"]
 uri = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
 
-[sinks.company_media_proxy_clickhouse.encoding]
+[sinks.company_media_proxy_http.encoding]
 only_fields = [
     "time",
     "hostname",
@@ -242,17 +242,17 @@ only_fields = [
 ]
 timestamp_format = "unix"
 
-[sinks.company_media_proxy_clickhouse.request]
+[sinks.company_media_proxy_http.request]
 in_flight_limit = 100
 rate_limit_duration_secs = 5
 rate_limit_num = 60
 
-[sinks.company_media_proxy_clickhouse.buffer]
+[sinks.company_media_proxy_http.buffer]
 type = "memory"
 max_events = 5000
 when_full = "block"
 
-[sinks.company_media_proxy_clickhouse.batch]
+[sinks.company_media_proxy_http.batch]
 max_size = 5245000
 timeout_secs = 5
 
@@ -298,22 +298,21 @@ inputs = ["company_unfurler_rename"]
 field = "msg"
 value = "unfurl"
 
-[sinks.company_unfurler_clickhouse]
-type = "clickhouse"
+[sinks.company_unfurler_http]
+type = "http"
 inputs = ["company_unfurler_filter"]
-host = "{{ clickhouse_host }}"
-table = "company_unfurler"
+uri = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
 
-[sinks.company_unfurler_clickhouse.encoding]
+[sinks.company_unfurler_http.encoding]
 only_fields = ["time", "hostname", "host", "url", "msg", "success"]
 timestamp_format = "unix"
 
-[sinks.company_unfurler_clickhouse.request]
+[sinks.company_unfurler_http.request]
 in_flight_limit = 100
 rate_limit_duration_secs = 5
 rate_limit_num = 60
 
-[sinks.company_unfurler_clickhouse.buffer]
+[sinks.company_unfurler_http.buffer]
 type = "memory"
 max_events = 5000
 when_full = "block"
@@ -345,21 +344,21 @@ host = "hostname"
 message = "content"
 timestamp = "time"
 
-[sinks.audit_clickhouse]
+[sinks.audit_http]
 type = "http"
 inputs = ["audit_rename"]
 uri = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
 
-[sinks.audit_clickhouse.encoding]
+[sinks.audit_http.encoding]
 only_fields = ["time", "hostname", "content", "tag", "pid"]
 timestamp_format = "unix"
 
-[sinks.audit_clickhouse.request]
+[sinks.audit_http.request]
 in_flight_limit = 100
 rate_limit_duration_secs = 5
 rate_limit_num = 60
 
-[sinks.audit_clickhouse.buffer]
+[sinks.audit_http.buffer]
 type = "memory"
 max_events = 5000
 when_full = "block"
