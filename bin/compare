@@ -122,8 +122,6 @@ print_divider
 #
 
 if [[ "$REPAIR" == "true" ]]; then
-  print_section_header "Repairing & discovering new partitions on the Athena table"
-
   EXECUTION_ID=$(athena_execute_query "MSCK REPAIR TABLE vector_tests")
 fi
 

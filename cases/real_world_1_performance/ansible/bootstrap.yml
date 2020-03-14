@@ -60,14 +60,12 @@
   become: true
   strategy: free
   roles:
-    - role: profiling
-      action: install
-
     - role: vector
       action: install
 
     - role: vector
       action: configure
+      configuration_file: "config_files/{{ vector_config_file }}"
 
 - hosts: '{{ test_namespace }}:&tag_TestRole_consumer'
   become: true

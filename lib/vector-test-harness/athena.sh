@@ -33,13 +33,14 @@ athena_wait_for_query() {
     [ "$QUERY_STATUS" == "FAILED" ] ||
     [ "$QUERY_STATUS" == "CANCELLED" ]; do
 
-    if [[ "$i" == "3" ]]; then
-      echo -ne "\b\b\b   \b\b\b" >&2
-    fi
-
     echo -ne "." >&2
     sleep 0.25
     i=$((i+1))
+
+    if [[ "$i" == "3" ]]; then
+      echo -ne "\b\b\b   \b\b\b" >&2
+      i=0
+    fi
 
     local RESULT
     RESULT="$(aws athena get-query-execution --query-execution-id "$EXECUTION_ID")"

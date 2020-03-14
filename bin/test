@@ -201,7 +201,10 @@ if [ "$BOOTSTRAP" == 'true' ] && [ "$SKIP_TERRAFORM" != 'true' ]; then
 
   cd terraform
 
-  terraform init -input=false \
+  terraform init \
+    -input=false \
+    -force-copy \
+    -get=true \
     -backend-config="bucket=vector-test-harness-state" \
     -backend-config="region=us-east-1" \
     -backend-config="encrypt=true" \
@@ -209,7 +212,9 @@ if [ "$BOOTSTRAP" == 'true' ] && [ "$SKIP_TERRAFORM" != 'true' ]; then
     -backend-config="key=vector-test-case/$TEST_NAME/$TEST_CONFIGURATION/$TEST_USER_ID.tfstate" \
     "${TERRAFORM_INIT_EXTRA_ARGS[@]}"
 
-  terraform apply -input=false -auto-approve \
+  terraform apply \
+    -input=false \
+    -auto-approve \
     -var pub_key="$TEST_SSH_PUBLIC_KEY" \
     -var test_name="$TEST_NAME" \
     -var test_configuration="$TEST_CONFIGURATION" \

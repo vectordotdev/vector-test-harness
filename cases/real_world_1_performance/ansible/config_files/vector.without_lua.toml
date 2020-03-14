@@ -42,27 +42,17 @@ separator = "."
 [transforms.company_api_timestamp.types]
 timestamp = "timestamp|%s"
 
-[transforms.company_api_metadata]
-type = "lua"
-inputs = ["company_api_timestamp"]
-source = """
-event["metadata_trace_id"] = event["metadata.trace_id"]
-event["metadata_guild_id"] = event["metadata.guild_id"]
-event["metadata_channel_id"] = event["metadata.channel_id"]
-event["metadata_method"] = event["metadata.method"]
-"""
-
 [transforms.company_api_rename]
 type = "rename_fields"
-inputs = ["company_api_metadata"]
+inputs = ["company_api_timestamp"]
 
 [transforms.company_api_rename.fields]
 timestamp = "time"
 host = "hostname"
-# "metadata.trace_id" = "metadata_trace_id"
-# "metadata.guild_id" = "metadata_guild_id"
-# "metadata.channel_id" = "metadata_channel_id"
-# "metadata.method" = "metadata_method"
+"metadata.trace_id" = "metadata_trace_id"
+"metadata.guild_id" = "metadata_guild_id"
+"metadata.channel_id" = "metadata_channel_id"
+"metadata.method" = "metadata_method"
 
 [sinks.company_api_http]
 type = "http"
@@ -136,23 +126,15 @@ separator = "."
 [transforms.company_admin_timestamp.types]
 timestamp = "timestamp|%s"
 
-[transforms.company_admin_metadata]
-type = "lua"
-inputs = ["company_admin_timestamp"]
-source = """
-event["metadata_trace_id"] = event["metadata.trace_id"]
-event["metadata_method"] = event["metadata.method"]
-"""
-
 [transforms.company_admin_rename]
 type = "rename_fields"
-inputs = ["company_admin_metadata"]
+inputs = ["company_admin_timestamp"]
 
 [transforms.company_admin_rename.fields]
 timestamp = "time"
 host = "hostname"
-# "metadata.trace_id" = "metadata_trace_id"
-# "metadata.method" = "metadata_method"
+"metadata.trace_id" = "metadata_trace_id"
+"metadata.method" = "metadata_method"
 
 [sinks.company_admin_http]
 type = "http"

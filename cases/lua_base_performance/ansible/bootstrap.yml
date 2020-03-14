@@ -24,9 +24,6 @@
   become: true
   strategy: free
   roles:
-    - role: profiling
-      action: install
-
     - role: vector
       action: install
 

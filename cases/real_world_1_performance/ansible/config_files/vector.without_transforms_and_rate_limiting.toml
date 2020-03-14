@@ -27,46 +27,9 @@ inputs = ["in"]
 field = "appname"
 value = "company-api"
 
-[transforms.company_api_json]
-type = "json_parser"
-inputs = ["company_api"]
-drop_invalid = true
-
-[transforms.company_api_timestamp]
-type = "split"
-inputs = ["company_api_json"]
-field = "timestamp"
-field_names = ["timestamp"]
-separator = "."
-
-[transforms.company_api_timestamp.types]
-timestamp = "timestamp|%s"
-
-[transforms.company_api_metadata]
-type = "lua"
-inputs = ["company_api_timestamp"]
-source = """
-event["metadata_trace_id"] = event["metadata.trace_id"]
-event["metadata_guild_id"] = event["metadata.guild_id"]
-event["metadata_channel_id"] = event["metadata.channel_id"]
-event["metadata_method"] = event["metadata.method"]
-"""
-
-[transforms.company_api_rename]
-type = "rename_fields"
-inputs = ["company_api_metadata"]
-
-[transforms.company_api_rename.fields]
-timestamp = "time"
-host = "hostname"
-# "metadata.trace_id" = "metadata_trace_id"
-# "metadata.guild_id" = "metadata_guild_id"
-# "metadata.channel_id" = "metadata_channel_id"
-# "metadata.method" = "metadata_method"
-
 [sinks.company_api_http]
 type = "http"
-inputs = ["company_api_rename"]
+inputs = ["company_api"]
 uri = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
 
 [sinks.company_api_http.encoding]
@@ -98,9 +61,9 @@ only_fields = [
 timestamp_format = "unix"
 
 [sinks.company_api_http.request]
-in_flight_limit = 100
+in_flight_limit = 1000
 rate_limit_duration_secs = 5
-rate_limit_num = 60
+rate_limit_num = 1000
 
 [sinks.company_api_http.buffer]
 type = "memory"
@@ -121,42 +84,9 @@ inputs = ["in"]
 field = "appname"
 value = "company-admin"
 
-[transforms.company_admin_json]
-type = "json_parser"
-inputs = ["company_admin"]
-drop_invalid = true
-
-[transforms.company_admin_timestamp]
-type = "split"
-inputs = ["company_admin_json"]
-field = "timestamp"
-field_names = ["timestamp"]
-separator = "."
-
-[transforms.company_admin_timestamp.types]
-timestamp = "timestamp|%s"
-
-[transforms.company_admin_metadata]
-type = "lua"
-inputs = ["company_admin_timestamp"]
-source = """
-event["metadata_trace_id"] = event["metadata.trace_id"]
-event["metadata_method"] = event["metadata.method"]
-"""
-
-[transforms.company_admin_rename]
-type = "rename_fields"
-inputs = ["company_admin_metadata"]
-
-[transforms.company_admin_rename.fields]
-timestamp = "time"
-host = "hostname"
-# "metadata.trace_id" = "metadata_trace_id"
-# "metadata.method" = "metadata_method"
-
 [sinks.company_admin_http]
 type = "http"
-inputs = ["company_admin_rename"]
+inputs = ["company_admin"]
 uri = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
 
 [sinks.company_admin_http.encoding]
@@ -182,6 +112,20 @@ only_fields = [
 ]
 timestamp_format = "unix"
 
+[sinks.company_admin_http.request]
+in_flight_limit = 1000
+rate_limit_duration_secs = 5
+rate_limit_num = 1000
+
+[sinks.company_admin_http.buffer]
+type = "memory"
+max_events = 5000
+when_full = "block"
+
+[sinks.company_admin_http.batch]
+max_size = 5245000
+timeout_secs = 5
+
 ##
 ## company-media-proxy
 ##
@@ -192,32 +136,9 @@ inputs = ["in"]
 field = "appname"
 value = "company-media-proxy"
 
-[transforms.company_media_proxy_json]
-type = "json_parser"
-inputs = ["company_media_proxy"]
-drop_invalid = true
-
-[transforms.company_media_proxy_timestamp]
-type = "split"
-inputs = ["company_media_proxy_json"]
-field = "ts"
-field_names = ["ts"]
-separator = "."
-
-[transforms.company_media_proxy_timestamp.types]
-ts = "timestamp|%s"
-
-[transforms.company_media_proxy_rename]
-type = "rename_fields"
-inputs = ["company_media_proxy_timestamp"]
-
-[transforms.company_media_proxy_rename.fields]
-ts = "time"
-host = "hostname"
-
 [sinks.company_media_proxy_http]
 type = "http"
-inputs = ["company_media_proxy_rename"]
+inputs = ["company_media_proxy"]
 uri = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
 
 [sinks.company_media_proxy_http.encoding]
@@ -246,9 +167,9 @@ only_fields = [
 timestamp_format = "unix"
 
 [sinks.company_media_proxy_http.request]
-in_flight_limit = 100
+in_flight_limit = 1000
 rate_limit_duration_secs = 5
-rate_limit_num = 60
+rate_limit_num = 1000
 
 [sinks.company_media_proxy_http.buffer]
 type = "memory"
@@ -269,41 +190,9 @@ inputs = ["in"]
 field = "appname"
 value = "company-unfurler"
 
-[transforms.company_unfurler_hostname]
-type = "rename_fields"
-inputs = ["company_unfurler"]
-
-[transforms.company_unfurler_hostname.fields]
-host = "hostname"
-
-[transforms.company_unfurler_json]
-type = "json_parser"
-inputs = ["company_unfurler_hostname"]
-drop_invalid = true
-
-[transforms.company_unfurler_timestamp]
-type = "coercer"
-inputs = ["company_unfurler_json"]
-
-[transforms.company_unfurler_timestamp.types]
-ts = "timestamp"
-
-[transforms.company_unfurler_rename]
-type = "rename_fields"
-inputs = ["company_unfurler_timestamp"]
-
-[transforms.company_unfurler_rename.fields]
-ts = "time"
-
-[transforms.company_unfurler_filter]
-type = "field_filter"
-inputs = ["company_unfurler_rename"]
-field = "msg"
-value = "unfurl"
-
 [sinks.company_unfurler_http]
 type = "http"
-inputs = ["company_unfurler_filter"]
+inputs = ["company_unfurler"]
 uri = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
 
 [sinks.company_unfurler_http.encoding]
@@ -312,9 +201,9 @@ only_fields = ["time", "hostname", "host", "url", "msg", "success"]
 timestamp_format = "unix"
 
 [sinks.company_unfurler_http.request]
-in_flight_limit = 100
+in_flight_limit = 1000
 rate_limit_duration_secs = 5
-rate_limit_num = 60
+rate_limit_num = 1000
 
 [sinks.company_unfurler_http.buffer]
 type = "memory"
@@ -331,26 +220,9 @@ inputs = ["in"]
 field = "appname"
 value = "audit"
 
-[transforms.audit_timestamp]
-type = "coercer"
-inputs = ["audit"]
-
-[transforms.audit_timestamp.types]
-timestamp = "timestamp"
-
-[transforms.audit_rename]
-type = "rename_fields"
-inputs = ["audit_timestamp"]
-
-[transforms.audit_rename.fields]
-appname = "tag"
-host = "hostname"
-message = "content"
-timestamp = "time"
-
 [sinks.audit_http]
 type = "http"
-inputs = ["audit_rename"]
+inputs = ["audit"]
 uri = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
 
 [sinks.audit_http.encoding]
@@ -359,9 +231,9 @@ only_fields = ["time", "hostname", "content", "tag", "pid"]
 timestamp_format = "unix"
 
 [sinks.audit_http.request]
-in_flight_limit = 100
+in_flight_limit = 1000
 rate_limit_duration_secs = 5
-rate_limit_num = 60
+rate_limit_num = 1000
 
 [sinks.audit_http.buffer]
 type = "memory"
