@@ -1,6 +1,5 @@
 ---
 profiling_results_s3_bucket: '{{ results_s3_bucket_name | mandatory }}'
 profiling_test_subject_version: '{{ lookup("vars", test_subject + "_version", default = ansible_local["subjects"][test_subject]["preinstalled_version"]) }}'
-profiling_results_s3_dir: |
-  name={{ test_name | urlencode }}/configuration={{ test_configuration | urlencode }}/subject={{ test_subject | urlencode }}/version={{ profiling_test_subject_version | trim | urlencode }}/timestamp={{ test_timestamp | urlencode }}/hostname={{ inventory_hostname | urlencode }}
+profiling_results_s3_dir: 'name={{ test_name | replace("/", "%2F") }}/configuration={{ test_configuration | replace("/", "%2F") }}/subject={{ test_subject | replace("/", "%2F") }}/version={{ profiling_test_subject_version | trim | replace("/", "%2F") }}/timestamp={{ test_timestamp | replace("/", "%2F") }}/hostname={{ inventory_hostname | replace("/", "%2F") }}'
 profiling_results_s3_url: 's3://{{ profiling_results_s3_bucket }}/{{ profiling_results_s3_dir | trim }}/dstat.csv'

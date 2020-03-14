@@ -312,11 +312,6 @@ cd ..
 # Footer
 #
 
-# Discover new partitions to ensure querying has the latest data.
-print_section_header "Discovering new partitions on the Athena table"
-
-EXECUTION_ID=$(athena_execute_query "MSCK REPAIR TABLE vector_tests")
-
 print_divider
 
 cat <<END

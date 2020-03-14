@@ -70,6 +70,7 @@ inputs = ["company_api_rename"]
 uri = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
 
 [sinks.company_api_http.encoding]
+codec = "json"
 except_fields = ["metadata.shard[0]", "metadata.shard[1]"]
 only_fields = [
     "time",
@@ -159,6 +160,7 @@ inputs = ["company_admin_rename"]
 uri = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
 
 [sinks.company_admin_http.encoding]
+codec = "json"
 only_fields = [
     "time",
     "endpoint",
@@ -219,6 +221,7 @@ inputs = ["company_media_proxy_rename"]
 uri = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
 
 [sinks.company_media_proxy_http.encoding]
+codec = "json"
 only_fields = [
     "time",
     "hostname",
@@ -304,6 +307,7 @@ inputs = ["company_unfurler_filter"]
 uri = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
 
 [sinks.company_unfurler_http.encoding]
+codec = "json"
 only_fields = ["time", "hostname", "host", "url", "msg", "success"]
 timestamp_format = "unix"
 
@@ -350,6 +354,7 @@ inputs = ["audit_rename"]
 uri = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
 
 [sinks.audit_http.encoding]
+codec = "json"
 only_fields = ["time", "hostname", "content", "tag", "pid"]
 timestamp_format = "unix"
 

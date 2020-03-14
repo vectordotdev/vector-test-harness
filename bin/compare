@@ -43,6 +43,7 @@ ensure_echanced_getopt_available
 #
 
 PERCENTAGES="true"
+REPAIR="false"
 SUBJECT_NAME=""
 SUBJECT_VERSIONS=()
 TEST_CONFIGURATION="default"
@@ -52,8 +53,8 @@ TEST_NAME=""
 # Flags
 #
 
-OPTIONS="c:ps:t:v:"
-LONGOPTS="configuration:,percentage,subject:,test:,version:"
+OPTIONS="c:prs:t:v:"
+LONGOPTS="configuration:,percentage,repair,subject:,test:,version:"
 PARSED="$(parse_arguments "$OPTIONS" "$LONGOPTS" "$0" "$@")"
 eval set -- "$PARSED"
 
@@ -65,6 +66,10 @@ while true; do
     ;;
   -p | --percentages)
     PERCENTAGES="true"
+    shift
+    ;;
+  -r | --repair)
+    REPAIR="true"
     shift
     ;;
   -s | --subject)
@@ -111,6 +116,16 @@ Subject: ${SUBJECT_NAME}
 Versions: ${SUBJECT_VERSIONS[*]}
 END
 print_divider
+
+#
+# Repair
+#
+
+if [[ "$REPAIR" == "true" ]]; then
+  print_section_header "Repairing & discovering new partitions on the Athena table"
+
+  EXECUTION_ID=$(athena_execute_query "MSCK REPAIR TABLE vector_tests")
+fi
 
 #
 # Execute
