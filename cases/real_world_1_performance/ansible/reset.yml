@@ -1,0 +1,12 @@
+---
+- hosts: '{{ test_namespace }}:&tag_TestRole_subject'
+  become: true
+  roles:
+    - role: vector
+      action: reset
+
+- hosts: '{{ test_namespace }}:&tag_TestRole_consumer'
+  become: true
+  roles:
+    - role: http_test_server
+      action: reset

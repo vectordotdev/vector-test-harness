@@ -1,0 +1,86 @@
+#                                    __   __  __
+#                                    \ \ / / / /
+#                                     \ V / / /
+#                                      \_/  \/
+#
+#                                    V E C T O R
+#                                   Configuration
+#
+# ------------------------------------------------------------------------------
+# Website: https://vector.dev
+# Docs: https://docs.vector.dev/configuration
+# ------------------------------------------------------------------------------
+data_dir = "/var/lib/vector"
+
+[sources.in]
+type = "syslog"
+mode = "tcp"
+address = "0.0.0.0:{{ subject_port }}"
+
+##
+## company-api
+##
+
+[transforms.company_api]
+type = "field_filter"
+inputs = ["in"]
+field = "appname"
+value = "company-api"
+
+[sinks.company_api_http]
+type = "http"
+inputs = ["company_api"]
+uri = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
+
+[sinks.company_api_http.encoding]
+codec = "ndjson"
+except_fields = ["metadata.shard[0]", "metadata.shard[1]"]
+only_fields = [
+    "time",
+    "endpoint",
+    "hostname",
+    "http_cf_ray",
+    "http_debug_options",
+    "http_content_length",
+    "http_method",
+    "http_referrer",
+    "http_remote_addr",
+    "http_response_time",
+    "http_route",
+    "http_status_code",
+    "http_user_agent",
+    "http_version",
+    "ip_country",
+    "ip_metro",
+    "user_id",
+    "metadata_trace_id",
+    "metadata_guild_id",
+    "metadata_channel_id",
+    "metadata_method",
+]
+timestamp_format = "unix"
+
+[sinks.company_api_http.request]
+in_flight_limit = 100
+rate_limit_duration_secs = 5
+rate_limit_num = 60
+
+[sinks.company_api_http.buffer]
+type = "memory"
+max_events = 5000
+when_full = "block"
+
+[sinks.company_api_http.batch]
+max_size = 5245000
+timeout_secs = 5
+
+##
+## Debug
+##
+
+# [sinks.out]
+# inputs = [
+#   "in"
+# ]
+# type = "console"
+# encoding = "json"

@@ -1,0 +1,11 @@
+---
+- name: Remove previous test log file
+  file:
+    path: "{{ location }}"
+    state: absent
+
+- name: Create test log file
+  shell: |
+    yes '{{ line }}' | \
+    head -n {{ line_count }} > \
+    {{ location }}

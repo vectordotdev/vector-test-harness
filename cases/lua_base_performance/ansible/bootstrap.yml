@@ -18,15 +18,12 @@
       action: create_test_file
       location: "{{ test_file }}"
       bytes: 104857600
-      format: json
+      encoding: json
 
 - hosts: '{{ test_namespace }}:&tag_TestRole_subject'
   become: true
   strategy: free
   roles:
-    - role: profiling
-      action: install
-
     - role: vector
       action: install
 

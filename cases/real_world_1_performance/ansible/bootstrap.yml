@@ -1,0 +1,75 @@
+---
+- hosts: '{{ test_namespace }}'
+  tasks:
+    - meta: refresh_inventory
+    - name: Wait 600 seconds for target connection to become reachable/usable
+      wait_for_connection:
+
+- hosts: '{{ test_namespace }}'
+  become: true
+  tasks:
+    - set_fact:
+        consumer_instance: "{{ hostvars[groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_consumer'].0] }}"
+
+- hosts: '{{ test_namespace }}:&tag_TestRole_producer[0]'
+  become: true
+  roles:
+    - role: head
+      action: create_test_file
+      location: "{{ test_file }}"
+      line_count: "{{ lines_per_consumer }}"
+      line: '<118>3 2020-03-13T20:45:38.119Z my.host.com company-api 2004 ID960 - {"metadata": {"trace_id": "trace123", "guide_id": "guild123", "channel_id": "channel123", "method": "method"}}'
+
+- hosts: '{{ test_namespace }}:&tag_TestRole_producer[1]'
+  become: true
+  roles:
+    - role: head
+      action: create_test_file
+      location: "{{ test_file }}"
+      line_count: "{{ lines_per_consumer }}"
+      line: '<118>3 2020-03-13T20:45:38.119Z my.host.com company-admin 2004 ID960 - {"metadata": {"trace_id": "trace123", "guide_id": "guild123", "channel_id": "channel123", "method": "method"}}'
+
+- hosts: '{{ test_namespace }}:&tag_TestRole_producer[2]'
+  become: true
+  roles:
+    - role: head
+      action: create_test_file
+      location: "{{ test_file }}"
+      line_count: "{{ lines_per_consumer }}"
+      line: '<118>3 2020-03-13T20:45:38.119Z my.host.com company-media-proxy 2004 ID960 - {"ts": "2020-03-13T20:45:38.119Z"}'
+
+- hosts: '{{ test_namespace }}:&tag_TestRole_producer[3]'
+  become: true
+  roles:
+    - role: head
+      action: create_test_file
+      location: "{{ test_file }}"
+      line_count: "{{ lines_per_consumer }}"
+      line: '<118>3 2020-03-13T20:45:38.119Z my.host.com company-unfurler 2004 ID960 - {"ts": "2020-03-13T20:45:38.119Z", "msg": "unfurl"}'
+
+- hosts: '{{ test_namespace }}:&tag_TestRole_producer[4]'
+  become: true
+  roles:
+    - role: head
+      action: create_test_file
+      location: "{{ test_file }}"
+      line_count: "{{ lines_per_consumer }}"
+      line: '<118>3 2020-03-13T20:45:38.119Z my.host.com audit 2004 ID960 - This is an audit log'
+
+- hosts: '{{ test_namespace }}:&tag_TestRole_subject'
+  become: true
+  strategy: free
+  roles:
+    - role: vector
+      action: install
+
+    - role: vector
+      action: configure
+      configuration_file: "config_files/{{ vector_config_file }}"
+
+- hosts: '{{ test_namespace }}:&tag_TestRole_consumer'
+  become: true
+  roles:
+    - role: http_test_server
+      action: configure
+      address: "0.0.0.0:{{ consumer_port }}"

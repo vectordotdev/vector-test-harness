@@ -25,27 +25,29 @@ athena_execute_query() {
 athena_wait_for_query() {
   local EXECUTION_ID="$1"
   local QUERY_STATUS=""
+  let i=0
 
-  printf "Executing query..." >&2
-
-  spin &
-  SPIN_PID=$!
-  trap "kill -9 $SPIN_PID" `seq 0 15`
+  echo -ne "Executing query" >&2
 
   until [ "$QUERY_STATUS" == "SUCCEEDED" ] ||
     [ "$QUERY_STATUS" == "FAILED" ] ||
     [ "$QUERY_STATUS" == "CANCELLED" ]; do
 
+    echo -ne "." >&2
     sleep 0.25
+    i=$((i+1))
+
+    if [[ "$i" == "3" ]]; then
+      echo -ne "\b\b\b   \b\b\b" >&2
+      i=0
+    fi
 
     local RESULT
     RESULT="$(aws athena get-query-execution --query-execution-id "$EXECUTION_ID")"
     QUERY_STATUS="$(echo "$RESULT" | jq -r ".QueryExecution.Status.State")"
-    i=i+1
   done
 
-  kill -9 $SPIN_PID 2>/dev/null
-  printf "\r                    \r" >&2
+  echo -ne "\r                        \r" >&2
 }
 
 athena_get_results() {
