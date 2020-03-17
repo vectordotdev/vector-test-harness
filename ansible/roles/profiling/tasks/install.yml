@@ -18,6 +18,11 @@
   apt:
     deb: '{{ temp_deb.path }}/dstat_0.7.2-4_all.deb'
 
+- name: Mark dstat as hold at dpkg
+  dpkg_selections:
+    name: dstat
+    selection: hold
+
 - name: Clear temp dir
   file:
     path: "{{ temp_deb.path }}"
