@@ -1,4 +1,13 @@
 ---
+- name: Capture dstat version
+  shell: "dstat --version | head -n 1"
+  register: dstat_version
+
+- name: Fail if dstat is not the correct version
+  fail:
+    msg: "Only Dstat 0.7.2 is allowed, you have {{ dstat_version }} installed"
+  when: dstat_version != "Dstat 0.7.2"
+
 - name: Remove previous /tmp/dstat.csv
   file:
     path: /tmp/dstat.csv
