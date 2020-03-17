@@ -23,6 +23,7 @@ OPTIONS
    -s, --subject        The subject name (ex: vector,fluentbit,etc)
    -t, --test           The test name (ex: tcp_to_blackhole,etc)
    -v, --version        The subject version(s) to compare (ex: tcp_to_blackhole,etc)
+   -r, --repair         Detect new test results before running the comparison.
 
 EXAMPLES
    ./compare -t tcp_to_tcp_performance
