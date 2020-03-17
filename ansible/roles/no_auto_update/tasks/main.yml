@@ -4,6 +4,8 @@
     state: stopped
     name: "{{ item }}"
   with_items:
-    - 'unattended-upgrades'
-    - 'apt-daily'
-    - 'apt-daily-upgrade'
+    - 'unattended-upgrades.service'
+    - 'apt-daily.service'
+    - 'apt-daily.timer'
+    - 'apt-daily-upgrade.service'
+    - 'apt-daily-upgrade.timer'
