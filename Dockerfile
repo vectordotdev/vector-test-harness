@@ -23,7 +23,7 @@ RUN python3 -m pip install --no-cache-dir \
   && aws --version
 
 # Install Terraform.
-ARG TERRAFORM_VERSION=0.12.20
+ARG TERRAFORM_VERSION=0.12.23
 RUN curl -fsSL "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" -o terraform.zip \
   && 7z x -o/usr/local/bin/ terraform.zip \
   && rm -rf terraform.zip \
