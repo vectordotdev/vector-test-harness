@@ -203,8 +203,6 @@ if [ "$BOOTSTRAP" == 'true' ] && [ "$SKIP_TERRAFORM" != 'true' ]; then
 
   terraform init \
     -input=false \
-    -force-copy \
-    -get=true \
     -backend-config="bucket=vector-test-harness-state" \
     -backend-config="region=us-east-1" \
     -backend-config="encrypt=true" \
