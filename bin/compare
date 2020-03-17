@@ -24,6 +24,7 @@ OPTIONS
    -t, --test           The test name (ex: tcp_to_blackhole,etc)
    -v, --version        The subject version(s) to compare (ex: tcp_to_blackhole,etc)
    -r, --repair         Detect new test results before running the comparison.
+   -h, --help           Print this message.
 
 EXAMPLES
    ./compare -t tcp_to_tcp_performance
@@ -54,8 +55,8 @@ TEST_NAME=""
 # Flags
 #
 
-OPTIONS="c:prs:t:v:"
-LONGOPTS="configuration:,percentage,repair,subject:,test:,version:"
+OPTIONS="c:prs:t:v:h"
+LONGOPTS="configuration:,percentage,repair,subject:,test:,version:,help"
 PARSED="$(parse_arguments "$OPTIONS" "$LONGOPTS" "$0" "$@")"
 eval set -- "$PARSED"
 
@@ -84,6 +85,10 @@ while true; do
   -v | --version)
     SUBJECT_VERSIONS+=("$2")
     shift 2
+    ;;
+  -h | --help)
+    usage
+    exit 0
     ;;
   --)
     shift
