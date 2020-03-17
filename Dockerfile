@@ -32,7 +32,7 @@ RUN curl -fsSL "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/te
 # Prepare terraform plugins.
 ENV TF_PLUGIN_DIR=/usr/local/terraform-plugins/
 # Install terraform-provider-aws.
-ARG TERRAFORM_PROVIDER_AWS_VERSION=2.46.0
+ARG TERRAFORM_PROVIDER_AWS_VERSION=2.53.0
 RUN curl -fsSL "https://releases.hashicorp.com/terraform-provider-aws/${TERRAFORM_PROVIDER_AWS_VERSION}/terraform-provider-aws_${TERRAFORM_PROVIDER_AWS_VERSION}_linux_amd64.zip" -o plugin.zip \
   && 7z x -o"$TF_PLUGIN_DIR" plugin.zip \
   && rm -rf plugin.zip
