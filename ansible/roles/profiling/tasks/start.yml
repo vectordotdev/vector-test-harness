@@ -1,6 +1,6 @@
 ---
 - name: Capture dstat version
-  command: "dstat --version | head -n 1"
+  shell: "dstat --version | head -n 1"
   register: dstat_version
 
 - name: Fail if dstat is not the correct version
