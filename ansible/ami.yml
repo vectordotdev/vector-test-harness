@@ -9,6 +9,9 @@
     - journald-rate-limits
     - flog
 
+    - role: socat_loop
+      action: install
+
     - role: file_test_server
       action: install
 
