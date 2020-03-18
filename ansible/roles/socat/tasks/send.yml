@@ -1,12 +1,6 @@
 ---
 - name: "Sending data to {{ address }} for {{ timeout }} seconds"
   shell: |
-    timeout {{ timeout }} bash -c "
-      while true
-      do
-        cat {{ file }} | \
-        socat -u - {{ address }};
-      done
-    "
-  register: timeout
-  failed_when: timeout.rc != 124
+    socat_loop "{{ timeout }}" "{{ file }}" -u - "{{ address }}"
+  register: socat_loop
+  failed_when: socat_loop.rc != 124
