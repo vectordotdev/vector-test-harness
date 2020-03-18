@@ -1,6 +1,13 @@
 ---
 - name: "Sending data to {{ address }} for {{ timeout }} seconds"
-  shell: |
-    socat_loop "{{ timeout }}" "{{ file }}" -u - "{{ address }}"
+  command:
+    argv: [
+      "socat_loop",
+      timeout,
+      file,
+      "-u",
+      "-",
+      address
+    ]
   register: socat_loop
   failed_when: socat_loop.rc != 124
