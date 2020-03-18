@@ -7,7 +7,9 @@
     - python3
     - awscli
     - journald-rate-limits
-    - flog
+
+    - role: flog
+      action: install
 
     - role: socat_loop
       action: install
