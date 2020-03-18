@@ -7,6 +7,6 @@ SOCAT_ARGS=("$@")
 
 exec timeout "$TIMEOUT" bash -euo pipefail <<CMD
 while true; do
-  socat "${SOCAT_ARGS[@]}" < "$FILE"
+  socat $(printf "'%s' " "${SOCAT_ARGS[@]}") < "$FILE"
 done
 CMD
