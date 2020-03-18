@@ -1,0 +1,12 @@
+#!/bin/bash
+set -euo pipefail
+
+TIMEOUT="$1"; shift
+FILE="$1"; shift
+SOCAT_ARGS=("$@")
+
+exec timeout "$TIMEOUT" bash -euo pipefail <<CMD
+while true; do
+  socat "${SOCAT_ARGS[@]}" < "$FILE"
+done
+CMD
