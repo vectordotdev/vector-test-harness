@@ -27,13 +27,8 @@
 
     - name: Warmup {{ test_subject }}
       shell: |
-        timeout 10 bash -c "
-          while true
-          do
-            cat /tmp/flog-100MiB.log | \
-            socat -u - tcp:{{ subject_instance.ec2_private_ip_address }}:{{ subject_port }}
-          done
-        "
+        socat_loop 10 /tmp/flog-100MiB.log \
+          -u - tcp:{{ subject_instance.ec2_private_ip_address }}:{{ subject_port }}
       register: timeout
       failed_when: timeout.rc != 124
 
@@ -51,13 +46,8 @@
   tasks:
     - name: Pipe test data to {{ test_subject }}
       shell: |
-        timeout 60 bash -c "
-          while true
-          do
-            cat /tmp/flog-100MiB.log | \
-            socat -u - tcp:{{ subject_instance.ec2_private_ip_address }}:{{ subject_port }}
-          done
-        "
+        socat_loop 60 /tmp/flog-100MiB.log \
+          -u - tcp:{{ subject_instance.ec2_private_ip_address }}:{{ subject_port }}
       register: timeout
       failed_when: timeout.rc != 124
 
