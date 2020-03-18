@@ -6,7 +6,7 @@
 - name: Fail if dstat is not the correct version
   fail:
     msg: "Only Dstat 0.7.2 is allowed, you have {{ dstat_version }} installed"
-  when: dstat_version != "Dstat 0.7.2"
+  when: dstat_version.stdout != "Dstat 0.7.2"
 
 - name: Remove previous /tmp/dstat.csv
   file:
