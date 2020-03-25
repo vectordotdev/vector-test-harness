@@ -218,6 +218,7 @@ if [ "$BOOTSTRAP" == 'true' ] && [ "$SKIP_TERRAFORM" != 'true' ]; then
     -var test_configuration="$TEST_CONFIGURATION" \
     -var user_id="$TEST_USER_ID" \
     -var results_s3_bucket_name="$TEST_RESULTS_S3_BUCKET_NAME" \
+    -var test_harness_aws_account_ids="[\"$VECTOR_TEST_HARNESS_AWS_ACCOUNT_ID\"]" \
     -var-file="../configurations/$TEST_CONFIGURATION/terraform.tfvars"
 
   cd ..

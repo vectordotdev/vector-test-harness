@@ -1,0 +1,6 @@
+---
+- name: Start verifying logs
+  systemd:
+    name: verify-logs
+    state: started
+    daemon-reload: yes
