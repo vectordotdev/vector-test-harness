@@ -11,7 +11,7 @@ locals {
 }
 
 module "vpc" {
-  source = "../../../terraform/aws_vpc"
+  source = "../aws_vpc"
 
   providers = {
     aws = aws
@@ -74,7 +74,7 @@ resource "aws_security_group" "consumer" {
 }
 
 module "aws_instance_profile" {
-  source = "../../../terraform/aws_instance_profile"
+  source = "../aws_instance_profile"
 
   providers = {
     aws = aws
@@ -86,7 +86,7 @@ module "aws_instance_profile" {
 }
 
 module "aws_instance_subject" {
-  source = "../../../terraform/aws_instance"
+  source = "../aws_instance"
 
   providers = {
     aws = aws
@@ -105,7 +105,7 @@ module "aws_instance_subject" {
 }
 
 module "aws_instance_consumer" {
-  source = "../../../terraform/aws_instance"
+  source = "../aws_instance"
 
   providers = {
     aws = aws
