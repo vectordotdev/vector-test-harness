@@ -63,8 +63,12 @@ export TF_IN_AUTOMATION=true
 
 cd global
 
-terraform init -input=false "${TERRAFORM_INIT_EXTRA_ARGS[@]}"
+terraform init \
+  "${TERRAFORM_COMMON_EXTRA_ARGS[@]}" \
+  "${TERRAFORM_INIT_EXTRA_ARGS[@]}"
 
-terraform apply -input=false -auto-approve \
+terraform apply \
+  "${TERRAFORM_COMMON_EXTRA_ARGS[@]}" \
+  -auto-approve \
   -var results_s3_bucket_name="$TEST_RESULTS_S3_BUCKET_NAME" \
   -var test_harness_aws_account_ids="[\"$TEST_HARNESS_AWS_ACCOUNT_ID\"]"

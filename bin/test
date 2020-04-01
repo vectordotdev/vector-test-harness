@@ -202,7 +202,7 @@ if [ "$BOOTSTRAP" == 'true' ] && [ "$SKIP_TERRAFORM" != 'true' ]; then
   cd terraform
 
   terraform init \
-    -input=false \
+    "${TERRAFORM_COMMON_EXTRA_ARGS[@]}" \
     -backend-config="bucket=vector-test-harness-state" \
     -backend-config="region=us-east-1" \
     -backend-config="encrypt=true" \
@@ -211,7 +211,7 @@ if [ "$BOOTSTRAP" == 'true' ] && [ "$SKIP_TERRAFORM" != 'true' ]; then
     "${TERRAFORM_INIT_EXTRA_ARGS[@]}"
 
   terraform apply \
-    -input=false \
+    "${TERRAFORM_COMMON_EXTRA_ARGS[@]}" \
     -auto-approve \
     -var pub_key="$TEST_SSH_PUBLIC_KEY" \
     -var test_name="$TEST_NAME" \
