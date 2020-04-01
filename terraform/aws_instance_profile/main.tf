@@ -3,14 +3,14 @@ data "aws_arn" "results_s3_bucket" {
 }
 
 resource "aws_iam_instance_profile" "default" {
-  name = "vector-test-${var.user_id}-${var.test_name}"
-  path = "/vector-test/${var.user_id}/${var.test_name}/"
+  name = "vector-test-${var.user_id}-${var.test_configuration}-${var.test_name}"
+  path = "/vector-test/${var.user_id}/${var.test_configuration}/${var.test_name}/"
   role = aws_iam_role.default.name
 }
 
 resource "aws_iam_role" "default" {
-  name               = "vector-test-${var.user_id}-${var.test_name}"
-  path               = "/vector-test/${var.user_id}/${var.test_name}/"
+  name               = "vector-test-${var.user_id}-${var.test_configuration}-${var.test_name}"
+  path               = "/vector-test/${var.user_id}/${var.test_configuration}/${var.test_name}/"
   assume_role_policy = data.aws_iam_policy_document.allow_ec2_assume.json
 }
 

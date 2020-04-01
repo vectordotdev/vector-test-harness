@@ -1,3 +1,11 @@
+variable "test_configuration" {
+  type = string
+
+  description = <<EOF
+The configuration name of the current test.
+EOF
+}
+
 variable "test_name" {
   type = string
 

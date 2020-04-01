@@ -80,6 +80,7 @@ module "aws_instance_profile" {
     aws = aws
   }
 
+  test_configuration     = local.test_configuration
   test_name              = local.test_name
   user_id                = local.user_id
   results_s3_bucket_name = local.results_s3_bucket_name
