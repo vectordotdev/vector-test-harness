@@ -74,3 +74,12 @@ spin() {
     done
   done
 }
+
+ensure_no_dashes() {
+  local STRING="$1"
+  local ERROR="$2"
+  if [[ "$STRING" == *"-"* ]]; then
+    error "Error: $ERROR"
+    exit 1
+  fi
+}
