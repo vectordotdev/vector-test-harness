@@ -132,13 +132,19 @@ if [ -z "$TEST_CONFIGURATION" ]; then
   fail_arg_invalid "Error: you must supply a test configuration via the -c flag:"
 fi
 
+ensure_no_dashes "$TEST_CONFIGURATION" "Test configuration can't contain dashes"
+
 if [ -z "$TEST_NAME" ]; then
   fail_arg_invalid "Error: you must supply a test name via the -t flag:"
 fi
 
+ensure_no_dashes "$TEST_NAME" "Test name can't contain dashes"
+
 if [ -z "$TEST_USER_ID" ]; then
   fail_arg_invalid "Error: you must supply a user ID via the -u flag or VECTOR_TEST_USER_ID env var:"
 fi
+
+ensure_no_dashes "$TEST_USER_ID" "User ID can't contain dashes"
 
 TEST_CASE_DIR="cases/$TEST_NAME"
 if [[ ! -d "$TEST_CASE_DIR" ]]; then
