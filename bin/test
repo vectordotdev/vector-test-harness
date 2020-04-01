@@ -195,7 +195,6 @@ prepare_ansible_extra_args_array true
 # Execute
 #
 
-export TF_IN_AUTOMATION=true
 cd "$TEST_CASE_DIR"
 
 #
@@ -206,6 +205,9 @@ if [ "$BOOTSTRAP" == 'true' ] && [ "$SKIP_TERRAFORM" != 'true' ]; then
   print_section_header "Provisioning test resources"
 
   cd terraform
+
+  export TF_IN_AUTOMATION=true
+  export TF_DATA_DIR=".terraform/$TEST_CONFIGURATION/$TEST_USER_ID"
 
   terraform init \
     "${TERRAFORM_COMMON_EXTRA_ARGS[@]}" \
