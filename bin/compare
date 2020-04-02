@@ -22,7 +22,7 @@ OPTIONS
    -p, --percentages    To include percentage increase from test winner (default: false)
    -s, --subject        The subject name (ex: vector,fluentbit,etc)
    -t, --test           The test name (ex: tcp_to_blackhole,etc)
-   -v, --version        The subject version(s) to compare (ex: tcp_to_blackhole,etc)
+   -v, --version        The subject version(s) to compare (ex: 0.8.0,nightly/latest,nightly/2020-03-14,dev-branch-1-6305861,etc)
    -r, --repair         Detect new test results before running the comparison.
    -h, --help           Print this message.
 
@@ -162,12 +162,14 @@ fi
 
 WHERE_CLAUSE="(${TEST_NAME_CONDITION}) AND (${SUBJECT_NAME_CONDITION}) AND (${SUBJECT_VERSION_CONDITION})"
 
+echo $WHERE_CLAUSE
+
 EXECUTION_ID="$(athena_execute_query "$(cat <<EOF
 WITH
 latest_versions AS (
   SELECT
     subject,
-    MAX(version) AS latest_version
+    MAX(version) AS version
   FROM vector_tests v
   WHERE ${WHERE_CLAUSE}
   GROUP BY $SUBJECT_GROUP_CONDITION
@@ -230,7 +232,7 @@ FROM (
   FROM vector_tests v
   INNER JOIN latest_versions ON
     latest_versions.subject = v.subject
-    AND latest_versions.latest_version = v.version
+    AND latest_versions.version = v.version
   WHERE ${WHERE_CLAUSE}
   GROUP BY v.name, v.configuration, v.subject, v.version, v.timestamp
 )
