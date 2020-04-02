@@ -162,8 +162,6 @@ fi
 
 WHERE_CLAUSE="(${TEST_NAME_CONDITION}) AND (${SUBJECT_NAME_CONDITION}) AND (${SUBJECT_VERSION_CONDITION})"
 
-echo $WHERE_CLAUSE
-
 EXECUTION_ID="$(athena_execute_query "$(cat <<EOF
 WITH
 latest_versions AS (
