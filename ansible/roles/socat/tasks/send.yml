@@ -3,11 +3,11 @@
   command:
     argv: [
       "socat_loop",
-      timeout,
-      file,
+      "{{ timeout }}",
+      "{{ file }}",
       "-u",
       "-",
-      address
+      "{{ address }}"
     ]
   register: socat_loop
   failed_when: socat_loop.rc != 124

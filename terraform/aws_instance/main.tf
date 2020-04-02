@@ -51,6 +51,7 @@ resource "aws_spot_instance_request" "default" {
     Test              = "true"
     TestName          = var.test_name
     TestConfiguration = var.test_configuration
+    TestIndex         = count.index
     TestRole          = var.role_name
     TestUserID        = var.user_id
   }
