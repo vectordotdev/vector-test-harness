@@ -1,3 +1,6 @@
+# The AWS region that everything should run in
+export AWS_DEFAULT_REGION=us-west-1
+
 # Specifying which AWS credentials set to use. See the "Setup" section in the
 # README.
 export AWS_PROFILE=vector-test-harness
