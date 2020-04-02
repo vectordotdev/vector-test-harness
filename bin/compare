@@ -29,7 +29,7 @@ OPTIONS
 EXAMPLES
    ./compare -t tcp_to_tcp_performance
    ./compare -t tcp_to_tcp_performance -s vector
-   ./compare -t tcp_to_tcp_performance -s vector -v latest-nightly -v dev-branch-count-sha
+   ./compare -t tcp_to_tcp_performance -s vector -v nightly/latest -v dev-branch-count-sha
 END
 
 #
