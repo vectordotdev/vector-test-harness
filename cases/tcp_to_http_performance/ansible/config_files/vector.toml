@@ -8,7 +8,7 @@
   type                    = "http"
   uri                     = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
   encoding                = "ndjson"
-  batch.max_size          = 10490000 # 10mib
+  batch.max_size          = 102400 # 100kib
   batch.timeout_secs      = 5
   request.in_flight_limit = 10000
   request.rate_limit_num  = 10000
