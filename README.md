@@ -352,7 +352,7 @@ since remote environments are easily accessible and reproducible by other engine
 [build-amis]: bin/build-amis
 [cases]: /cases
 [compare]: bin/compare
-[correctness]: https://docs.vector.dev/correctness
+[correctness]: https://vector.dev/#correctness
 [create_keys]: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html
 [data_location]: #performance-data-location
 [debugging]: #debugging
@@ -362,7 +362,7 @@ since remote environments are easily accessible and reproducible by other engine
 [dstat]: http://dag.wiee.rs/home-made/dstat/
 [dstat_command]: /ansible/roles/profiling/tasks/start.yml
 [how_it_works]: #how-it-works
-[performance]: https://docs.vector.dev/performance
+[performance]: https://vector.dev/#performance
 [performance_data]: #performance-data
 [profiling_role]: /ansible/roles/profiling
 [profiling_start]: /ansible/roles/profiling/tasks/start.yml
