@@ -4,6 +4,8 @@
 # based on these parameters. Please create a new configuration and specify taht
 # configuration instead.
 producer_instance_type  = "c5.large"
-producer_instance_count = 10
-subject_instance_type   = "c5.large"
+producer_instance_count = 20
+subject_instance_type   = "c5.9xlarge"
 subject_port            = 9000
+consumer_instance_type  = "c5d.9xlarge" # slighly larger to ensure it is not a bottleneck
+consumer_port           = 9000
