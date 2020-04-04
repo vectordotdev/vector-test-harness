@@ -1,5 +1,4 @@
 provider "aws" {
-  region  = "us-east-1"
   version = "~> 2.53"
 }
 
@@ -9,7 +8,6 @@ terraform {
   backend "s3" {
     bucket         = "vector-state"
     key            = "tests.tfstate"
-    region         = "us-east-1"
     encrypt        = true
     dynamodb_table = "TerraformLocks"
   }

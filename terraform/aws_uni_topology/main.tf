@@ -1,8 +1,8 @@
-data "aws_caller_identity" "current" {
-}
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
 
 locals {
-  availability_zone      = "us-east-1b"
+  availability_zone      = "${data.aws_region.current.name}b"
   cidr_block             = "10.0.0.0/16"
   test_configuration     = var.test_configuration
   test_name              = var.test_name
