@@ -4,9 +4,12 @@
   address = "0.0.0.0:{{ subject_port }}"
 
 [sinks.out]
-  inputs   = ["in"]
-  type     = "http"
-  uri      = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
-  encoding = "ndjson"
-  batch_size    = 102400 # 100kib
-  batch_timeout = 5 # 5 seconds
+  inputs                  = ["in"]
+  type                    = "http"
+  uri                     = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
+  encoding                = "ndjson"
+  batch.max_size          = 10490000 # 10mib
+  batch.timeout_secs      = 5
+  request.in_flight_limit = 10000
+  request.rate_limit_num  = 10000
+

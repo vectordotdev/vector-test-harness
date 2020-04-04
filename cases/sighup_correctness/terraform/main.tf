@@ -9,7 +9,7 @@ terraform {
 }
 
 module "topology" {
-  source = "../../../terraform/aws_tcp_bi_topology"
+  source = "../../../terraform/aws_tcp_bi_send_topology"
 
   providers = {
     aws = aws
