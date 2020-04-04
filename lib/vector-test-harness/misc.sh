@@ -21,6 +21,7 @@ fail() {
 fail_arg_invalid() {
   local MESSAGE="$1"
   error "$MESSAGE"
+  echo ""
   usage
   exit 3
 }

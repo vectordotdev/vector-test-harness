@@ -24,7 +24,7 @@ OPTIONS
    -s, --subject         The test subject, if not set all subjects are tested (ex: vector, env: VECTOR_TEST_SUBJECT)
    -t, --test            The test to run (ex: tcp_to_blackhole, env: VECTOR_TEST_NAME)
    -u, --user-id         Your user ID (ex: ben, env: VECTOR_TEST_USER_ID)
-   -v, --vector-version  The vector version to test (ex: v0.9.0, env: VECTOR_VERSION_TO_TEST)
+   -v, --vector-version  The Vector version to test (ex: v0.9.0, env: VECTOR_VERSION_TO_TEST)
    -h, --help            Print this message
 
 EXAMPLE
@@ -149,6 +149,10 @@ ensure_no_dashes "$TEST_USER_ID" "User ID can't contain dashes"
 TEST_CASE_DIR="cases/$TEST_NAME"
 if [[ ! -d "$TEST_CASE_DIR" ]]; then
   fail_arg_invalid "Error: test $TEST_NAME does not exist"
+fi
+
+if [[ "$TEST_VECTOR_VERSION" == *"latest"* ]]; then
+  fail_arg_invalid "Error: Vector version $TEST_VECTOR_VERSION cannot contain 'latest'. Please specify the exact version instead. Dynamic versions cannot be used because it would otherwise be impossible to know which version the test data is associated with."
 fi
 
 IS_DEV_VECTOR_VERSION="false"
