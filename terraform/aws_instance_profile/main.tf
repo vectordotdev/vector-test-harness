@@ -9,7 +9,7 @@ resource "aws_iam_instance_profile" "default" {
 }
 
 resource "aws_iam_role" "default" {
-  name               = "vector-test-${var.user_id}-${var.test_configuration}-${var.test_name}"
+  name               = substr("vector-test-${var.user_id}-${var.test_configuration}-${var.test_name}", 0, 63)
   path               = "/vector-test/${var.user_id}/${var.test_configuration}/${var.test_name}/"
   assume_role_policy = data.aws_iam_policy_document.allow_ec2_assume.json
 }

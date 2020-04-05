@@ -22,7 +22,11 @@ variable "subject_instance_type" {
   type = string
 }
 
-variable "subject_port" {
+variable "subject_from_port" {
+  type = string
+}
+
+variable "subject_to_port" {
   type = string
 }
 

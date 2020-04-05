@@ -31,8 +31,8 @@ resource "aws_security_group" "producer" {
 
   # Inter-node egress
   egress {
-    from_port = var.subject_port
-    to_port   = var.subject_port
+    from_port = var.subject_from_port
+    to_port   = var.subject_to_port
     protocol  = "tcp"
     self      = true
   }
@@ -53,8 +53,8 @@ resource "aws_security_group" "subject" {
 
   # Inter-node ingress
   ingress {
-    from_port   = var.subject_port
-    to_port     = var.subject_port
+    from_port   = var.subject_from_port
+    to_port     = var.subject_to_port
     protocol    = "tcp"
     cidr_blocks = [module.vpc.cidr_block]
   }

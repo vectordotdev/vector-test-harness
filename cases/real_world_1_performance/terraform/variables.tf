@@ -22,7 +22,23 @@ variable "subject_instance_type" {
   type = string
 }
 
-variable "subject_port" {
+variable "subject_api_port" {
+  type = string
+}
+
+variable "subject_admin_port" {
+  type = string
+}
+
+variable "subject_media_proxy_port" {
+  type = string
+}
+
+variable "subject_unfurler_port" {
+  type = string
+}
+
+variable "subject_audit_port" {
   type = string
 }
 

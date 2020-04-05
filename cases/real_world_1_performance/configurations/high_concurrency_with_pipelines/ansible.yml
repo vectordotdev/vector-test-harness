@@ -6,10 +6,10 @@
 ---
 lines_per_consumer: 10000000 # 10mil
 subject_api_port: 9000
-subject_admin_port: 9000
-subject_media_proxy_port: 9000
-subject_unfurler_port: 9000
-subject_audit_port: 9000
+subject_admin_port: 9001
+subject_media_proxy_port: 9002
+subject_unfurler_port: 9003
+subject_audit_port: 9004
 consumer_port: 9000
 test_file: "/tmp/fake.log"
-vector_config_file: "vector.without_lua.toml"
+vector_config_file: "vector.pipelines.toml"

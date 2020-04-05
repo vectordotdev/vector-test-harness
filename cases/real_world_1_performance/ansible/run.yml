@@ -7,6 +7,36 @@
     - set_fact:
         subject_instance: "{{ hostvars[groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_subject'].0] }}"
 
+- hosts: '{{ test_namespace }}:&tag_TestRole_producer:&tag_TestIndex_0'
+  become: true
+  tasks:
+    - set_fact:
+        subject_port: "{{ subject_api_port }}"
+
+- hosts: '{{ test_namespace }}:&tag_TestRole_producer:&tag_TestIndex_1'
+  become: true
+  tasks:
+    - set_fact:
+        subject_port: "{{ subject_admin_port }}"
+
+- hosts: '{{ test_namespace }}:&tag_TestRole_producer:&tag_TestIndex_2'
+  become: true
+  tasks:
+    - set_fact:
+        subject_port: "{{ subject_media_proxy_port }}"
+
+- hosts: '{{ test_namespace }}:&tag_TestRole_producer:&tag_TestIndex_3'
+  become: true
+  tasks:
+    - set_fact:
+        subject_port: "{{ subject_unfurler_port }}"
+
+- hosts: '{{ test_namespace }}:&tag_TestRole_producer:&tag_TestIndex_4'
+  become: true
+  tasks:
+    - set_fact:
+        subject_port: "{{ subject_audit_port }}"
+
 - hosts: '{{ test_namespace }}:&tag_TestRole_consumer'
   become: true
   tasks:

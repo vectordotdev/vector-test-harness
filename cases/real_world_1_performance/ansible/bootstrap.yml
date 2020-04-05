@@ -13,48 +13,42 @@
 
 - hosts: '{{ test_namespace }}:&tag_TestRole_producer:&tag_TestIndex_0'
   become: true
-  roles:
-    - role: head
-      action: create_test_file
-      location: "{{ test_file }}"
-      line_count: "{{ lines_per_consumer }}"
-      line: '<118>3 2020-03-13T20:45:38.119Z my.host.com company-api 2004 ID960 - {"metadata": {"trace_id": "trace123", "guide_id": "guild123", "channel_id": "channel123", "method": "method"}}'
+  tasks:
+    - set_fact:
+        line_content: '<118>3 2020-03-13T20:45:38.119Z my.host.com company-api 2004 ID960 - {"metadata": {"trace_id": "trace123", "guide_id": "guild123", "channel_id": "channel123", "method": "method"}}'
 
 - hosts: '{{ test_namespace }}:&tag_TestRole_producer:&tag_TestIndex_1'
   become: true
-  roles:
-    - role: head
-      action: create_test_file
-      location: "{{ test_file }}"
-      line_count: "{{ lines_per_consumer }}"
-      line: '<118>3 2020-03-13T20:45:38.119Z my.host.com company-admin 2004 ID960 - {"metadata": {"trace_id": "trace123", "guide_id": "guild123", "channel_id": "channel123", "method": "method"}}'
+  tasks:
+    - set_fact:
+        line_content: '<118>3 2020-03-13T20:45:38.119Z my.host.com company-admin 2004 ID960 - {"metadata": {"trace_id": "trace123", "guide_id": "guild123", "channel_id": "channel123", "method": "method"}}'
 
 - hosts: '{{ test_namespace }}:&tag_TestRole_producer:&tag_TestIndex_2'
   become: true
-  roles:
-    - role: head
-      action: create_test_file
-      location: "{{ test_file }}"
-      line_count: "{{ lines_per_consumer }}"
-      line: '<118>3 2020-03-13T20:45:38.119Z my.host.com company-media-proxy 2004 ID960 - {"ts": "2020-03-13T20:45:38.119Z"}'
+  tasks:
+    - set_fact:
+        line_content: '<118>3 2020-03-13T20:45:38.119Z my.host.com company-media-proxy 2004 ID960 - {"ts": "2020-03-13T20:45:38.119Z"}'
 
 - hosts: '{{ test_namespace }}:&tag_TestRole_producer:&tag_TestIndex_3'
   become: true
-  roles:
-    - role: head
-      action: create_test_file
-      location: "{{ test_file }}"
-      line_count: "{{ lines_per_consumer }}"
-      line: '<118>3 2020-03-13T20:45:38.119Z my.host.com company-unfurler 2004 ID960 - {"ts": "2020-03-13T20:45:38.119Z", "msg": "unfurl"}'
+  tasks:
+    - set_fact:
+        line_content: '<118>3 2020-03-13T20:45:38.119Z my.host.com company-unfurler 2004 ID960 - {"ts": "2020-03-13T20:45:38.119Z", "msg": "unfurl"}'
 
 - hosts: '{{ test_namespace }}:&tag_TestRole_producer:&tag_TestIndex_4'
+  become: true
+  tasks:
+    - set_fact:
+        line_content: '<118>3 2020-03-13T20:45:38.119Z my.host.com company-admin 2004 ID960 - {"metadata": {"trace_id": "trace123", "guide_id": "guild123", "channel_id": "channel123", "method": "method"}}'
+
+- hosts: '{{ test_namespace }}:&tag_TestRole_producer'
   become: true
   roles:
     - role: head
       action: create_test_file
       location: "{{ test_file }}"
       line_count: "{{ lines_per_consumer }}"
-      line: '<118>3 2020-03-13T20:45:38.119Z my.host.com audit 2004 ID960 - This is an audit log'
+      line: "{{ line_content }}"
 
 - hosts: '{{ test_namespace }}:&tag_TestRole_subject'
   become: true

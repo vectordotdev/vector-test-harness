@@ -20,7 +20,8 @@ module "topology" {
   producer_instance_type  = var.producer_instance_type
   pub_key                 = var.pub_key
   subject_instance_type   = var.subject_instance_type
-  subject_port            = var.subject_port
+  subject_from_port       = var.subject_api_port
+  subject_to_port         = var.subject_audit_port
   test_configuration      = var.test_configuration
   test_name               = var.test_name
   user_id                 = var.user_id
