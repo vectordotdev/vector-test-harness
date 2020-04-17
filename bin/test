@@ -216,7 +216,7 @@ if [ "$BOOTSTRAP" == 'true' ] && [ "$SKIP_TERRAFORM" != 'true' ]; then
   terraform init \
     "${TERRAFORM_COMMON_EXTRA_ARGS[@]}" \
     -backend-config="bucket=${VECTOR_TEST_STATE_S3_BUCKET_NAME}" \
-    -backend-config="region=$AWS_REGION" \
+    -backend-config="region=${AWS_REGION:-$AWS_DEFAULT_REGION}" \
     -backend-config="encrypt=true" \
     -backend-config="dynamodb_table=TerraformLocks" \
     -backend-config="key=vector-test-case/$TEST_NAME/$TEST_CONFIGURATION/$TEST_USER_ID.tfstate" \
