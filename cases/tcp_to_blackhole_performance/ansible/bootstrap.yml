@@ -27,8 +27,7 @@
       action: configure
 
     - role: vector
-      action: install_archive_from_url
+      action: install
 
     - role: vector
       action: configure
-      configuration_file: config_files/vector.old.toml
