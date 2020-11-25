@@ -49,7 +49,7 @@
         name: flog
       vars:
         action: create_test_file
-        bytes: {{ test_file_bytes }}
+        bytes: "{{ test_file_bytes }}"
         location: "{{ test_files_root }}{{ item }}.log"
         encoding: text
       with_sequence: count={{ test_file_count }}
