@@ -82,7 +82,7 @@ host = "hostname"
 [sinks.company_api_http]
 type = "http"
 inputs = ["company_api_rename"]
-uri = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
+uri = "http://{{ consumer_ip }}:{{ consumer_port }}"
 
 [sinks.company_api_http.encoding]
 codec = "ndjson"
@@ -166,7 +166,7 @@ host = "hostname"
 [sinks.company_admin_http]
 type = "http"
 inputs = ["company_admin_rename"]
-uri = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
+uri = "http://{{ consumer_ip }}:{{ consumer_port }}"
 
 [sinks.company_admin_http.encoding]
 codec = "ndjson"
@@ -221,7 +221,7 @@ host = "hostname"
 [sinks.company_media_proxy_http]
 type = "http"
 inputs = ["company_media_proxy_rename"]
-uri = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
+uri = "http://{{ consumer_ip }}:{{ consumer_port }}"
 
 [sinks.company_media_proxy_http.encoding]
 codec = "ndjson"
@@ -301,7 +301,7 @@ value = "unfurl"
 [sinks.company_unfurler_http]
 type = "http"
 inputs = ["company_unfurler_filter"]
-uri = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
+uri = "http://{{ consumer_ip }}:{{ consumer_port }}"
 
 [sinks.company_unfurler_http.encoding]
 codec = "ndjson"
@@ -342,7 +342,7 @@ timestamp = "time"
 [sinks.audit_http]
 type = "http"
 inputs = ["audit_rename"]
-uri = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
+uri = "http://{{ consumer_ip }}:{{ consumer_port }}"
 
 [sinks.audit_http.encoding]
 codec = "ndjson"

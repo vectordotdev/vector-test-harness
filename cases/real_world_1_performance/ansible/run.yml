@@ -5,7 +5,7 @@
   become: true
   tasks:
     - set_fact:
-        subject_instance: "{{ hostvars[groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_subject'].0] }}"
+        subject_ip: "{{ hostvars[groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_subject'].0].private_ip_address }}"
 
 - hosts: '{{ test_namespace }}:&tag_TestRole_producer:&tag_TestIndex_0'
   become: true
@@ -58,9 +58,9 @@
 # - hosts: '{{ test_namespace }}:&tag_TestRole_producer'
 #   become: true
 #   tasks:
-#     - name: Wait for port {{ subject_instance.ec2_private_ip_address }}:{{ subject_port }} to become available
+#     - name: Wait for port {{ subject_ip }}:{{ subject_port }} to become available
 #       wait_for:
-#         host: "{{ subject_instance.ec2_private_ip_address }}"
+#         host: "{{ subject_ip }}"
 #         port: "{{ subject_port }}"
 #         delay: 1
 
@@ -69,7 +69,7 @@
 #         name: socat
 #       vars:
 #         action: send
-#         address: "tcp:{{ subject_instance.ec2_private_ip_address }}:{{ subject_port }}"
+#         address: "tcp:{{ subject_ip }}:{{ subject_port }}"
 #         file: "{{ test_file }}"
 #         timeout: 10
 
@@ -90,7 +90,7 @@
         name: socat
       vars:
         action: send
-        address: "tcp:{{ subject_instance.ec2_private_ip_address }}:{{ subject_port }}"
+        address: "tcp:{{ subject_ip }}:{{ subject_port }}"
         file: "{{ test_file }}"
         timeout: 60
 

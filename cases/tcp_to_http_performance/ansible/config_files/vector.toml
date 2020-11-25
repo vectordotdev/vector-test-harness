@@ -6,7 +6,7 @@
 [sinks.out]
   inputs                  = ["in"]
   type                    = "http"
-  uri                     = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
+  uri                     = "http://{{ consumer_ip }}:{{ consumer_port }}"
   encoding                = "ndjson"
   batch.max_size          = 102400 # 100kib
   batch.timeout_secs      = 5

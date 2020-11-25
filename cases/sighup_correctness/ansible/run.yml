@@ -14,13 +14,13 @@
   become: true
   tasks:
     - set_fact:
-        consumer_instance: "{{ hostvars[groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_consumer'].0] }}"
+        consumer_ip: "{{ hostvars[groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_consumer'].0].private_ip_address }}"
 
     - name: "Reset the config to it's original state"
       include: "configure/{{ test_subject }}.yml"
 
     - set_fact:
-        consumer_instance: "{{ hostvars[groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_consumer'].1] }}"
+        consumer_ip: "{{ hostvars[groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_consumer'].1].private_ip_address }}"
 
     - include_role:
         name: "{{ test_subject }}"

@@ -30,7 +30,7 @@ value = "company-api"
 [sinks.company_api_http]
 type = "http"
 inputs = ["company_api"]
-uri = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
+uri = "http://{{ consumer_ip }}:{{ consumer_port }}"
 
 [sinks.company_api_http.encoding]
 codec = "ndjson"

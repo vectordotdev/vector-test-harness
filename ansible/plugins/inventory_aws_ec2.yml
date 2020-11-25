@@ -1,17 +1,10 @@
 # aws ec2 ansible dynamic inventory plugin
 plugin: aws_ec2
 
-#set aws_access_key and secret_key.
-# aws_access_key: <PUT IN YOUR AWS ACCESS KEY>
-# aws_secret_key: <PUT IN YOUR AWS SECRET KEY>
-
-# set the regions.
 regions:
   - us-east-1
-# - us-east-2# set strict to False
-# if True this will make invalid entries
-# a fatal error
-strict: Falsekeyed_groups:
+
+keyed_groups:
   #  each aws ec2 instance has it own instance tags. create
   #  a tag variable from those tags for ansible to use.
   #  if the ec2 tag Name had the value cygnusx1 the tag
@@ -23,37 +16,3 @@ strict: Falsekeyed_groups:
   #  tag_Applications_Oracle
   - key: tags
     prefix: tag
-  #
-  # the following keyed groups are from the aws url:
-  # https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-instances.html#options
-  # below are some of the variable that can be used.
-  # an example for instance_type:
-  # aws_instance_type_t2_micro
-  - key: architecture
-    prefix: arch
-  - key: tags.Applications
-    separator: ''
-  - key: instance_type
-    prefix: aws_instance_type
-  - key: placement.region
-    prefix: aws_region
-  - key: image_id
-    prefix: aws_image
-  - key: hypervisor
-    prefix: aws_hypervisor
-  - key: 'security_groups|json_query("[].group_id")'
-    prefix: 'security_groups'hostnames:
-# a list in order of precedence for hostname variables.
-#
-  - ip-address
-  - dns-name
-  - tag:Name
-  - private-ip-addresscompose:
-# use if you need to connect via the ec2
-# private ip address.
-#
-# this is needed for example in a
-# corporate / company environment where ec2
-# instances don't use a public ip address
-#
-#  ansible_host: private_ip_address

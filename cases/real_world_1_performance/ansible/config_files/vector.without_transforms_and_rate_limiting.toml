@@ -30,7 +30,7 @@ value = "company-api"
 [sinks.company_api_http]
 type = "http"
 inputs = ["company_api"]
-uri = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
+uri = "http://{{ consumer_ip }}:{{ consumer_port }}"
 
 [sinks.company_api_http.encoding]
 codec = "ndjson"
@@ -87,7 +87,7 @@ value = "company-admin"
 [sinks.company_admin_http]
 type = "http"
 inputs = ["company_admin"]
-uri = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
+uri = "http://{{ consumer_ip }}:{{ consumer_port }}"
 
 [sinks.company_admin_http.encoding]
 codec = "ndjson"
@@ -139,7 +139,7 @@ value = "company-media-proxy"
 [sinks.company_media_proxy_http]
 type = "http"
 inputs = ["company_media_proxy"]
-uri = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
+uri = "http://{{ consumer_ip }}:{{ consumer_port }}"
 
 [sinks.company_media_proxy_http.encoding]
 codec = "ndjson"
@@ -193,7 +193,7 @@ value = "company-unfurler"
 [sinks.company_unfurler_http]
 type = "http"
 inputs = ["company_unfurler"]
-uri = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
+uri = "http://{{ consumer_ip }}:{{ consumer_port }}"
 
 [sinks.company_unfurler_http.encoding]
 codec = "ndjson"
@@ -223,7 +223,7 @@ value = "audit"
 [sinks.audit_http]
 type = "http"
 inputs = ["audit"]
-uri = "http://{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
+uri = "http://{{ consumer_ip }}:{{ consumer_port }}"
 
 [sinks.audit_http.encoding]
 codec = "ndjson"

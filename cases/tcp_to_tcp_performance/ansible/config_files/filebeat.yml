@@ -10,4 +10,4 @@ filebeat.inputs:
 # enable buffering. This should work regardless of the use of their proprietary
 # lumberjack protocol.
 output.logstash:
-  hosts: ["{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"]
+  hosts: ["{{ consumer_ip }}:{{ consumer_port }}"]

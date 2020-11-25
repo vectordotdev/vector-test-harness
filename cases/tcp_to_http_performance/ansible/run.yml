@@ -5,8 +5,8 @@
   become: true
   tasks:
     - set_fact:
-        consumer_instance: "{{ hostvars[groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_consumer'].0] }}"
-        subject_instance: "{{ hostvars[groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_subject'].0] }}"
+        consumer_ip: "{{ hostvars[groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_consumer'].0].private_ip_address }}"
+        subject_ip: "{{ hostvars[groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_subject'].0].private_ip_address }}"
 
 - hosts: '{{ test_namespace }}:&tag_TestRole_consumer'
   become: true
@@ -21,9 +21,9 @@
 - hosts: '{{ test_namespace }}:&tag_TestRole_subject'
   become: true
   tasks:
-    - name: Wait for consumer {{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }} to become available
+    - name: Wait for consumer {{ consumer_ip }}:{{ consumer_port }} to become available
       wait_for:
-        host: "{{ consumer_instance.ec2_private_ip_address }}"
+        host: "{{ consumer_ip }}"
         port: "{{ consumer_port }}"
         delay: 1
 
@@ -36,16 +36,16 @@
 - hosts: '{{ test_namespace }}:&tag_TestRole_producer'
   become: true
   tasks:
-    - name: Wait for subject {{ subject_instance.ec2_private_ip_address }}:{{ subject_port }} to become available
+    - name: Wait for subject {{ subject_ip }}:{{ subject_port }} to become available
       wait_for:
-        host: "{{ subject_instance.ec2_private_ip_address }}"
+        host: "{{ subject_ip }}"
         port: "{{ subject_port }}"
         delay: 1
 
     - name: Warmup {{ test_subject }}
       shell: |
         socat_loop 10 /tmp/flog-100MiB.log \
-          -u - tcp:{{ subject_instance.ec2_private_ip_address }}:{{ subject_port }}
+          -u - tcp:{{ subject_ip }}:{{ subject_port }}
       register: timeout
       failed_when: timeout.rc != 124
 
@@ -64,7 +64,7 @@
     - name: Pipe test data to {{ test_subject }}
       shell: |
         socat_loop 60 /tmp/flog-100MiB.log \
-          -u - tcp:{{ subject_instance.ec2_private_ip_address }}:{{ subject_port }}
+          -u - tcp:{{ subject_ip }}:{{ subject_port }}
       register: timeout
       failed_when: timeout.rc != 124
 

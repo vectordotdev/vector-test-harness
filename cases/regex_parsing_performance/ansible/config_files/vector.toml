@@ -12,4 +12,4 @@
   inputs  = ["apache_common_parser"]
   type    = "socket"
   mode    = "tcp"
-  address = "{{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }}"
+  address = "{{ consumer_ip }}:{{ consumer_port }}"
