@@ -253,7 +253,6 @@ results_s3_bucket_name=$TEST_RESULTS_S3_BUCKET_NAME"
 
 ANSIBLE_COMMON_ARGS_ARRAY=(
   -u ubuntu
-  -i "../../../ansible/ec2.py"
   --extra-vars "@../configurations/$TEST_CONFIGURATION/ansible.yml"
   --extra-vars "$EXTRA_VARS"
 )

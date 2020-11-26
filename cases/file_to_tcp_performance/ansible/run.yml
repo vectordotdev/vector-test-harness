@@ -5,7 +5,7 @@
   become: true
   tasks:
     - set_fact:
-        consumer_instance: "{{ hostvars[groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_consumer'].0] }}"
+        consumer_ip: "{{ hostvars[groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_consumer'].0].private_ip_address }}"
         consumer_role: "{% if test_subject=='filebeat' %}logstash{% else %}tcp_test_server{% endif %}"
 
 - hosts: '{{ test_namespace }}:&tag_TestRole_consumer'
@@ -19,9 +19,9 @@
 - hosts: '{{ test_namespace }}:&tag_TestRole_subject'
   become: true
   tasks:
-    - name: Wait for port {{ consumer_instance.ec2_private_ip_address }}:{{ consumer_port }} to become available
+    - name: Wait for port {{ consumer_ip }}:{{ consumer_port }} to become available
       wait_for:
-        host: "{{ consumer_instance.ec2_private_ip_address }}"
+        host: "{{ consumer_ip }}"
         port: "{{ consumer_port }}"
         delay: 1
 

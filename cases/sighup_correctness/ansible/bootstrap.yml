@@ -9,7 +9,7 @@
   become: true
   tasks:
     - set_fact:
-        consumer_instance: "{{ hostvars[groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_consumer'].0] }}"
+        consumer_ip: "{{ hostvars[groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_consumer'].0].private_ip_address }}"
 
 - hosts: '{{ test_namespace }}:&tag_TestRole_subject'
   become: true

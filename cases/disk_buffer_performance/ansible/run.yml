@@ -5,7 +5,7 @@
   become: true
   tasks:
     - set_fact:
-        subject_instance: "{{ hostvars[groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_subject'].0] }}"
+        subject_ip: "{{ hostvars[groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_subject'].0].private_ip_address }}"
 
 - hosts: '{{ test_namespace }}:&tag_TestRole_consumer'
   become: true
@@ -31,14 +31,14 @@
   tasks:
     - name: Wait for port {{ subject_port }} to become available
       wait_for:
-        host: "{{ subject_instance.ec2_private_ip_address }}"
+        host: "{{ subject_ip }}"
         port: "{{ subject_port }}"
         delay: 1
 
     - name: Warmup {{ test_subject }}
       shell: |
         socat_loop 10 /tmp/flog-100MiB.log \
-          -u - tcp:{{ hostvars[groups.tag_TestRole_subject.0].ec2_private_ip_address }}:{{ subject_port }}
+          -u - tcp:{{ hostvars[groups.tag_TestRole_subject.0].private_ip_address }}:{{ subject_port }}
       register: timeout
       failed_when: timeout.rc != 124
 
@@ -57,7 +57,7 @@
     - name: Pipe test data to {{ test_subject }}
       shell: |
         socat_loop 60 /tmp/flog-100MiB.log \
-          -u - tcp:{{ hostvars[groups.tag_TestRole_subject.0].ec2_private_ip_address }}:{{ subject_port }}
+          -u - tcp:{{ hostvars[groups.tag_TestRole_subject.0].private_ip_address }}:{{ subject_port }}
       register: timeout
       failed_when: timeout.rc != 124
 

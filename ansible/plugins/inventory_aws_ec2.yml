@@ -1,0 +1,18 @@
+# aws ec2 ansible dynamic inventory plugin
+plugin: aws_ec2
+
+regions:
+  - us-east-1
+
+keyed_groups:
+  #  each aws ec2 instance has it own instance tags. create
+  #  a tag variable from those tags for ansible to use.
+  #  if the ec2 tag Name had the value cygnusx1 the tag
+  #  variable would be:
+  #  tag_Name_cygnusx1
+  #  if a tag existed for an aws instance as
+  #  Applications with the value of Oracle the
+  #  variable would be:
+  #  tag_Applications_Oracle
+  - key: tags
+    prefix: tag
