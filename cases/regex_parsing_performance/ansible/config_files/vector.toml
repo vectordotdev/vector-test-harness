@@ -6,10 +6,11 @@
 [transforms.apache_common_parser]
   inputs = ["in"]
   type   = "regex_parser"
-  regex  = '^(?P<host>[\w\.]+) - (?P<user>[\w]+) (?P<bytes_in>[\d]+) \[(?P<timestamp>.*)\] "(?P<method>[\w]+) (?P<path>.*)" (?P<status>[\d]+) (?P<bytes_out>[\d]+)$'
+  patterns = ['^(?P<host>[\w\.]+) - (?P<user>[\w]+) (?P<bytes_in>[\d]+) \[(?P<timestamp>.*)\] "(?P<method>[\w]+) (?P<path>.*)" (?P<status>[\d]+) (?P<bytes_out>[\d]+)$']
 
 [sinks.out]
   inputs  = ["apache_common_parser"]
   type    = "socket"
   mode    = "tcp"
   address = "{{ consumer_ip }}:{{ consumer_port }}"
+  encoding.codec = "text"

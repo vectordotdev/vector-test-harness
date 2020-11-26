@@ -5,6 +5,7 @@
 # configuration instead.
 ---
 lines_per_consumer: 10000000 # 10mil
+subject_port: 9000
 subject_api_port: 9000
 subject_admin_port: 9000
 subject_media_proxy_port: 9000
