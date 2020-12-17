@@ -213,7 +213,7 @@ if [ "$BOOTSTRAP" == 'true' ] && [ "$SKIP_TERRAFORM" != 'true' ]; then
   export TF_IN_AUTOMATION=true
   export TF_DATA_DIR=".terraform/$TEST_CONFIGURATION/$TEST_USER_ID"
 
-  terraform init \
+  terraform init -reconfigure \
     "${TERRAFORM_COMMON_EXTRA_ARGS[@]}" \
     -backend-config="bucket=${VECTOR_TEST_STATE_S3_BUCKET_NAME}" \
     -backend-config="region=${AWS_DEFAULT_REGION}" \
@@ -254,6 +254,7 @@ results_s3_bucket_name=$TEST_RESULTS_S3_BUCKET_NAME"
 ANSIBLE_COMMON_ARGS_ARRAY=(
   -u ubuntu
   --extra-vars "@../configurations/$TEST_CONFIGURATION/ansible.yml"
+  --extra-vars "ansible_ssh_private_key_file=$VECTOR_TEST_SSH_PRIVATE_KEY"
   --extra-vars "$EXTRA_VARS"
 )
 
