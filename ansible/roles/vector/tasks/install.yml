@@ -7,6 +7,12 @@
         name: vector
         state: absent
 
+    - name: Ensure vector user is removed before installing
+      user:
+        name: vector
+        state: absent
+        remove: yes
+
     - name: Install Vector .deb package from URL
       when: vector_version is not regex('^dev-')
       include: "install_deb_from_url.yml"
