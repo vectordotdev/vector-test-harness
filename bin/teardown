@@ -20,6 +20,7 @@ OPTIONS
    -c, --configuration   The test configuration (default: default, env: VECTOR_TEST_CONFIGURATION)
    -t, --test            The test to run (ex: tcp_to_blackhole, env: VECTOR_TEST_NAME)
    -u, --user-id         Your user ID (ex: ben, env: VECTOR_TEST_USER_ID)
+   -y, --yes             Answer yes to any prompts
    -h, --help            Print this message
 
 EXAMPLE
@@ -44,13 +45,14 @@ TEST_NAME="${VECTOR_TEST_NAME:-""}"
 TEST_RESULTS_S3_BUCKET_NAME="${VECTOR_TEST_RESULTS_S3_BUCKET_NAME:-""}"
 TEST_SSH_PUBLIC_KEY="${VECTOR_TEST_SSH_PUBLIC_KEY:-""}"
 TEST_USER_ID="${VECTOR_TEST_USER_ID:-""}"
+TEST_YES_PROMPTS="${VECTOR_TEST_YES_PROMPTS:-""}"
 
 #
 # Flags
 #
 
-OPTIONS="c:t:u:h"
-LONGOPTS="configuration:,test:,user-id:,help"
+OPTIONS="c:t:u:yh"
+LONGOPTS="configuration:,test:,user-id:,yes,help"
 PARSED="$(parse_arguments "$OPTIONS" "$LONGOPTS" "$0" "$@")"
 eval set -- "$PARSED"
 
@@ -67,6 +69,14 @@ while true; do
   -u | --user-id)
     TEST_USER_ID="$2"
     shift 2
+    ;;
+  -u | --user-id)
+    TEST_USER_ID="$2"
+    shift 2
+    ;;
+  -y | --yes)
+    TEST_YES_PROMPTS=true
+    shift 1
     ;;
   -h | --help)
     usage
@@ -132,6 +142,7 @@ export TF_IN_AUTOMATION=true
 export TF_DATA_DIR=".terraform/$TEST_CONFIGURATION/$TEST_USER_ID"
 terraform destroy \
   "${TERRAFORM_COMMON_EXTRA_ARGS[@]}" \
+  "$(if [[ $TEST_YES_PROMPTS ]]; then echo "--auto-approve"; fi)" \
   -var pub_key="$TEST_SSH_PUBLIC_KEY" \
   -var test_name="$TEST_NAME" \
   -var test_configuration="$TEST_CONFIGURATION" \
