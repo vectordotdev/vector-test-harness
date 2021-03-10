@@ -1,0 +1,12 @@
+random_seed = 20210309
+
+# Set the number of background worker threads that this run will use.
+worker_threads = 2
+
+[targets.plain]
+path_template = "logs/%NNN%-plain.log"
+duplicates = 10
+variant = "Ascii"
+maximum_bytes_per_file = "4Gb"
+bytes_per_second = "2.5 Mb"
+maximum_line_size_bytes = "100 Kb"
