@@ -31,4 +31,4 @@ if [ ! -f "${VECTOR_BIN}" ]; then
     popd
 fi
 
-exec flamegraph "${VECTOR_BIN}" --config vector.toml
+exec perf record --call-graph dwarf "${VECTOR_BIN}" --config vector.toml

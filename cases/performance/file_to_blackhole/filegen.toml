@@ -5,8 +5,16 @@ worker_threads = 2
 
 [targets.plain]
 path_template = "logs/%NNN%-plain.log"
-duplicates = 10
+duplicates = 225
 variant = "Ascii"
 maximum_bytes_per_file = "4Gb"
-bytes_per_second = "2.5 Mb"
-maximum_line_size_bytes = "100 Kb"
+bytes_per_second = "100 Kb"
+maximum_line_size_bytes = "1 Kb"
+
+[targets.plain2]
+path_template = "logs/%NNN%-plain2.log"
+duplicates = 255
+variant = "Ascii"
+maximum_bytes_per_file = "4Gb"
+bytes_per_second = "100 Kb"
+maximum_line_size_bytes = "1 Kb"
