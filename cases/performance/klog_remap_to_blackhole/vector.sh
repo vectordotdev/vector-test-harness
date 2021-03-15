@@ -31,6 +31,16 @@ if [ ! -f "${VECTOR_BIN}" ]; then
     popd
 fi
 
-perf stat --repeat=10 bash -c "zcat baked.log.gz | ${VECTOR_BIN} -qq --config vector-multihop.toml"
+perf stat --repeat=10 bash -c "zcat baked.log.gz | ${VECTOR_BIN} -qq --threads=1 --config vector-multihop.toml"
+perf stat --repeat=10 bash -c "zcat baked.log.gz | ${VECTOR_BIN} -qq --threads=1 --config vector-nohop.toml"
 
-perf stat --repeat=10 bash -c "zcat baked.log.gz | ${VECTOR_BIN} -qq --config vector-nohop.toml"
+zcat baked.log.gz | perf record --call-graph dwarf "${VECTOR_BIN}" -qq --threads=1 --config vector-multihop.toml && mv perf.data perf-multihop.data
+zcat baked.log.gz | perf record --call-graph dwarf "${VECTOR_BIN}" -qq --threads=1 --config vector-nohop.toml && mv perf.data perf-nohop.data
+
+perf script --input=perf-multihop.data | inferno-collapse-perf > stacks-multihop.folded
+inferno-flamegraph < stacks-multihop.folded > flamegraph-multihop.svg
+
+perf script --input=perf-nohop.data | inferno-collapse-perf > stacks-nohop.folded
+inferno-flamegraph < stacks-nohop.folded > flamegraph-nohop-.svg
+
+inferno-diff-folded stacks-multihop.folded stacks-nohop-.folded | inferno-flamegraph > multihop-to-nohop.svg

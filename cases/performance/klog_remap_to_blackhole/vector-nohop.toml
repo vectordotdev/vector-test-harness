@@ -10,9 +10,8 @@ source = """
 # json_parser transform equivalent
 parsed_json, err = parse_json(.message)
 if err != null {
-  . = merge(., parsed_json)
+  ., _ = merge(., parsed_json)
 }
-
 # regex_parser transform equivalent (double escape character classes because toml)
 matches, err = parse_regex(.source, r'^/([\\w]+)/([\\w]+)/([\\w]+)/(?P<pod>[\\w\\-]+)_(?P<namespace>[\\w\\-]+)_(?P<container>[\\w\\-\\.]+)-(\\w+).log$')
 if err != null {
@@ -20,13 +19,15 @@ if err != null {
   .namespace = matches.namespace
   .container = matches.container
 }
-
-# add_fields and coercer transform equivalents
-.origin_id = .namespace + "/" + .pod + "/" .container
+# add_fields transform equivalent
+.origin_id, err = .namespace + "/" + .pod + "/" + .container
 .agent_name = "vector"
 .host = "${VECTOR_SELF_NODE_NAME}"
-.timestamp = to_timestamp(.time)
-
+# coercer transform equivalent
+ts, err = to_timestamp(.time)
+if err != null {
+  .timestamp = ts
+}
 # original remap logic, improved
 nested_json, err = parse_json(.log)
 if err != null {
