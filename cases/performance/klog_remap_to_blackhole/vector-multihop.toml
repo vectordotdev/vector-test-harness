@@ -1,0 +1,73 @@
+data_dir = "data"
+
+[sources.stdin]
+type = "stdin"
+
+[transforms.json_parser]
+type = "json_parser"
+inputs = ["stdin"]
+
+[transforms.regex_parser]
+type = "regex_parser"
+inputs = ["json_parser"]
+drop_field = false
+field = "source"
+# Take namespace,pod,container name from file field of /var/log/containers/
+patterns = ['^/([\w]+)/([\w]+)/([\w]+)/(?P<pod>[\w\-]+)_(?P<namespace>[\w\-]+)_(?P<container>[\w\-\.]+)-(\w+).log$']
+types.pod = "string"
+types.namespace = "string"
+types.container = "string"
+
+[transforms.add_fields]
+type = "add_fields"
+inputs = ["regex_parser"]
+overwrite = true
+fields.origin_id = "{{ namespace }}/{{ pod }}/{{ container }}"
+fields.agent_name = "vector"
+fields.host = "${VECTOR_SELF_NODE_NAME}"
+fields.timestamp = "{{ time }}"
+
+[transforms.coercer]
+type = "coercer"
+inputs = ["add_fields"]
+types.timestamp = "timestamp"
+
+[transforms.remap]
+type = "remap"
+inputs = ["coercer"]
+source = """
+if starts_with(.log, "{") {
+   .log = parse_json!(.log)
+   .log_type = "json"
+} else {
+  .log_type = "text"
+}
+"""
+
+[transforms.swimlanes]
+type = "swimlanes"
+inputs = ["remap"]
+
+[transforms.swimlanes.lanes.json]
+type = "remap"
+source = """
+  .log_type == "json"
+"""
+
+[transforms.swimlanes.lanes.text]
+type = "remap"
+source = """
+  .log_type == "text"
+"""
+
+[transforms.reduce]
+type = "reduce"
+inputs = ["swimlanes.text"]
+group_by = ["origin_id"]
+merge_strategies.log = "concat_newline"
+starts_when.type = "remap"
+starts_when.source = '''match!(.log, r'^\d{4}\D\d{2}\D\d{2}(T|\s)?\d{2}:\d{2}:\d{2}') || match!(.log, r'^\[?\d{2}\S\w{3}\S\d{4}:\d{2}:\d{2}:\d{2} [+]\d{2,}\]') || match!(.log, r'^\w{3}\s\d{2}\s\d{2}:\d{2}:\d{2}.\d{3}') || match!(.log, r'^\[\w+]: \d{4}\D\d{2}\D\d{2}(T|\s)?\d{2}:\d{2}:\d{2}')'''
+
+[sinks.blackhole]
+type = "blackhole"
+inputs = ["reduce", "swimlanes.text", "swimlanes.json"]
