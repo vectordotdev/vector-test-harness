@@ -1,0 +1,4 @@
+*.data
+*.svg
+dhat.out.*
+*.folded

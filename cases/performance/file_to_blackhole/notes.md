@@ -142,3 +142,32 @@ a relatively small number of files -- 10 -- producing at 50Mb/sec caused the
 file source to fall behind by 254 Mb/sec. The progenitor code for `file-source`
 was concerned with fairness and not throughput, which I believe shows today in
 the data.
+
+## 2021/03/22
+
+With our understanding of `file` source being relatively solid we've now focused
+on downstream pressure with remap, done in
+[`klog_remap_to_blackhole`](../klog_remap_to_blackhole). This case extends the
+tes surface to include perf collection, flamegraph diffs and
+[dhat](https://www.valgrind.org/docs/manual/dh-manual.html) as the flamegraphs
+indicate that vector's suffering allocator pressure in remap itself. Note that
+test case makes a distinction between nohop (where all computation is done in
+remap) and multihop (where computation is spread across multiple concurrent
+nodes) and two key results stick out:
+
+ * when vector is single-threaded these two configurations have roughly the same
+   runtime, implying a constant overhead and
+ * when vector is _not_ single-threaded the multihop runs much faster, spreading
+   the cost across concurrent actors.
+
+This makes sense. A serial bottleneck is a serial bottleneck. We believe
+currently that [PR 5474](https://github.com/timberio/vector/pull/5374/)
+addresses some of these costs but this pull request has been allowed to drift
+substantially against master and is, well, "chonky". My current focus with
+`klog_remap_to_blackhole` is to gain confidence that the changes in this PR
+will, in fact, materially improve vector's performance profile for this use case
+especially as compared to potentially less intrusive changes like [PR
+6846](https://github.com/timberio/vector/pull/6846) may. DHAT _does_ show many
+blocks allocated _inside_ VRL that are either short-lived or never read(!) but
+whether these blocks could be avoided if we were referencing log event data from
+the outside is not known to me.
