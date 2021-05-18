@@ -3,13 +3,13 @@
 set -o errexit
 set -o pipefail
 set -o nounset
-set -o xtrace
+# set -o xtrace
 
 __dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BIN="${__dir}/bin"
 BUILD="${__dir}/.build"
-VECTOR_BASE_SHA="f1ea629fb1d751bbb073597e6fe17887cd6a0098"
-VECTOR_COMP_SHA="043af0866d054b74d4cd69d3641db36c8a34d8d9"
+OUT="${__dir}/out"
+VECTOR_BASE_SHA="6c0df5614a10c4ef7d8c5e18d3bba289c6a7a0b5"
+VECTOR_COMP_SHA="cb12351ba2a039db1ea962ab75f990b3d149f37e"
 
 VECTOR_BASE_BIN="${__dir}/bin/vector-${VECTOR_BASE_SHA}"
 VECTOR_COMP_BIN="${__dir}/bin/vector-${VECTOR_COMP_SHA}"
@@ -20,6 +20,7 @@ REPO_NAME="${REPO_DOT_GIT%.*}"
 
 mkdir -p "${__dir}/bin"
 mkdir -p "${BUILD}"
+mkdir -p "${OUT}"
 
 if [ ! -d "${BUILD}/${REPO_NAME}" ]; then
     pushd "${BUILD}"
@@ -31,7 +32,7 @@ if [ ! -f "${VECTOR_BASE_BIN}" ]; then
     pushd "${BUILD}/${REPO_NAME}"
     git fetch --all
     git checkout ${VECTOR_BASE_SHA}
-    RUSTFLAGS="-g" cargo build --no-default-features --features "sources-stdin,sources-internal_metrics,transforms-json_parser,transforms-regex_parser,transforms-add_fields,transforms-coercer,transforms-remap,transforms-reduce,transforms-route,sinks-prometheus,sinks-blackhole" --release
+    RUSTFLAGS="-g" cargo build --release
     cp target/release/vector "${VECTOR_BASE_BIN}"
     popd
 fi
@@ -40,22 +41,70 @@ if [ ! -f "${VECTOR_COMP_BIN}" ]; then
     pushd "${BUILD}/${REPO_NAME}"
     git fetch --all
     git checkout ${VECTOR_COMP_SHA}
-    # RUSTFLAGS="-g" cargo build --no-default-features --features "sources-stdin,sources-internal_metrics,transforms-json_parser,transforms-regex_parser,transforms-add_fields,transforms-coercer,transforms-remap,transforms-reduce,transforms-route,sinks-prometheus,sinks-blackhole" --release
     RUSTFLAGS="-g" cargo build --release
     cp target/release/vector "${VECTOR_COMP_BIN}"
     popd
 fi
 
-perf stat --repeat=10 bash -c "zcat baked.log.gz | ${VECTOR_BASE_BIN} -qq --config vector-nohop.toml"
-perf stat --repeat=10 bash -c "zcat baked.log.gz | ${VECTOR_COMP_BIN} -qq --config vector-nohop.toml"
+CONFIGS="${__dir}/configs/*"
 
-zcat baked.log.gz | perf record --call-graph dwarf "${VECTOR_BASE_BIN}" -qq --config vector-nohop.toml && mv perf.data perf-base-nohop.data
-zcat baked.log.gz | perf record --call-graph dwarf "${VECTOR_COMP_BIN}" -qq --config vector-nohop.toml && mv perf.data perf-comp-nohop.data
+figlet "hyperfine"
+for config in $CONFIGS
+do
+    echo "PROCESSING: $(basename "${config}")"
+    #
+    # Topline stable numbers
+    #
+    hyperfine "zcat baked.log.gz | ${VECTOR_BASE_BIN} -qq --config ${config}" \
+              "zcat baked.log.gz | ${VECTOR_COMP_BIN} -qq --config ${config}"
+done
 
-perf script --input=perf-base-nohop.data | inferno-collapse-perf > stacks-base-nohop.folded
-perf script --input=perf-comp-nohop.data | inferno-collapse-perf > stacks-comp-nohop.folded
+figlet "perf / flamegraph"
+for config in $CONFIGS
+do
+    NAME="$(basename "${config}" | cut -f 1 -d '.')"
 
-inferno-flamegraph < stacks-base-nohop.folded > flamegraph-base-nohop.svg
-inferno-flamegraph < stacks-comp-nohop.folded > flamegraph-comp-nohop.svg
+    BASE_PERF="${OUT}/perf-${VECTOR_BASE_SHA}-${NAME}.data"
+    BASE_FOLDED="${OUT}/stacks-${VECTOR_BASE_SHA}-${NAME}.folded"
+    BASE_SVG="${OUT}/${VECTOR_BASE_SHA}-${NAME}.svg"
 
-inferno-diff-folded stacks-base-nohop.folded stacks-comp-nohop.folded | inferno-flamegraph > diff.svg
+    COMP_PERF="${OUT}/perf-${VECTOR_COMP_SHA}-${NAME}.data"
+    COMP_FOLDED="${OUT}/stacks-${VECTOR_COMP_SHA}-${NAME}.folded"
+    COMP_SVG="${OUT}/${VECTOR_COMP_SHA}-${NAME}.svg"
+
+    #
+    # Perf / Flamegraphs
+    #
+    zcat baked.log.gz | \
+        perf record --call-graph dwarf "${VECTOR_BASE_BIN}" -qq --config "${config}" && \
+        mv perf.data "${BASE_PERF}"
+
+    zcat baked.log.gz | \
+        perf record --call-graph dwarf "${VECTOR_COMP_BIN}" -qq --config "${config}" && \
+        mv perf.data "${COMP_PERF}"
+
+    perf script --input="${BASE_PERF}" | inferno-collapse-perf > "${BASE_FOLDED}"
+    perf script --input="${COMP_PERF}" | inferno-collapse-perf > "${COMP_FOLDED}"
+
+    inferno-flamegraph < "${BASE_FOLDED}" > "${BASE_SVG}"
+    inferno-flamegraph < "${COMP_FOLDED}" > "${COMP_SVG}"
+
+    inferno-diff-folded "${BASE_FOLDED}" "${COMP_FOLDED}" | inferno-flamegraph > "${OUT}/diff-${VECTOR_BASE_SHA}-${VECTOR_COMP_SHA}.svg"
+    inferno-diff-folded "${COMP_FOLDED}" "${BASE_FOLDED}" | inferno-flamegraph --negate > "${OUT}/diff-${VECTOR_COMP_SHA}-${VECTOR_BASE_SHA}.svg"
+done
+
+figlet "massif"
+for config in $CONFIGS
+do
+    NAME="$(basename "${config}" | cut -f 1 -d '.')"
+    BASE_MASSIF="${OUT}/massif.out.${NAME}-${VECTOR_BASE_SHA}"
+    COMP_MASSIF="${OUT}/massif.out.${NAME}-${VECTOR_COMP_SHA}"
+
+    #
+    # Valgrind
+    #
+    zcat baked.log.gz | \
+        valgrind --tool=massif --massif-out-file="${BASE_MASSIF}" "${VECTOR_BASE_BIN}" -qq --config "${config}"
+    zcat baked.log.gz | \
+        valgrind --quiet --tool=massif --massif-out-file="${COMP_MASSIF}" "${VECTOR_COMP_BIN}" -qq --config "${config}"
+done
