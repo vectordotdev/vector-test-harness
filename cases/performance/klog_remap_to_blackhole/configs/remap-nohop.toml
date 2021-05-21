@@ -20,7 +20,7 @@ if err != null {
   .container = matches.container
 }
 # add_fields transform equivalent
-.origin_id, err = .namespace + "/" + .pod + "/" + .container
+.origin_id = .namespace + "/" + .pod + "/" + .container
 .agent_name = "vector"
 .host = "${VECTOR_SELF_NODE_NAME}"
 # coercer transform equivalent
