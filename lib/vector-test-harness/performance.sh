@@ -114,7 +114,7 @@ build_vector_sha() {
     git fetch --all
     git checkout "${VECTOR_SHA}"
     RUSTFLAGS="-g" cargo build $FEATURES
-    cp target/release/vector "${VECTOR_BIN}"
+    cp target/debug/vector "${VECTOR_BIN}"
     popd
   fi
 }
