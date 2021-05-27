@@ -1,16 +1,14 @@
 #!/usr/bin/env bash
-
 set -o errexit
 set -o pipefail
 set -o nounset
-# set -o xtrace
-set -x
 
 __self_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source ${__self_dir}/../../../lib/vector-test-harness/performance.sh
 
 VECTOR_BASE_SHA="$1"
 VECTOR_COMP_SHA="$2"
+PERF_SAMPLE_HZ=${PERF_SAMPLE_HZ:-"499"}
 
 # Get all our directories and inputs sorted out.
 CONFIGS="${__self_dir}/configs/*"
@@ -28,27 +26,23 @@ VECTOR_COMP_BIN=$(get_bin_for_sha "${VECTOR_COMP_SHA}")
 
 # Head-to-head runs utilizing the different configurations via hyperfine. This gets us
 # the topline numbers for which SHA is completing the tests fastest.
+generate_hyperfine_results_template "${RESULTS_DIR}"
+
 figlet "hyperfine"
 for config in $CONFIGS
 do
     base_config=$(basename "${config}")
     markdown_path=$(get_hyperfine_result_subfile_path "${RESULTS_DIR}" "${base_config}")
 
-    echo "PROCESSING: $(basename "${config}")"
     hyperfine "zcat ${INPUT_FILE} | ${VECTOR_BASE_BIN} -qq --config ${config}" \
               "zcat ${INPUT_FILE} | ${VECTOR_COMP_BIN} -qq --config ${config}" \
               --command-name "${base_config} (base)" \
               --command-name "${base_config} (comparison)" \
               --export-markdown "${markdown_path}"
-done
 
-generate_hyperfine_results "${RESULTS_DIR}"
-
-for config in $CONFIGS
-do
-    base_config=$(basename "${config}")
     append_hyperfine_result "${RESULTS_DIR}" "${base_config}"
 done
+echo "Finished with hyperfine."
 
 # Now do the same thing, but run then binary under `perf` so we can generate flamegraphs.
 # figlet "perf / flamegraph"
@@ -67,25 +61,32 @@ done
 #     #
 #     # Perf / Flamegraphs
 #     #
+#     echo "Running perf baseline..."
 #     zcat ${INPUT_FILE} | \
-#         sudo perf record --call-graph dwarf -F 499 "${VECTOR_BASE_BIN}" -qq --config "${config}" && \
+#         sudo perf record --call-graph dwarf -F "${PERF_SAMPLE_HZ}" "${VECTOR_BASE_BIN}" -qq --config "${config}" && \
 #         sudo mv perf.data "${BASE_PERF}"
 
+#     echo "Running perf comparison..."
 #     zcat ${INPUT_FILE} | \
-#         sudo perf record --call-graph dwarf -F 499 "${VECTOR_COMP_BIN}" -qq --config "${config}" && \
+#         sudo perf record --call-graph dwarf -F "${PERF_SAMPLE_HZ}" "${VECTOR_COMP_BIN}" -qq --config "${config}" && \
 #         sudo mv perf.data "${COMP_PERF}"
 
+#     echo "Transforming raw perf results..."
 #     sudo perf script --input="${BASE_PERF}" | inferno-collapse-perf > "${BASE_FOLDED}"
 #     sudo perf script --input="${COMP_PERF}" | inferno-collapse-perf > "${COMP_FOLDED}"
 
+#     echo "Generating baseline/comparison flamegraph SVGs..."
 #     inferno-flamegraph < "${BASE_FOLDED}" > "${BASE_SVG}"
 #     inferno-flamegraph < "${COMP_FOLDED}" > "${COMP_SVG}"
 
-#     inferno-diff-folded "${BASE_FOLDED}" "${COMP_FOLDED}" | inferno-flamegraph > "${OUT}/diff-${VECTOR_BASE_SHA}-${VECTOR_COMP_SHA}.svg"
-#     inferno-diff-folded "${COMP_FOLDED}" "${BASE_FOLDED}" | inferno-flamegraph --negate > "${OUT}/diff-${VECTOR_COMP_SHA}-${VECTOR_BASE_SHA}.svg"
+#     echo "Generating mirrored difference flamegraph SVGs..."
+#     inferno-diff-folded "${BASE_FOLDED}" "${COMP_FOLDED}" | inferno-flamegraph > "${RESULTS_DIR}/diff-${VECTOR_BASE_SHA}-${VECTOR_COMP_SHA}.svg"
+#     inferno-diff-folded "${COMP_FOLDED}" "${BASE_FOLDED}" | inferno-flamegraph --negate > "${RESULTS_DIR}/diff-${VECTOR_COMP_SHA}-${VECTOR_BASE_SHA}.svg"
+
+#     echo "Finished with perf/flamegraph."
 # done
 
-# Now run through massif to check out memory usage / growth.
+# # Now run through massif to check out memory usage / growth.
 # figlet "massif"
 # for config in $CONFIGS
 # do
@@ -96,8 +97,11 @@ done
 #     #
 #     # Valgrind
 #     #
+#     echo "Running massif baseline..."
 #     zcat ${INPUT_FILE} | \
-#         valgrind --tool=massif --massif-out-file="${BASE_MASSIF}" "${VECTOR_BASE_BIN}" -qq --config "${config}"
+#         valgrind --quiet --tool=massif --massif-out-file="${BASE_MASSIF}" "${VECTOR_BASE_BIN}" -qq --config "${config}"
+#     echo "Running massif comparison..."
 #     zcat ${INPUT_FILE} | \
 #         valgrind --quiet --tool=massif --massif-out-file="${COMP_MASSIF}" "${VECTOR_COMP_BIN}" -qq --config "${config}"
+#     echo "Finished with massif."
 # done

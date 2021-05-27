@@ -45,7 +45,7 @@ prepare_dirs_for_sha() {
 #
 # This file is suitable for direct inclusion in a Github issue/PR comment, and is formatted via
 # Markdown.
-generate_hyperfine_results() {
+generate_hyperfine_results_template() {
   local RESULTS_DIR="$1"
   cat << EOF > "${RESULTS_DIR}/hyperfine.md"
 ## Hyperfine
@@ -113,7 +113,7 @@ build_vector_sha() {
     pushd "${SRC_DIR}/${REPOSITORY_NAME}"
     git fetch --all
     git checkout "${VECTOR_SHA}"
-    RUSTFLAGS="-g" cargo build --release $FEATURES
+    RUSTFLAGS="-g" cargo build $FEATURES
     cp target/release/vector "${VECTOR_BIN}"
     popd
   fi
