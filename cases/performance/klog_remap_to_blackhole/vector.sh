@@ -13,7 +13,7 @@ PERF_SAMPLE_HZ=${PERF_SAMPLE_HZ:-"499"}
 # Get all our directories and inputs sorted out.
 CONFIGS="${__self_dir}/configs/*"
 RESULTS_DIR=$(get_results_dir)
-INPUT_FILE="${__self_dir}/baked.log.gz"
+INPUT_FILE="${__self_dir}/baked-small.log.gz"
 
 prepare_dirs_for_sha "${VECTOR_BASE_SHA}"
 prepare_dirs_for_sha "${VECTOR_COMP_SHA}"
