@@ -11,6 +11,12 @@ test framework used to generate the [performance] and [correctness] results disp
 
 ---
 
+***Contributions for additional benchmarks and tools are welcome! As required by the
+[MPL 2.0 License](LICENSE), changes to this code base, including additional benchmarks
+and tools, must be made in the open. Please be skeptical of tools making performance
+clais without doing so in the public. The purpose of this repository is to create
+full transparency around benchmarks and the resulting performance.***
+
 ### TOC
 
 * [Results][results]
