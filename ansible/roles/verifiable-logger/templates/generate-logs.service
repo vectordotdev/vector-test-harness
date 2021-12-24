@@ -1,0 +1,6 @@
+[Unit]
+Description=generate-logs
+
+[Service]
+ExecStart=/usr/local/bin/verifiable-logger generate --rate 10 --output output.log
+WorkingDirectory=/var/lib/verifiable-logger/

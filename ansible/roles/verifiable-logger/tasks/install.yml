@@ -1,0 +1,21 @@
+---
+- name: Create verifiable-logger directory
+  file:
+    path: /var/lib/verifiable-logger
+    state: directory
+
+- name: Copy verifiable-logger binary
+  get_url:
+    url: "https://verifiable-logger-builds.s3.us-east-2.amazonaws.com/verifiable-logger"
+    dest: /usr/local/bin/verifiable-logger
+    mode: 755
+
+- name: Copy generate-logs unit file
+  template:
+    src: generate-logs.service
+    dest: /etc/systemd/system/generate-logs.service
+
+- name: Copy verify-logs unit file
+  template:
+    src: verify-logs.service
+    dest: /etc/systemd/system/verify-logs.service
