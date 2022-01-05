@@ -1,5 +1,0 @@
----
-- include_role:
-    name: logstash
-  vars:
-    action: configure

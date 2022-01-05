@@ -1,1 +1,0 @@
-`stdin -> blackhole` experiment

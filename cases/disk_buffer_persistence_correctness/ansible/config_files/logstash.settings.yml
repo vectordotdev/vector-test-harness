@@ -1,9 +1,0 @@
-path.logs: /var/log/logstash
-pipeline.batch.delay: 2
-queue.type: persisted
-queue.max_bytes: 100mb
-
-# We set this to 1 since this is the only way to guarantee
-# full persistence of events flowing through Logstash, even
-# though this "severly" impact performance.
-queue.checkpoint.writes: 1

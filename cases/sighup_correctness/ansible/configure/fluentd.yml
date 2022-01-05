@@ -1,5 +1,0 @@
----
-- include_role:
-    name: fluentd
-  vars:
-    action: configure

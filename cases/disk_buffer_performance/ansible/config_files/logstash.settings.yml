@@ -1,9 +1,0 @@
-path.logs: /var/log/logstash
-queue.type: persisted
-queue.max_bytes: 100mb
-
-# We set this to 1 since this benchmark is concerned with full
-# persistence. In other words, configuring each subject in a state
-# that minimizes data loss. This provides an apples to apples comparison
-# since this is the default behavior of Vector's disk buffers.
-queue.checkpoint.writes: 1

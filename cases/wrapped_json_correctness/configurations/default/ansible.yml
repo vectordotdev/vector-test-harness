@@ -1,4 +1,0 @@
----
-subject_port: 9000
-tcp_consumer_port: 9001
-http_consumer_port: 9002
