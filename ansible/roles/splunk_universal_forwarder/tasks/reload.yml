@@ -1,3 +1,0 @@
----
-- name: Reload splunk_universal_forwarder
-  shell: systemctl kill -s HUP --kill-who=main splunk_universal_forwarder.service

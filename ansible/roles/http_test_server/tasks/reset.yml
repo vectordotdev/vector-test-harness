@@ -1,5 +1,0 @@
----
-- include: "stop.yml"
-
-- name: Reset http test server state
-  shell: rm -rf /tmp/http_test_server_summary.json

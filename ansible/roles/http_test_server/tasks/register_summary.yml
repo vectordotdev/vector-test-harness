@@ -1,7 +1,0 @@
----
-- name: Register http_test_server_summary
-  shell: cat /tmp/http_test_server_summary.json
-  register: output
-
-- set_fact:
-    summary: "{{ output.stdout|from_json }}"

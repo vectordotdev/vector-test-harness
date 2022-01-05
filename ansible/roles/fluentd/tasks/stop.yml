@@ -1,6 +1,0 @@
----
-- name: Stop the td-agent systemd service
-  systemd:
-    name: td-agent
-    daemon_reload: no
-    state: stopped

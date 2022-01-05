@@ -1,6 +1,0 @@
----
-- name: Start the telegraf systemd service
-  systemd:
-    name: telegraf
-    daemon_reload: no
-    state: started

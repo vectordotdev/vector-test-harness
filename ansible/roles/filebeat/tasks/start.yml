@@ -1,6 +1,0 @@
----
-- name: Start the filebeat systemd service
-  systemd:
-    name: filebeat
-    daemon_reload: no
-    state: started

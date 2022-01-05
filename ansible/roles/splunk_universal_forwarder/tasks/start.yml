@@ -1,6 +1,0 @@
----
-- name: Start splunk_universal_forwarder systemd service
-  systemd:
-    name: splunk_universal_forwarder
-    daemon_reload: no
-    state: started

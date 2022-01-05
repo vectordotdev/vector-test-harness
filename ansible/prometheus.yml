@@ -1,9 +1,0 @@
----
-- hosts: default
-  become: true
-  roles:
-    - utilities
-    - python3
-    - awscli
-    - tls-support
-    - prometheus-daemon

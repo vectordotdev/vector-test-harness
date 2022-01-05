@@ -1,6 +1,0 @@
----
-# install node_exporter by default
-prometheus_exporter_name: node_exporter
-prometheus_exporter_version: 0.17.0
-prometheus_exporter_sha256: d2e00d805dbfdc67e7291ce2d2ff151f758dd7401dd993411ff3818d0e231489
-prometheus_exporter_flags: "--collector.systemd"

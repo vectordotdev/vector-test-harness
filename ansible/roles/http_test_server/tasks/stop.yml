@@ -1,6 +1,0 @@
----
-- name: Stop the http_test_server systemd service
-  systemd:
-    name: http_test_server
-    daemon_reload: no
-    state: stopped

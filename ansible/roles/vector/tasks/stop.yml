@@ -1,6 +1,0 @@
----
-- name: Stop the vector systemd service
-  systemd:
-    name: vector
-    daemon_reload: no
-    state: stopped

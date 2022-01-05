@@ -1,3 +1,0 @@
----
-- name: Reload td-agent-bit
-  shell: systemctl kill -s HUP --kill-who=main td-agent-bit.service

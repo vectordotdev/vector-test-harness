@@ -1,5 +1,0 @@
----
-bytes: 104857600
-encoding: json
-format: apache_common
-location: "/tmp/flog-100MiB.log"

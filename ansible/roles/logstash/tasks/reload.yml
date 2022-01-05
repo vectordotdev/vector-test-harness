@@ -1,3 +1,0 @@
----
-- name: Reload logstash
-  shell: systemctl kill -s HUP --kill-who=main logstash.service

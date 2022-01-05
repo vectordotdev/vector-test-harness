@@ -1,5 +1,0 @@
-- name: Remove test docker container
-  docker_container:
-    name: '{{ container_name }}'
-    image: '{{ image_name }}'
-    state: absent

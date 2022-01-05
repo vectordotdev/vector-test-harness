@@ -1,5 +1,0 @@
----
-- name: Install Ruby
-  apt:
-    name: ruby-full
-    state: present

@@ -1,8 +1,0 @@
----
-- name: Install socat_loop command
-  copy:
-    src: socat_loop
-    dest: /usr/local/bin/socat_loop
-    owner: root
-    group: root
-    mode: '0755'

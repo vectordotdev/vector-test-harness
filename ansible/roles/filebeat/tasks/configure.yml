@@ -1,6 +1,0 @@
----
-- name: Install Filebeat configuration
-  template:
-    src: "{{ configuration_file }}"
-    dest: /etc/filebeat/filebeat.yml
-    mode: 0644

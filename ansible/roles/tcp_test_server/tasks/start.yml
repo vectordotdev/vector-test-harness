@@ -1,6 +1,0 @@
----
-- name: Start the tcp_test_server systemd service
-  systemd:
-    name: tcp_test_server
-    daemon_reload: no
-    state: started

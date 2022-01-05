@@ -1,6 +1,0 @@
----
-- name: Start the td-agent systemd service
-  systemd:
-    name: td-agent
-    daemon_reload: no
-    state: started

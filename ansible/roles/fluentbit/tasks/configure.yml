@@ -1,7 +1,0 @@
----
-- name: Install td-agent-bit configuration files
-  template:
-    src: "{{ item }}"
-    dest: "/etc/td-agent-bit/{{ item | basename }}"
-    mode: 0644
-  with_items: "{{ configuration_files }}"

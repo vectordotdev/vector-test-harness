@@ -1,6 +1,0 @@
----
-- name: Start vector systemd service
-  systemd:
-    name: vector
-    daemon_reload: no
-    state: started

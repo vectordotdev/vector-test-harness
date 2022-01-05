@@ -1,6 +1,0 @@
----
-- name: Start the logstash systemd service
-  systemd:
-    name: logstash
-    daemon_reload: no
-    state: started

@@ -1,6 +1,0 @@
----
-- name: Stop the td-agent-bit systemd service
-  systemd:
-    name: td-agent-bit
-    daemon_reload: no
-    state: stopped
