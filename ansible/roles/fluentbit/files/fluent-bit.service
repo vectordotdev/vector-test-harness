@@ -1,0 +1,14 @@
+[Unit]
+Description=Fluent Bit
+After=network-online.target
+Requires=network-online.target
+
+[Service]
+ExecStart=/opt/fluent-bit/bin/fluent-bit -c /etc/fluent-bit/td-agent-bit.conf
+Restart=no
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=fluent-bit
+
+[Install]
+WantedBy=multi-user.target
