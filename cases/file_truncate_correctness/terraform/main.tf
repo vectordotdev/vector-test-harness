@@ -1,9 +1,13 @@
-provider "aws" {
-  version = "~> 3.11"
-}
-
 terraform {
-  required_version = ">= 0.13"
+  required_version = ">= 1.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+
   backend "s3" {}
 }
 
@@ -20,4 +24,5 @@ module "topology" {
   test_name              = var.test_name
   user_id                = var.user_id
   results_s3_bucket_name = var.results_s3_bucket_name
+  ssh_cidr               = var.ssh_cidr
 }

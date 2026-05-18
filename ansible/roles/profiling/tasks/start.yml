@@ -1,12 +1,27 @@
 ---
-- name: Capture dstat version
-  shell: "dstat --version | head -n 1"
-  register: dstat_version
+- name: Ensure dstat uses python3
+  replace:
+    path: /usr/local/bin/dstat
+    regexp: '^#!/usr/bin/env python$'
+    replace: '#!/usr/bin/env python3'
 
-- name: Fail if dstat is not the correct version
-  fail:
-    msg: "Only Dstat 0.7.2 is allowed, you have {{ dstat_version }} installed"
-  when: dstat_version.stdout != "Dstat 0.7.2"
+- name: Fix dstat Python 3.10 — add collections.abc import
+  replace:
+    path: /usr/local/bin/dstat
+    regexp: '^import collections$'
+    replace: "import collections\nimport collections.abc"
+
+- name: Fix dstat Python 3.10 — collections.Sequence
+  replace:
+    path: /usr/local/bin/dstat
+    regexp: '\bcollections\.Sequence\b'
+    replace: 'collections.abc.Sequence'
+
+- name: Fix dstat Python 3.10 — types.ListType and TupleType
+  shell: |
+    sudo sed -i -e 's/types\.ListType/list/g' -e 's/types\.TupleType/tuple/g' \
+      -e 's/types\.StringTypes/str/g' -e 's/types\.StringType/str/g' \
+      /usr/local/bin/dstat
 
 - name: Remove previous /tmp/dstat.csv
   file:
@@ -25,25 +40,10 @@
 #            backwards compatible. Changing the structure of this file makes it
 #            very difficult to compare results across time with tools like Athena.
 - name: Start dstat profiling
-  command:
-    argv: [
-      "dstat",
-      "--epoch",
-      "--cpu",
-      "--disk",
-      "--io",
-      "--load",
-      "--mem",
-      "--net",
-      "--proc",
-      "--proc-count",
-      "--sys",
-      "--socket",
-      "--tcp",
-      "--udp",
-      "--vm",
-      "--output", "/tmp/dstat.csv",
-    ]
-  async: 1000
-  poll: 0
-  register: dstat
+  shell: >-
+    nohup dstat
+    --epoch --cpu --disk --io --load --mem --net --proc --sys
+    --socket --tcp --udp --vm
+    --output /tmp/dstat.csv
+    > /tmp/dstat.out 2>&1 &
+    echo $!

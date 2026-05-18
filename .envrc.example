@@ -1,5 +1,5 @@
 # The AWS region that everything should run in
-export AWS_DEFAULT_REGION=us-west-1
+export AWS_DEFAULT_REGION=us-east-1
 
 # Specifying which AWS credentials set to use. See the "Setup" section in the
 # README.
@@ -17,7 +17,7 @@ export VECTOR_TEST_SSH_PUBLIC_KEY=~/.ssh/vector_tests.pub
 # user_id. Ex: ben
 export VECTOR_TEST_USER_ID=<REPLACE_ME>
 
-# The S3 bucket used to store state of the test infrastructure.
-export VECTOR_TEST_STATE_S3_BUCKET_NAME=<REPLACE ME>
+# The S3 bucket used to store Terraform state.
+export VECTOR_TEST_STATE_S3_BUCKET_NAME=<REPLACE_ME>
 # The S3 bucket used to store test results.
 export VECTOR_TEST_RESULTS_S3_BUCKET_NAME=<REPLACE_ME>

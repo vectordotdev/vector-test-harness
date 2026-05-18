@@ -1,5 +1,5 @@
 ---
-- include: "stop.yml"
+- include_tasks: "stop.yml"
 
 - name: Reset http test server state
   shell: rm -rf /tmp/http_test_server_summary.json

@@ -5,8 +5,10 @@
 
 [transforms.apache_common_parser]
   inputs = ["in"]
-  type   = "regex_parser"
-  patterns = ['^(?P<host>[\w\.]+) - (?P<user>[\w]+) (?P<bytes_in>[\d]+) \[(?P<timestamp>.*)\] "(?P<method>[\w]+) (?P<path>.*)" (?P<status>[\d]+) (?P<bytes_out>[\d]+)$']
+  type   = "remap"
+  source = '''
+    . = parse_regex!(.message, r'^(?P<host>[\w\.]+) - (?P<user>[\w]+) (?P<bytes_in>[\d]+) \[(?P<timestamp>.*)\] "(?P<method>[\w]+) (?P<path>.*)" (?P<status>[\d]+) (?P<bytes_out>[\d]+)$')
+  '''
 
 [sinks.out]
   inputs  = ["apache_common_parser"]

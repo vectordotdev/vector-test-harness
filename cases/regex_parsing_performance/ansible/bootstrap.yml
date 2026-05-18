@@ -23,11 +23,11 @@
 - hosts: '{{ test_namespace }}:&tag_TestRole_subject'
   become: true
   roles:
-    # - role: fluentbit
-    #   action: configure
-    #   configuration_files:
-    #     - config_files/td-agent-bit.conf
-    #     - config_files/td-agent-bit.parsers.conf
+    - role: fluentbit
+      action: configure
+      configuration_files:
+        - config_files/td-agent-bit.conf
+        - config_files/td-agent-bit.parsers.conf
 
     # - role: fluentd
     #   action: configure

@@ -9,19 +9,20 @@
     home: /opt/http_test_server
     shell: /usr/sbin/nologin
 
-- name: Install http_test_server
-  shell: /usr/local/go/bin/go get -u github.com/timberio/http_test_server
-  environment:
-    GOPATH: /home/{{ ansible_user }}/go
+- name: Create GOPATH src directory
+  file:
+    path: /home/{{ ansible_user }}/go/src/github.com/timberio
+    state: directory
 
-- name: Build the http_test_server binary
+- name: Clone http_test_server
+  git:
+    repo: https://github.com/timberio/http_test_server
+    dest: /home/{{ ansible_user }}/go/src/github.com/timberio/http_test_server
+
+- name: Build and install http_test_server
   shell:
-    cmd: /usr/local/go/bin/go build
+    cmd: /usr/local/go/bin/go build -o /usr/local/bin/http_test_server .
     chdir: /home/{{ ansible_user }}/go/src/github.com/timberio/http_test_server
   environment:
     GOPATH: "/home/{{ ansible_user }}/go"
-
-- name: Install the http_test_server binary
-  shell:
-    cmd: mv http_test_server /usr/local/bin
-    chdir: /home/{{ ansible_user }}/go/src/github.com/timberio/http_test_server
+    GO111MODULE: "off"

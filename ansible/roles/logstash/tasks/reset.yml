@@ -1,5 +1,5 @@
 ---
-- include: stop.yml
+- include_tasks: stop.yml
 
 - name: Delete state data
   shell: rm -rf /usr/share/logstash/data/{*,.*}

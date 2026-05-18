@@ -1,6 +1,6 @@
 ---
-- name: Stop the td-agent-bit systemd service
+- name: Stop the fluent-bit systemd service
   systemd:
-    name: td-agent-bit
+    name: fluent-bit
     daemon_reload: no
     state: stopped

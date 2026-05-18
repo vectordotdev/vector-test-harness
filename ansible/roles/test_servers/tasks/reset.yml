@@ -1,2 +1,2 @@
 ---
-- include: "stop.yml"
+- include_tasks: "stop.yml"

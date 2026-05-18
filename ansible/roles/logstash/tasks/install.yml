@@ -1,7 +1,4 @@
 ---
-- include_role:
-    name: java8
-
 - name: Setup the logstash user
   user:
     name: logstash
@@ -31,9 +28,9 @@
 
 - name: Add logstash apt repository
   apt_repository:
-    repo: 'deb https://artifacts.elastic.co/packages/6.x/apt stable main'
+    repo: 'deb https://artifacts.elastic.co/packages/8.x/apt stable main'
     state: present
-    filename: td-agent
+    filename: logstash
     update_cache: yes
 
 - name: Install logstash

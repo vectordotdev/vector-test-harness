@@ -5,11 +5,17 @@
       - pkill
       - -f
       - dstat
+  failed_when: false
 
 - include_role:
     name: subjects
   vars:
     action: load_facts
+
+- name: Check if dstat CSV was created
+  stat:
+    path: /tmp/dstat.csv
+  register: dstat_csv
 
 - name: Upload dstat CSV to S3
   command:
@@ -21,3 +27,4 @@
       - '{{ profiling_results_s3_url }}'
       - --acl
       - bucket-owner-full-control
+  when: dstat_csv.stat.exists

@@ -1,4 +1,4 @@
-FROM debian:buster-backports
+FROM debian:bookworm-slim
 
 # Prepare system.
 RUN apt-get update \
@@ -9,41 +9,35 @@ RUN apt-get update \
     python3-wheel \
     curl \
     ca-certificates \
-    p7zip-full \
+    unzip \
     ssh \
     ruby \
   && rm -rf /var/lib/apt/lists/*
 
-# Install Ansible, AWS CLI and boto.
-RUN python3 -m pip install --no-cache-dir \
+# Install Ansible, AWS CLI and boto3.
+RUN python3 -m pip install --no-cache-dir --break-system-packages \
     ansible \
-    boto \
+    boto3 \
+    botocore \
     awscli \
   && ansible --version \
   && aws --version
 
 # Install Terraform.
-ARG TERRAFORM_VERSION=0.12.23
+ARG TERRAFORM_VERSION=1.9.8
 RUN curl -fsSL "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" -o terraform.zip \
-  && 7z x -o/usr/local/bin/ terraform.zip \
+  && unzip -o terraform.zip -d /usr/local/bin/ \
   && rm -rf terraform.zip \
   && terraform version
 
-# Prepare terraform plugins.
-ENV TF_PLUGIN_DIR=/usr/local/terraform-plugins/
-# Install terraform-provider-aws.
-ARG TERRAFORM_PROVIDER_AWS_VERSION=2.53.0
-RUN curl -fsSL "https://releases.hashicorp.com/terraform-provider-aws/${TERRAFORM_PROVIDER_AWS_VERSION}/terraform-provider-aws_${TERRAFORM_PROVIDER_AWS_VERSION}_linux_amd64.zip" -o plugin.zip \
-  && 7z x -o"$TF_PLUGIN_DIR" plugin.zip \
-  && rm -rf plugin.zip
-
 # Install jq.
-RUN curl -fsSL https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -o /usr/local/bin/jq \
+ARG JQ_VERSION=1.7.1
+RUN curl -fsSL "https://github.com/jqlang/jq/releases/download/jq-${JQ_VERSION}/jq-linux-amd64" -o /usr/local/bin/jq \
   && chmod +x /usr/local/bin/jq \
   && jq --version
 
 # Install ruby gems.
-RUN gem install --no-rdoc --no-ri \
+RUN gem install --no-document \
   table_print
 
 # Expose Python 3 as `python`.
@@ -52,8 +46,7 @@ RUN ln -sT /usr/bin/python3 /usr/local/bin/python
 # Print the state after the installation to simplify troubleshooting.
 RUN set -x \
   && ls -la / \
-  && ls -la /usr/local/bin \
-  && ls -la "$TF_PLUGIN_DIR"
+  && ls -la /usr/local/bin
 
 # Setup the workspace.
 WORKDIR /vector-test-harness
