@@ -8,4 +8,4 @@
   type     = "socket"
   mode     = "tcp"
   address  = "{{ consumer_ip }}:{{ consumer_port }}"
-  encoding = "text"
+  encoding.codec = "text"

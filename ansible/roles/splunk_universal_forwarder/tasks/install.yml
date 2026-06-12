@@ -22,6 +22,25 @@
     path: /tmp/splunk_universal_forwarder.deb
     state: absent
 
+- name: Fix splunkforwarder directory ownership (9.x uses splunkfwd user)
+  file:
+    path: /opt/splunkforwarder
+    state: directory
+    owner: splunkfwd
+    group: splunkfwd
+    recurse: yes
+
+- name: Seed Splunk admin credentials (required for 9.x first start)
+  copy:
+    dest: /opt/splunkforwarder/etc/system/local/user-seed.conf
+    content: |
+      [user_info]
+      USERNAME = admin
+      PASSWORD = changeme
+    owner: splunkfwd
+    group: splunkfwd
+    mode: 0600
+
 - name: Install Splunk Universal Forwarder limits configuration
   copy:
     src: limits.conf

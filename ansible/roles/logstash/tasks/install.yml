@@ -38,5 +38,13 @@
     name: logstash
     state: present
 
+- name: Fix logstash data directory ownership
+  file:
+    path: /usr/share/logstash/data
+    state: directory
+    owner: logstash
+    group: logstash
+    recurse: yes
+
 - name: Install logstash null output plugin
   shell: /usr/share/logstash/bin/logstash-plugin install logstash-output-null

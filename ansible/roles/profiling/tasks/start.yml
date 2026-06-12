@@ -40,10 +40,23 @@
 #            backwards compatible. Changing the structure of this file makes it
 #            very difficult to compare results across time with tools like Athena.
 - name: Start dstat profiling
-  shell: >-
-    nohup dstat
-    --epoch --cpu --disk --io --load --mem --net --proc --sys
-    --socket --tcp --udp --vm
-    --output /tmp/dstat.csv
-    > /tmp/dstat.out 2>&1 &
-    echo $!
+  command:
+    argv:
+      - dstat
+      - --epoch
+      - --cpu
+      - --disk
+      - --io
+      - --load
+      - --mem
+      - --net
+      - --proc
+      - --sys
+      - --socket
+      - --tcp
+      - --udp
+      - --vm
+      - --output
+      - /tmp/dstat.csv
+  async: 1000
+  poll: 0

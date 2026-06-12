@@ -14,7 +14,8 @@
     - include_role:
         name: "{{ consumer_role }}"
       vars:
-        action: start
+        action: "{{ 'start_and_wait' if consumer_role == 'logstash' else 'start' }}"
+        port: "{{ consumer_port }}"
 
 - hosts: '{{ test_namespace }}:&tag_TestRole_subject'
   become: true

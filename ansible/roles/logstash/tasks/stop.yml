@@ -3,4 +3,5 @@
   systemd:
     name: logstash
     daemon_reload: no
+    enabled: no
     state: stopped

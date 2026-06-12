@@ -6,4 +6,4 @@
 [sinks.out]
   inputs       = ["in"]
   type         = "blackhole"
-  print_amount = 10000
+  print_interval_secs = 10

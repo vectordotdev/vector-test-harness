@@ -1,6 +1,15 @@
 ---
+- name: Ensure logstash data directory is writable
+  file:
+    path: /usr/share/logstash/data
+    state: directory
+    owner: logstash
+    group: logstash
+    recurse: yes
+
 - name: Start the logstash systemd service
   systemd:
     name: logstash
     daemon_reload: no
+    enabled: no
     state: started

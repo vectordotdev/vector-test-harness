@@ -1,10 +1,6 @@
 ---
-- name: Stop dstat
-  command:
-    argv:
-      - pkill
-      - -f
-      - dstat
+- name: Stop dstat (SIGINT triggers Python cleanup and flushes CSV buffer)
+  shell: pkill -SIGINT -f dstat; sleep 2
   failed_when: false
 
 - include_role:

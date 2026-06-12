@@ -288,7 +288,8 @@ fi
 
 run() {
   local RUN_SUBJECT="$1"
-  if grep --quiet "role: $RUN_SUBJECT" bootstrap.yml; then
+  # Match both "role: X" (roles: block) and "name: X" (include_role: in tasks: block)
+  if grep --quiet "role: $RUN_SUBJECT\|name: $RUN_SUBJECT" bootstrap.yml; then
     print_section_header "Testing $RUN_SUBJECT"
 
     set -x
