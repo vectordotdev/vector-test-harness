@@ -1,0 +1,136 @@
+#!/usr/bin/env python3
+"""
+Read benchmark results from S3 dstat CSVs and print a MiB/s comparison table.
+
+Usage:
+  bin/results -t TEST_NAME [-c CONFIGURATION] [-u USER_ID]
+
+Examples:
+  bin/results -t regex_parsing_performance
+  bin/results -t tcp_to_blackhole_performance -c default -u <user>
+"""
+import argparse
+import os
+import subprocess
+import sys
+
+# dstat column layout (from: dstat --epoch --cpu --disk --io --load --mem --net ...)
+# epoch, usr, sys, idl, wai, stl, dsk_read, dsk_writ, io_read, io_writ,
+# 1m, 5m, 15m, mem_used, mem_free, mem_buff, mem_cach, net_recv, net_send, ...
+RECV_COL = 17
+SEND_COL = 18
+MiB = 1_048_576
+
+# Which direction to measure per test case.
+# recv = how fast subject accepts data from producers
+# send = how fast subject ships data to consumer (file_to_tcp reads from disk)
+METRIC = {
+    'tcp_to_blackhole_performance': 'recv',
+    'file_to_tcp_performance':      'send',
+    'regex_parsing_performance':    'recv',
+    'tcp_to_http_performance':      'send',
+    'tcp_to_tcp_performance':       'recv',
+}
+# dstat columns: epoch, usr, sys, idl, wai, stl, dsk_read, dsk_writ, ...
+DISK_READ_COL = 6
+COL = {'recv': RECV_COL, 'send': SEND_COL, 'disk_read': DISK_READ_COL}
+
+
+def parse_key(key):
+    """Extract subject and version from S3 key path."""
+    parts = {}
+    for segment in key.split('/'):
+        if '=' in segment:
+            k, v = segment.split('=', 1)
+            parts[k] = v
+    return parts.get('subject', '?'), parts.get('version', '?')
+
+
+def compute_mibps(content, col):
+    """Parse dstat CSV content and return steady-state MiB/s for given column."""
+    data = []
+    for line in content.splitlines()[8:]:
+        line = line.strip()
+        if not line or not line[0].isdigit():
+            continue
+        cols = line.split(',')
+        if len(cols) > col:
+            try:
+                val = float(cols[col])
+                if val > 0:
+                    data.append(val)
+            except ValueError:
+                pass
+    if not data:
+        return None
+    steady = data[10:-5] if len(data) > 20 else data
+    return sum(steady) / len(steady) / MiB
+
+
+def main():
+    parser = argparse.ArgumentParser(description='Show benchmark results from S3 dstat CSVs')
+    parser.add_argument('-t', '--test', required=True, help='Test case name')
+    parser.add_argument('-c', '--configuration', default=None, help='Configuration (e.g. default, sandbox)')
+    parser.add_argument('-u', '--user-id', default=None, help='User ID filter')
+    parser.add_argument('--bucket', default=None, help='S3 results bucket (default: VECTOR_TEST_RESULTS_S3_BUCKET_NAME)')
+    args = parser.parse_args()
+
+    bucket = args.bucket or os.environ.get('VECTOR_TEST_RESULTS_S3_BUCKET_NAME')
+    if not bucket:
+        print('Error: set VECTOR_TEST_RESULTS_S3_BUCKET_NAME or pass --bucket', file=sys.stderr)
+        sys.exit(1)
+
+    test = args.test
+    config = args.configuration
+    metric = METRIC.get(test, 'recv')
+    col = COL[metric]
+
+    print(f'\nTest:          {test}')
+    print(f'Configuration: {config or "all"}')
+    print(f'Metric:        net/{metric} (MiB/s)\n')
+
+    prefix = f'name={test}/'
+    if config:
+        prefix += f'configuration={config}/'
+
+    ls_result = subprocess.run(
+        ['aws', 's3', 'ls', f's3://{bucket}/{prefix}', '--recursive', '--region', 'us-east-1'],
+        capture_output=True, text=True
+    )
+    keys = [
+        parts[3] for line in ls_result.stdout.strip().splitlines()
+        if len(parts := line.split()) >= 4 and parts[3].endswith('dstat.csv')
+    ]
+
+    if not keys:
+        print(f'No dstat CSVs found under s3://{bucket}/{prefix}')
+        sys.exit(1)
+
+    # Keep only the latest run per (subject, version)
+    latest = {}
+    for key in sorted(keys):
+        latest[parse_key(key)] = key
+
+    results = []
+    for (subject, version), key in sorted(latest.items()):
+        dl = subprocess.run(
+            ['aws', 's3', 'cp', f's3://{bucket}/{key}', '-', '--region', 'us-east-1'],
+            capture_output=True, text=True
+        )
+        mibps = compute_mibps(dl.stdout, col)
+        results.append((subject, version, mibps))
+
+    results.sort(key=lambda x: -(x[2] or 0))
+
+    W_subj, W_ver, W_val = 28, 20, 10
+    header = f"{'Subject':<{W_subj}} {'Version':<{W_ver}} {'MiB/s':>{W_val}}"
+    print(header)
+    print('-' * len(header))
+    for subject, version, mibps in results:
+        mibps_str = f'{mibps:.1f}' if mibps is not None else 'n/a'
+        print(f'{subject:<{W_subj}} {version:<{W_ver}} {mibps_str:>{W_val}}')
+    print()
+
+
+if __name__ == '__main__':
+    main()
