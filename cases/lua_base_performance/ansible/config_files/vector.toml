@@ -6,13 +6,18 @@
 [transforms.lua]
   inputs = ["in"]
   type = "lua"
+  version = "2"
+  hooks.process = "process"
   source = """
-event["new_field"] = "new value"
-"""
+  function process(event, emit)
+    event.log["new_field"] = "new value"
+    emit(event)
+  end
+  """
 
 [sinks.out]
   inputs   = ["lua"]
   type     = "socket"
   mode     = "tcp"
   address  = "{{ consumer_ip }}:{{ consumer_port }}"
-  encoding = "text"
+  encoding.codec = "text"
