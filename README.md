@@ -63,9 +63,10 @@ transparency around benchmarks and the resulting performance.***
    Vector test harness in a separate AWS sandbox account if possible.
 3. [Create an Amazon compatible key pair][create_keys]. This will be used for SSH access to test
    instances.
-4. Run `cp .envrc.example .envrc`. Read through the file, update as necessary.
-5. Run `source .envrc` to prepare the environment. Alternatively install [direnv] to do this
-   automatically.
+4. Run `cp .env.example .env`. Read through the file, update as necessary.
+  * You can alternatively `cp .env.example .envrc` and use `.envrc` instead if you want to work with [direnv].
+5. Run `source .env` to prepare the environment. [direnv] can help you do this
+   automatically if you created `.envrc`.
    Note that the `.env` file, if it exists, will be automatically sourced into
    the scripts environment - so it's another option to set the environment
    variables for the `bin/*` commands of this repo.
@@ -135,7 +136,7 @@ ssh  -o 'IdentityFile="~/.ssh/vector_management"' ubuntu@51.5.210.84
 
 Where:
 
-* `~/.ssh/vector_management` = the `VECTOR_TEST_SSH_PRIVATE_KEY` value provided in your `.envrc` file.
+* `~/.ssh/vector_management` = the `VECTOR_TEST_SSH_PRIVATE_KEY` value provided in your `.env` file.
 * `ubuntu` = the default root username for the instance.
 * `51.5.210.84` = the _public_ IP address of the instance.
 
