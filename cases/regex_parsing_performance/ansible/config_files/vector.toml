@@ -7,7 +7,7 @@
   inputs = ["in"]
   type   = "remap"
   source = '''
-    . = parse_regex!(.message, r'^(?P<host>[\w\.]+) - (?P<user>[\w]+) (?P<bytes_in>[\d]+) \[(?P<timestamp>.*)\] "(?P<method>[\w]+) (?P<path>.*)" (?P<status>[\d]+) (?P<bytes_out>[\d]+)$')
+    . = parse_regex!(.message, r'^(?P<host>[\w\.]+) - (?P<user>[\w]+) (?P<bytes_in>[\d]+) \[(?P<timestamp>[^\]]*)\] "(?P<method>[\w]+) (?P<path>[^"]*)" (?P<status>[\d]+) (?P<bytes_out>[\d]+)$')
   '''
 
 [sinks.out]
