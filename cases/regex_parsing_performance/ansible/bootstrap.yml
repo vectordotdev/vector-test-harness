@@ -50,18 +50,6 @@
         - src: config_files/splunk.transforms.conf
           dest: transforms.conf
 
-    - role: splunk_universal_forwarder
-      action: configure
-      configuration_files:
-        - src: config_files/splunk.inputs.conf
-          dest: inputs.conf
-        - src: config_files/splunk.outputs.conf
-          dest: outputs.conf
-        - src: config_files/splunk.props.conf
-          dest: props.conf
-        - src: config_files/splunk.transforms.conf
-          dest: transforms.conf
-
     - role: vector
       action: install
 
