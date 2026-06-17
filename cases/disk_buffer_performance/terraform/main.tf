@@ -30,5 +30,5 @@ module "topology" {
   test_name               = var.test_name
   user_id                 = var.user_id
   results_s3_bucket_name  = var.results_s3_bucket_name
-  ssh_cidr               = var.ssh_cidr
+  ssh_cidr                = var.ssh_cidr
 }
