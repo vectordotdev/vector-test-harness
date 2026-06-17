@@ -40,11 +40,11 @@ $ bin/compare -t regex_parsing_performance
 | TCP close (avg) | 0           | 0        | 5         | 1         | 3          |
 -------------------------------------------------------------------------------------------------------------
 W = winner
-fluentbit = 1.1.0
-fluentd = 3.3.0-1
-logstash = 7.0.1
-splunk_heavy_forwarder = 7.2.6-c0bf0f679ce9
-vector = 0.2.0-6-g434bed8
+fluentbit = 3.2.7
+fluentd = 4.5.2-1
+logstash = 8.17.3
+splunk_heavy_forwarder = 9.2.2-d76edf6f0a15
+vector = 0.55.0
 ```
 
 ## Try It
