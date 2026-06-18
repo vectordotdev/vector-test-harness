@@ -1,30 +1,38 @@
 ---
-- name: Ensure dstat is removed before installing
+- name: Install dstat dependencies
   apt:
-    name: dstat
-    state: absent
+    name:
+      - python3
+      - python3-termcolor
+    state: present
+    update_cache: yes
 
-- name: Prepare temporary directory
-  tempfile:
-    state: directory
-  register: temp_deb
+- name: Install dstat (Python 3 compatible)
+  get_url:
+    url: https://raw.githubusercontent.com/dstat-real/dstat/master/dstat
+    dest: /usr/local/bin/dstat
+    mode: '0755'
 
-- name: Copy local dstat.deb file to remote machine
-  copy:
-    src: dstat_0.7.2-4_all.deb
-    dest: '{{ temp_deb.path }}/dstat_0.7.2-4_all.deb'
+- name: Fix dstat shebang to use python3
+  replace:
+    path: /usr/local/bin/dstat
+    regexp: '^#!/usr/bin/env python$'
+    replace: '#!/usr/bin/env python3'
 
-- name: Install dstat
-  apt:
-    deb: '{{ temp_deb.path }}/dstat_0.7.2-4_all.deb'
+- name: Fix dstat Python 3.10 — add collections.abc import
+  replace:
+    path: /usr/local/bin/dstat
+    regexp: '^import collections$'
+    replace: "import collections\nimport collections.abc"
 
-- name: Mark dstat as hold at dpkg
-  dpkg_selections:
-    name: dstat
-    selection: hold
+- name: Fix dstat Python 3.10 — collections.Sequence
+  replace:
+    path: /usr/local/bin/dstat
+    regexp: '\bcollections\.Sequence\b'
+    replace: 'collections.abc.Sequence'
 
-- name: Clear temp dir
-  file:
-    path: "{{ temp_deb.path }}"
-    state: absent
-  when: temp_deb.path is defined
+- name: Fix dstat Python 3.10 — types.ListType and TupleType
+  shell: |
+    sed -i -e 's/types\.ListType/list/g' -e 's/types\.TupleType/tuple/g' \
+      -e 's/types\.StringTypes/str/g' -e 's/types\.StringType/str/g' \
+      /usr/local/bin/dstat

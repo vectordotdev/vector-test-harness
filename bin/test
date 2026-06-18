@@ -57,7 +57,7 @@ TEST_RESULTS_S3_BUCKET_NAME="${VECTOR_TEST_RESULTS_S3_BUCKET_NAME:-""}"
 TEST_SSH_PUBLIC_KEY="${VECTOR_TEST_SSH_PUBLIC_KEY:-""}"
 TEST_TIMESTAMP="${VECTOR_TEST_TIMESTAMP:-"$(date -u +%s)"}"
 TEST_VECTOR_DEB_PATH="${VECTOR_TEST_VECTOR_DEB_PATH:-""}"
-TEST_VECTOR_VERSION="${VECTOR_VERSION_TO_TEST:-"0.8.2"}" # TODO: improve default version detection
+TEST_VECTOR_VERSION="${VECTOR_VERSION_TO_TEST:-"0.55.0"}"
 
 # Configurable via cli flags
 TEST_CONFIGURATION="${VECTOR_TEST_CONFIGURATION:-"default"}"
@@ -288,7 +288,8 @@ fi
 
 run() {
   local RUN_SUBJECT="$1"
-  if grep --quiet "role: $RUN_SUBJECT" bootstrap.yml; then
+  # Match both "role: X" (roles: block) and "name: X" (include_role: in tasks: block)
+  if grep --quiet "role: $RUN_SUBJECT\|name: $RUN_SUBJECT" bootstrap.yml; then
     print_section_header "Testing $RUN_SUBJECT"
 
     set -x

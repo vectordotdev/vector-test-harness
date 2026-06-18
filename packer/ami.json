@@ -9,7 +9,7 @@
       "source_ami_filter": {
         "filters": {
           "virtualization-type": "hvm",
-          "name": "ubuntu/images/*ubuntu-bionic-18.04-amd64-server-*",
+          "name": "ubuntu/images/*ubuntu-jammy-22.04-amd64-server-*",
           "root-device-type": "ebs"
         },
         "owners": ["099720109477"],
@@ -17,6 +17,16 @@
       },
       "instance_type": "c5.large",
       "ssh_username": "ubuntu",
+      "ssh_interface": "session_manager",
+      "iam_instance_profile": "vector-packer-build",
+      "launch_block_device_mappings": [
+        {
+          "device_name": "/dev/sda1",
+          "volume_size": 50,
+          "volume_type": "gp3",
+          "delete_on_termination": true
+        }
+      ],
       "ami_name": "vector/images/hvm-ssd/test-harness-amd64-{{ isotime \"2006-01-02\" | clean_resource_name }}-{{ timestamp }}"
     }
   ],

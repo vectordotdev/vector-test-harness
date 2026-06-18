@@ -4,7 +4,8 @@
   start_at_beginning = true
 
 [sinks.out]
-  inputs  = ["in"]
-  type    = "socket"
-  mode    = "tcp"
-  address = "{{ consumer_ip }}:{{ consumer_port }}"
+  inputs          = ["in"]
+  type            = "socket"
+  mode            = "tcp"
+  address         = "{{ consumer_ip }}:{{ consumer_port }}"
+  encoding.codec  = "text"

@@ -1,2 +1,2 @@
 ---
-- include: "reset.yml"
+- include_tasks: "reset.yml"

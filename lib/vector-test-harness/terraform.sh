@@ -29,4 +29,15 @@ prepare_terraform_params() {
       "-input=false"
     )
   fi
+
+  local EGRESS_IP
+  EGRESS_IP="$(curl -sf https://checkip.amazonaws.com 2>/dev/null || true)"
+  if [[ -n "$EGRESS_IP" ]]; then
+    TERRAFORM_COMMON_EXTRA_ARGS+=(
+      "-var" "ssh_cidr=${EGRESS_IP}/32"
+    )
+    if [[ "$VERBOSE" != "false" ]]; then
+      echo "SSH CIDR: ${EGRESS_IP}/32"
+    fi
+  fi
 }

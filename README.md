@@ -3,6 +3,9 @@
 </p>
 <br />
 
+> [!NOTE]
+> This repository is under construction. The test harness, most correctness tests, and some performance tests have not been fully validated against recent versions and may be broken.
+
 Full end-to-end test harness for the [Vector][vector] log & metrics router. This is the
 test framework used to generate the [performance] and [correctness] results displayed in the
 [Vector docs][vector_docs]. You can learn more about how this test harness works in the
@@ -57,15 +60,16 @@ transparency around benchmarks and the resulting performance.***
 
 ## Setup
 
-1. Ensure you have [Ansible][ansible] (2.7+) and [Terraform][terraform] (0.12.20+) installed.
+1. Ensure you have [Ansible][ansible] (2.16+) and [Terraform][terraform] (1.0+) installed.
 2. This step is optional, but highly recommended. Setup a [`vector`][vector] specific
    [AWS profile][aws_profile] in your `~/.aws/credentials` file. We highly recommend running the
    Vector test harness in a separate AWS sandbox account if possible.
 3. [Create an Amazon compatible key pair][create_keys]. This will be used for SSH access to test
    instances.
-4. Run `cp .envrc.example .envrc`. Read through the file, update as necessary.
-5. Run `source .envrc` to prepare the environment. Alternatively install [direnv] to do this
-   automatically.
+4. Run `cp .env.example .env`. Read through the file, update as necessary.
+  * You can alternatively `cp .env.example .envrc` and use `.envrc` instead if you want to work with [direnv].
+5. Run `source .env` to prepare the environment. [direnv] can help you do this
+   automatically if you created `.envrc`.
    Note that the `.env` file, if it exists, will be automatically sourced into
    the scripts environment - so it's another option to set the environment
    variables for the `bin/*` commands of this repo.
@@ -135,7 +139,7 @@ ssh  -o 'IdentityFile="~/.ssh/vector_management"' ubuntu@51.5.210.84
 
 Where:
 
-* `~/.ssh/vector_management` = the `VECTOR_TEST_SSH_PRIVATE_KEY` value provided in your `.envrc` file.
+* `~/.ssh/vector_management` = the `VECTOR_TEST_SSH_PRIVATE_KEY` value provided in your `.env` file.
 * `ubuntu` = the default root username for the instance.
 * `51.5.210.84` = the _public_ IP address of the instance.
 

@@ -6,8 +6,8 @@ Requires=network-online.target
 [Service]
 Type=forking
 RemainAfterExit=False
-User=splunk
-Group=splunk
+User=splunkfwd
+Group=splunkfwd
 ExecStart=/opt/splunkforwarder/bin/splunk start --accept-license --answer-yes --no-prompt
 ExecStop=/opt/splunkforwarder/bin/splunk stop
 PIDFile=/opt/splunkforwarder/var/run/splunk/splunkd.pid

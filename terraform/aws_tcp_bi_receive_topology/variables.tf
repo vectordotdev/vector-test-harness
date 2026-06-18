@@ -37,3 +37,8 @@ variable "user_id" {
 variable "results_s3_bucket_name" {
   type = string
 }
+
+variable "ssh_cidr" {
+  type    = string
+  default = "0.0.0.0/0"
+}

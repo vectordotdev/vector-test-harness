@@ -1,7 +1,4 @@
 ---
-- include_role:
-    name: java8
-
 - name: Setup the logstash user
   user:
     name: logstash
@@ -31,15 +28,23 @@
 
 - name: Add logstash apt repository
   apt_repository:
-    repo: 'deb https://artifacts.elastic.co/packages/6.x/apt stable main'
+    repo: 'deb https://artifacts.elastic.co/packages/8.x/apt stable main'
     state: present
-    filename: td-agent
+    filename: logstash
     update_cache: yes
 
 - name: Install logstash
   apt:
     name: logstash
     state: present
+
+- name: Fix logstash data directory ownership
+  file:
+    path: /usr/share/logstash/data
+    state: directory
+    owner: logstash
+    group: logstash
+    recurse: yes
 
 - name: Install logstash null output plugin
   shell: /usr/share/logstash/bin/logstash-plugin install logstash-output-null

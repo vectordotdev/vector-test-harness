@@ -22,6 +22,7 @@ module "vpc" {
   cidr_block        = local.cidr_block
   test_name         = local.test_name
   user_id           = local.user_id
+  ssh_cidr          = var.ssh_cidr
 }
 
 resource "aws_security_group" "subject" {

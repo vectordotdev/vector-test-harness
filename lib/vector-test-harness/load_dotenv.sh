@@ -13,7 +13,7 @@ load_env_file() {
 
 load_dotenv() {
   load_env_file ".env"
-  load_env_file ".env.local"
+  load_env_file ".envrc"
 }
 
 load_dotenv_if_allowed() {

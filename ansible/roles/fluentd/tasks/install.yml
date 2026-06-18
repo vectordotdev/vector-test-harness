@@ -26,7 +26,7 @@
 
 - name: Add td-agent apt repository
   apt_repository:
-    repo: 'deb https://packages.treasuredata.com/3/ubuntu/xenial/ xenial contrib'
+    repo: 'deb https://packages.treasuredata.com/4/ubuntu/jammy/ jammy contrib'
     state: present
     filename: td-agent
     update_cache: yes
@@ -37,7 +37,7 @@
     state: present
 
 - name: Install out_http plugin
-  shell: /opt/td-agent/embedded/bin/fluent-gem install fluent-plugin-out-http
+  shell: /opt/td-agent/bin/fluent-gem install fluent-plugin-out-http
 
 - name: Install td-agent daemon systemd script
   copy:
@@ -48,12 +48,12 @@
 
 - name: Remove default td-agent.conf
   file:
-    path: /opt/td-agent/etc/td-agent/td-agent.conf
+    path: /etc/td-agent/td-agent.conf
     state: absent
 
 - name: Remove default td-agent.conf.tmpl
   file:
-    path: /opt/td-agent/etc/td-agent/td-agent.conf.tmpl
+    path: /etc/td-agent/td-agent.conf.tmpl
     state: absent
 
 # This ensures that the process is not running. Each test is responsible

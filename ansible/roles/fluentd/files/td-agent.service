@@ -6,7 +6,7 @@ Requires=network-online.target
 [Service]
 User=td-agent
 Group=td-agent
-ExecStart=/opt/td-agent/embedded/bin/fluentd -c /etc/td-agent/td-agent.conf
+ExecStart=/opt/td-agent/bin/fluentd -c /etc/td-agent/td-agent.conf
 Restart=no
 StandardOutput=syslog
 StandardError=syslog

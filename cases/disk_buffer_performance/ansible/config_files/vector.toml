@@ -14,5 +14,5 @@ data_dir = "/var/lib/vector"
 
   [sinks.out.buffer]
     type      = "disk"
-    max_size  = 104857600 # 100MiB
+    max_size  = 536870912 # 512MiB (minimum is 268435488; use 512MiB to be safe)
     when_full = "block"

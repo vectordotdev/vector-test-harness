@@ -46,5 +46,7 @@ check_terraform_at() {
 check_terraform_at ./global
 
 for TEST_CASE_DIR in ./cases/*; do
-  check_terraform_at "$TEST_CASE_DIR/terraform"
+  if [[ -d "$TEST_CASE_DIR/terraform" ]]; then
+    check_terraform_at "$TEST_CASE_DIR/terraform"
+  fi
 done

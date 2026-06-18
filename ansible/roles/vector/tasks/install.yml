@@ -13,15 +13,21 @@
         state: absent
         remove: yes
 
-    - name: Install Vector .deb package from URL
-      when: vector_version is not regex('^dev-')
-      include: "install_deb_from_url.yml"
+    - name: Install Vector .deb package from URL (stable)
+      when: vector_version is not regex('^dev-') and vector_version is not regex('^nightly')
+      include_tasks: "install_deb_from_url.yml"
       vars:
-        deb: https://packages.timber.io/vector/{{ vector_version }}/vector-amd64.deb
+        deb: "https://github.com/vectordotdev/vector/releases/download/v{{ vector_version }}/vector_{{ vector_version }}-1_amd64.deb"
+
+    - name: Install Vector .deb package from URL (nightly)
+      when: vector_version is regex('^nightly')
+      include_tasks: "install_deb_from_url.yml"
+      vars:
+        deb: "https://packages.timber.io/vector/nightly/{{ vector_version | regex_replace('^nightly-', '') }}/vector_nightly-1_amd64.deb"
 
     - name: Install Vector .deb package from local file
       when: vector_version is regex('^dev-')
-      include: "install_deb_from_file.yml"
+      include_tasks: "install_deb_from_file.yml"
       vars:
         local_deb: "{{ local_vector_deb_path }}"
 
@@ -30,6 +36,28 @@
         name: vector
         groups: docker
         append: yes
+
+    - name: Remove demo vector.yaml shipped by package
+      file:
+        path: /etc/vector/vector.yaml
+        state: absent
+
+    - name: Create systemd drop-in directory for vector
+      file:
+        path: /etc/systemd/system/vector.service.d
+        state: directory
+        mode: '0755'
+
+    - name: Install systemd drop-in to use explicit config path
+      copy:
+        dest: /etc/systemd/system/vector.service.d/config.conf
+        content: |
+          [Service]
+          ExecStartPre=
+          ExecStartPre=/usr/bin/vector validate --config-toml /etc/vector/vector.toml
+          ExecStart=
+          ExecStart=/usr/bin/vector --config-toml /etc/vector/vector.toml
+        mode: '0644'
 
     # This ensures that the process is not running. Each test is responsible
     # for starting and stopping the relevant services.

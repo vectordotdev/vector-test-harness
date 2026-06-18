@@ -1,5 +1,5 @@
 ---
-- include: start.yml
+- include_tasks: start.yml
 
 - name: Wait for port {{ port }} to become available
   wait_for:

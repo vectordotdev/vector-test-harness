@@ -1,6 +1,6 @@
 ---
-- name: Start the td-agent-bit systemd service
+- name: Start the fluent-bit systemd service
   systemd:
-    name: td-agent-bit
+    name: fluent-bit
     daemon_reload: no
     state: started
