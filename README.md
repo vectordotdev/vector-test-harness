@@ -3,6 +3,9 @@
 </p>
 <br />
 
+> [!NOTE]
+> This repository is under construction. The test harness, most correctness tests, and some performance tests have not been fully validated against recent versions and may be broken.
+
 Full end-to-end test harness for the [Vector][vector] log & metrics router. This is the
 test framework used to generate the [performance] and [correctness] results displayed in the
 [Vector docs][vector_docs]. You can learn more about how this test harness works in the
