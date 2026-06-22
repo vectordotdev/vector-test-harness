@@ -1,0 +1,6 @@
+[Unit]
+Description=verify-logs
+
+[Service]
+ExecStart=/usr/local/bin/verifiable-logger verify file-to-s3-reliability-test-data us-east-1 --prefix "host=%H" --tail
+WorkingDirectory=/var/lib/verifiable-logger/

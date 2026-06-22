@@ -1,0 +1,12 @@
+---
+- hosts: '{{ test_namespace }}:&tag_TestRole_subject'
+  become: true
+  roles:
+    - role: verifiable-logger
+      action: start-generating
+
+    - role: verifiable-logger
+      action: start-verifying
+
+    - role: vector
+      action: start

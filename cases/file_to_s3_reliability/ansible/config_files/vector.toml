@@ -1,0 +1,16 @@
+data_dir = "/var/lib/vector"
+
+[sources.file]
+type = "file"
+include = ["/var/lib/verifiable-logger/output.log"]
+start_at_beginning = true
+
+[sinks.s3]
+inputs = ["file"]
+type = "aws_s3"
+region = "us-east-1"
+bucket = "file-to-s3-reliability-test-data"
+key_prefix = "host={{ host }}/date=%F/"
+encoding = "text"
+compression = "none"
+batch.timeout_secs = 30

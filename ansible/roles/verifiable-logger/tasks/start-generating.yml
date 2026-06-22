@@ -1,0 +1,6 @@
+---
+- name: Start generating logs
+  systemd:
+    name: generate-logs
+    state: started
+    daemon-reload: yes
