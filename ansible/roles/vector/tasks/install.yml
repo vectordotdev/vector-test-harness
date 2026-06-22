@@ -54,9 +54,9 @@
         content: |
           [Service]
           ExecStartPre=
-          ExecStartPre=/usr/bin/vector validate --config-toml /etc/vector/vector.toml
+          ExecStartPre=/usr/bin/vector validate --config-yaml /etc/vector/vector.yaml
           ExecStart=
-          ExecStart=/usr/bin/vector --config-toml /etc/vector/vector.toml
+          ExecStart=/usr/bin/vector --config-yaml /etc/vector/vector.yaml
         mode: '0644'
 
     # This ensures that the process is not running. Each test is responsible

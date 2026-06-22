@@ -1,0 +1,21 @@
+data_dir: data
+
+sources:
+  internal:
+    type: internal_metrics
+  file:
+    type: file
+    max_line_bytes: 1024000
+    fingerprint:
+      strategy: device_and_inode
+    include:
+      - logs/*.log
+
+sinks:
+  prometheus:
+    type: prometheus_exporter
+    inputs: ["internal"]
+    address: "0.0.0.0:9001"
+  blackhole:
+    type: blackhole
+    inputs: ["file"]

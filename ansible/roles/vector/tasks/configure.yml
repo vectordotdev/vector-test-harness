@@ -2,5 +2,5 @@
 - name: Install Vector configuration
   template:
     src: "{{ configuration_file }}"
-    dest: /etc/vector/vector.toml
+    dest: /etc/vector/vector.yaml
     mode: 0644

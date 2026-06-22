@@ -1,0 +1,173 @@
+data_dir: /var/lib/vector
+
+sources:
+  in:
+    type: syslog
+    mode: tcp
+    address: "0.0.0.0:{{ subject_port }}"
+
+transforms:
+  company_api:
+    type: filter
+    inputs: ["in"]
+    condition: '.appname == "company-api"'
+
+  company_api_process:
+    type: remap
+    inputs: ["company_api"]
+    source: |
+      parsed, err = parse_json(.message)
+      if err == null && is_object(parsed) {
+        . = merge!(., parsed)
+      }
+      .hostname = del(.host)
+      .metadata_trace_id = string(.metadata.trace_id) ?? ""
+      .metadata_guild_id = string(.metadata.guild_id) ?? ""
+      .metadata_channel_id = string(.metadata.channel_id) ?? ""
+      .metadata_method = string(.metadata.method) ?? ""
+
+  company_admin:
+    type: filter
+    inputs: ["in"]
+    condition: '.appname == "company-admin"'
+
+  company_admin_process:
+    type: remap
+    inputs: ["company_admin"]
+    source: |
+      parsed, err = parse_json(.message)
+      if err == null && is_object(parsed) {
+        . = merge!(., parsed)
+      }
+      .hostname = del(.host)
+      .metadata_trace_id = string(.metadata.trace_id) ?? ""
+      .metadata_method = string(.metadata.method) ?? ""
+
+  company_media_proxy:
+    type: filter
+    inputs: ["in"]
+    condition: '.appname == "company-media-proxy"'
+
+  company_media_proxy_process:
+    type: remap
+    inputs: ["company_media_proxy"]
+    source: |
+      parsed, err = parse_json(.message)
+      if err == null && is_object(parsed) {
+        . = merge!(., parsed)
+      }
+      .hostname = del(.host)
+
+  company_unfurler:
+    type: filter
+    inputs: ["in"]
+    condition: '.appname == "company-unfurler"'
+
+  company_unfurler_process:
+    type: remap
+    inputs: ["company_unfurler"]
+    source: |
+      .hostname = del(.host)
+      parsed, err = parse_json(.message)
+      if err == null && is_object(parsed) {
+        . = merge!(., parsed)
+      }
+
+  company_unfurler_filter:
+    type: filter
+    inputs: ["company_unfurler_process"]
+    condition: '.msg == "unfurl"'
+
+  audit_filter:
+    type: filter
+    inputs: ["in"]
+    condition: '.appname == "audit"'
+
+  audit_process:
+    type: remap
+    inputs: ["audit_filter"]
+    source: |
+      .tag = del(.appname)
+      .hostname = del(.host)
+      .content = del(.message)
+      .time = del(.timestamp)
+
+sinks:
+  company_api_http:
+    type: http
+    inputs: ["company_api_process"]
+    uri: "http://{{ consumer_ip }}:{{ consumer_port }}"
+    encoding:
+      codec: json
+    request:
+      concurrency: 100
+      rate_limit_duration_secs: 5
+      rate_limit_num: 60
+    batch:
+      max_bytes: 5245000
+      timeout_secs: 5
+    buffer:
+      type: memory
+      max_events: 5000
+      when_full: block
+
+  company_admin_http:
+    type: http
+    inputs: ["company_admin_process"]
+    uri: "http://{{ consumer_ip }}:{{ consumer_port }}"
+    encoding:
+      codec: json
+
+  company_media_proxy_http:
+    type: http
+    inputs: ["company_media_proxy_process"]
+    uri: "http://{{ consumer_ip }}:{{ consumer_port }}"
+    encoding:
+      codec: json
+    request:
+      concurrency: 100
+      rate_limit_duration_secs: 5
+      rate_limit_num: 60
+    batch:
+      max_bytes: 5245000
+      timeout_secs: 5
+    buffer:
+      type: memory
+      max_events: 5000
+      when_full: block
+
+  company_unfurler_http:
+    type: http
+    inputs: ["company_unfurler_filter"]
+    uri: "http://{{ consumer_ip }}:{{ consumer_port }}"
+    encoding:
+      codec: json
+    request:
+      concurrency: 100
+      rate_limit_duration_secs: 5
+      rate_limit_num: 60
+    batch:
+      max_bytes: 5245000
+      timeout_secs: 5
+    buffer:
+      type: memory
+      max_events: 5000
+      when_full: block
+
+  audit_http:
+    type: http
+    inputs: ["audit_process"]
+    uri: "http://{{ consumer_ip }}:{{ consumer_port }}"
+    encoding:
+      codec: json
+    request:
+      concurrency: 100
+      rate_limit_duration_secs: 5
+      rate_limit_num: 60
+    batch:
+      max_bytes: 5245000
+      timeout_secs: 5
+    buffer:
+      type: memory
+      max_events: 5000
+      when_full: block
