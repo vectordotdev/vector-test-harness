@@ -3,17 +3,18 @@
   mode    = "tcp"
   address = "127.0.0.1:{{ subject_port }}"
 
-[transforms.json_decoder]
-  inputs  = ["in"]
-  type    = "json_parser"
-
-[transforms.json_unwrapper]
-  inputs  = ["json_decoder"]
-  type    = "json_parser"
-  field   = "log"
+[transforms.parse_wrapped_json]
+  inputs = ["in"]
+  type   = "remap"
+  source = '''
+    . = merge!(., parse_json!(string!(.message)))
+    . = merge!(., parse_json!(string!(.log)))
+    del(.log)
+  '''
 
 [sinks.out]
-  inputs  = ["json_unwrapper"]
-  type    = "socket"
-  mode    = "tcp"
-  address = "127.0.0.1:{{ tcp_consumer_port }}"
+  inputs         = ["parse_wrapped_json"]
+  type           = "socket"
+  mode           = "tcp"
+  address        = "127.0.0.1:{{ tcp_consumer_port }}"
+  encoding.codec = "json"
