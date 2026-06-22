@@ -1,0 +1,20 @@
+data_dir: /var/lib/vector
+
+sources:
+  in:
+    type: socket
+    mode: tcp
+    address: "127.0.0.1:{{ subject_port }}"
+
+sinks:
+  out:
+    inputs: ["in"]
+    type: socket
+    mode: tcp
+    address: "127.0.0.1:{{ tcp_consumer_port }}"
+    encoding:
+      codec: text
+    buffer:
+      type: disk
+      max_size: 104857600  # 100MiB
+      when_full: block

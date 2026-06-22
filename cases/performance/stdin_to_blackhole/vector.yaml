@@ -1,0 +1,10 @@
+data_dir: data
+
+sources:
+  stdin:
+    type: stdin
+
+sinks:
+  blackhole:
+    type: blackhole
+    inputs: ["stdin"]

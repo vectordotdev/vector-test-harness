@@ -1,0 +1,19 @@
+data_dir: /var/lib/vector
+
+sources:
+  in:
+    type: file
+    include:
+      - "{{ test_file_location }}*"
+    start_at_beginning: true
+    fingerprinting:
+      strategy: device_and_inode
+
+sinks:
+  out:
+    inputs: ["in"]
+    type: socket
+    mode: tcp
+    address: "127.0.0.1:{{ tcp_consumer_port }}"
+    encoding:
+      codec: text
