@@ -42,10 +42,16 @@ The subject is configured to:
 
 ## Try It
 
-You can run this test via:
+Run the local Vector check without cloud infrastructure:
 
+```sh
+vth check wrapped_json_correctness --vector-bin /path/to/vector
 ```
-test -t wrapped_json_correctness
+
+For the remote case:
+
+```sh
+vth run -t wrapped_json_correctness -s vector
 ```
 
 ## Resources
@@ -59,8 +65,8 @@ test -t wrapped_json_correctness
 
 
 [development]: /README.md#development
-[docs]: https://docs.vector.dev
+[docs]: https://vector.dev/docs/
 [how_it_works]: /README.md#how-it-works
-[repo]: https://github.com/timberio/vector
+[repo]: https://github.com/vectordotdev/vector
 [setup]: /README.md#setup
 [website]: https://vector.dev

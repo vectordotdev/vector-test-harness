@@ -14,6 +14,6 @@ The fixture does not contain Docker/container envelopes. That parsing belongs in
 the dedicated wrapped-JSON and Docker cases rather than unused stages here.
 The simplified workloads require fresh performance baselines.
 
-Run `just bench klog_remap_to_blackhole --vector-bin /path/to/vector`. Use
+Run `vth bench klog_remap_to_blackhole --vector-bin /path/to/vector`. Use
 `--config` to select one variant; otherwise the harness also runs the stdin
 baseline under `configs/`.

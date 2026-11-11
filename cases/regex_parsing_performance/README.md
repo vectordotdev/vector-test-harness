@@ -28,7 +28,7 @@ baseline before comparing performance or claiming current correctness.
 * **Note: Filebeat does not support parsing**
 
 ```
-$ just compare -t regex_parsing_performance
+$ vth compare -t regex_parsing_performance
 
 | Metric          | fluentbit   | fluentd  | logstash  | splunk_hf | vector     |
 |:----------------|:------------|:---------|:----------|:----------|:-----------|
@@ -56,7 +56,7 @@ vector = 0.55.0
 ## Try It
 
 ```bash
-just run -t regex_parsing_performance
+vth run -t regex_parsing_performance
 ```
 
 ## Resources
@@ -71,10 +71,10 @@ just run -t regex_parsing_performance
 
 
 [development]: /README.md#development
-[docs]: https://docs.vector.dev
+[docs]: https://vector.dev/docs/
 [how_it_works]: /README.md#how-it-works
 [performance_data]: /README.md#performance-data
-[repo]: https://github.com/timberio/vector
+[repo]: https://github.com/vectordotdev/vector
 [setup]: /README.md#setup
 [usage]: /README.md#usage
 [website]: https://vector.dev

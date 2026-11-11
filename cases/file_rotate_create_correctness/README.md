@@ -36,7 +36,7 @@ baseline before comparing performance or claiming current correctness.
 You can run this test via:
 
 ```
-test -t file_rotate_create_correctness
+vth run -t file_rotate_create_correctness -s vector
 ```
 
 ## Resources
@@ -50,8 +50,8 @@ test -t file_rotate_create_correctness
 
 
 [development]: /README.md#development
-[docs]: https://docs.vector.dev
+[docs]: https://vector.dev/docs/
 [how_it_works]: /README.md#how-it-works
-[repo]: https://github.com/timberio/vector
+[repo]: https://github.com/vectordotdev/vector
 [setup]: /README.md#setup
 [website]: https://vector.dev

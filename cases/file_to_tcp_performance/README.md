@@ -21,7 +21,7 @@ baseline before comparing performance or claiming current correctness.
 ### Multi-file
 
 ```
-$ just compare -t file_to_tcp_performance -c multi_file
+$ vth compare -t file_to_tcp_performance -c multi_file
 
 | Metric           | filebeat   | fluentbit | fluentd   | logstash   | splunk_hf | splunk_uf | vector      |
 |:-----------------|:-----------|:----------|:----------|:-----------|:----------|:----------|:------------|
@@ -51,14 +51,14 @@ vector = 0.2.0
 ### Single-file
 
 ```
-$ just compare -t file_to_tcp_performance -c single_file
+$ vth compare -t file_to_tcp_performance -c single_file
 
 ```
 
 ## Try It
 
 ```bash
-just run -t file_to_tcp_performance -c <multi_file|single_file>
+vth run -t file_to_tcp_performance -c <multi_file|single_file>
 ```
 
 ## Resources
@@ -73,10 +73,10 @@ just run -t file_to_tcp_performance -c <multi_file|single_file>
 
 
 [development]: /README.md#development
-[docs]: https://docs.vector.dev
+[docs]: https://vector.dev/docs/
 [how_it_works]: /README.md#how-it-works
 [performance_data]: /README.md#performance-data
-[repo]: https://github.com/timberio/vector
+[repo]: https://github.com/vectordotdev/vector
 [setup]: /README.md#setup
 [usage]: /README.md#usage
 [website]: https://vector.dev

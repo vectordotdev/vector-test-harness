@@ -18,7 +18,7 @@ have not been re-measured with the Vector 0.61 configurations; establish a new
 baseline before comparing performance or claiming current correctness.
 
 ```
-$ just compare -t tcp_to_blackhole_performance
+$ vth compare -t tcp_to_blackhole_performance
 
 | Metric          | fluentbit | fluentd   | logstash  | vector    |
 |:----------------|:----------|:----------|:----------|:----------|
@@ -45,7 +45,7 @@ vector = 0.2.0-6-g434bed8
 ## Try It
 
 ```bash
-just run -t tcp_to_blackhole_performance
+vth run -t tcp_to_blackhole_performance
 ```
 
 ## Resources
@@ -60,10 +60,10 @@ just run -t tcp_to_blackhole_performance
 
 
 [development]: /README.md#development
-[docs]: https://docs.vector.dev
+[docs]: https://vector.dev/docs/
 [how_it_works]: /README.md#how-it-works
 [performance_data]: /README.md#performance-data
-[repo]: https://github.com/timberio/vector
+[repo]: https://github.com/vectordotdev/vector
 [setup]: /README.md#setup
 [usage]: /README.md#usage
 [website]: https://vector.dev
