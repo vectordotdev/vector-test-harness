@@ -46,6 +46,9 @@ build *args:
 bench *args:
     cargo run --locked --quiet --bin vth -- bench "$@"
 
+check-case *args:
+    cargo run --locked --quiet --bin vth -- check "$@"
+
 profile *args:
     cargo run --locked --quiet --bin vth -- profile "$@"
 

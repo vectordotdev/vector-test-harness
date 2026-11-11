@@ -1,6 +1,5 @@
 use std::{
-    fs,
-    io::{self, Read},
+    fs, io,
     path::{Path, PathBuf},
     process::{Child, Command, Stdio},
     sync::atomic::Ordering,
@@ -17,7 +16,7 @@ use crate::{
     cli::{
         BenchArgs, BuildArgs, FlamegraphArgs, GenerateArgs, ProfileArgs, ProfileTool, WorkloadArgs,
     },
-    runtime::{check_file, identifier, Invocation, Runtime, INTERRUPTED},
+    runtime::{check_file, identifier, sha256, Invocation, Runtime, INTERRUPTED},
 };
 
 struct BuildLock(PathBuf);
@@ -337,20 +336,6 @@ fn vector(workload: &Workload, config: &Path, binary: &Path) -> Invocation {
         "--config",
         &config.to_string_lossy(),
     ])
-}
-
-fn sha256(path: &Path) -> Result<String> {
-    let mut file = fs::File::open(path)?;
-    let mut hasher = Sha256::new();
-    let mut buffer = [0; 65_536];
-    loop {
-        let n = file.read(&mut buffer)?;
-        if n == 0 {
-            break;
-        }
-        hasher.update(&buffer[..n]);
-    }
-    Ok(format!("{:x}", hasher.finalize()))
 }
 
 pub fn bench(runtime: &Runtime, args: BenchArgs) -> Result<()> {

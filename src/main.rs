@@ -1,6 +1,7 @@
 mod analysis;
 mod aws;
 mod cli;
+mod correctness;
 mod guest;
 mod infra;
 mod local;
@@ -71,6 +72,13 @@ fn execute(cli: Cli, inherited: Option<Runtime>) -> Result<()> {
         Commands::Lint => infra::lint(&runtime),
         Commands::Ssh { args } => infra::ssh(&runtime, args),
         Commands::Doctor => infra::doctor(&runtime),
+        Commands::Check(args) => {
+            let code = correctness::run(&runtime, args)?;
+            if code != 0 {
+                std::process::exit(code);
+            }
+            Ok(())
+        }
         Commands::Build(args) => local::build(&runtime, args),
         Commands::Bench(args) => local::bench(&runtime, args),
         Commands::Profile(args) => local::profile(&runtime, args),
