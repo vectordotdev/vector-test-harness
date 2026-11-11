@@ -7,6 +7,11 @@
     - include_role:
         name: tcp_test_server
       vars:
+        action: reset
+
+    - include_role:
+        name: tcp_test_server
+      vars:
         action: start_and_wait
         port: "{{ consumer_port }}"
 
@@ -17,7 +22,7 @@
         consumer_ip: "{{ hostvars[groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_consumer'].0].private_ip_address }}"
 
     - name: "Reset the config to it's original state"
-      include: "configure/{{ test_subject }}.yml"
+      include_tasks: "configure/{{ test_subject }}.yml"
 
     - set_fact:
         consumer_ip: "{{ hostvars[groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_consumer'].1].private_ip_address }}"
@@ -37,12 +42,16 @@
         echo "{\"log\": \"First line\"}" | socat -u - tcp:127.0.0.1:{{ subject_port }}
 
     - name: "Update config to point to the new consumer"
-      include: "configure/{{ test_subject }}.yml"
+      include_tasks: "configure/{{ test_subject }}.yml"
 
     - include_role:
         name: "{{ test_subject }}"
       vars:
         action: reload
+
+    - name: Allow the asynchronous configuration reload to finish
+      pause:
+        seconds: 1
 
     - name: Send second line
       shell: |
@@ -60,3 +69,18 @@
         name: tcp_test_server
       vars:
         action: stop
+
+    - include_role:
+        name: tcp_test_server
+      vars:
+        action: register_summary
+
+    - name: Select the line expected by this consumer
+      set_fact:
+        expected_line: "{{ 'First line' if inventory_hostname == groups['tag_Name_vector_test_' + user_id + '_' + test_name + '_' + test_configuration + '_consumer'][0] else 'Second line' }}"
+
+    - name: Verify that reload routed each line to its intended consumer
+      assert:
+        that:
+          - summary.message_count == 1
+          - expected_line in summary.first_message

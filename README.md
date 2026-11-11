@@ -10,10 +10,10 @@ Terraform and Ansible define the existing remote environments and workloads.
 The optional `justfile` provides convenient commands for the same Rust CLI.
 
 > [!NOTE]
-> The existing cases are under construction. Consolidating the runner does not
-> validate old Vector configs, subject installers, or historical performance
-> claims against current versions. Cloud and profiling validation still require
-> the appropriate AWS account and Linux benchmark machines.
+> Case configurations target Vector 0.61.0. Cloud execution, other subject
+> installers, and historical performance claims still require validation in the
+> appropriate AWS account and on controlled Linux benchmark machines. Updated
+> workloads require fresh performance baselines.
 
 ## Getting started
 
@@ -41,10 +41,10 @@ precedence over `.env`. The harness parses `.env` as data and never executes
 `.envrc` or shell commands in configuration. `--no-dotenv` disables loading.
 
 ```sh
-just run -t tcp_to_tcp_performance -s vector -v 0.55.0
+just run -t tcp_to_tcp_performance -s vector -v 0.61.0
 just run -t tcp_to_tcp_performance -s vector --run-only
 just results -t tcp_to_tcp_performance
-just compare -t tcp_to_tcp_performance -s vector -v 0.54.0 -v 0.55.0
+just compare -t tcp_to_tcp_performance -s vector -v 0.60.0 -v 0.61.0
 just teardown -t tcp_to_tcp_performance --yes
 ```
 
@@ -114,9 +114,9 @@ just flamegraph --input /path/to/profile.perf.data --baseline /path/to/baseline.
 `bench` records each repetition, alternates baseline/candidate order, and writes
 `benchmark.json` with artifact hashes and explicit measurement-method metadata.
 These timings have a new method identity and must not be pooled with historical
-hyperfine or dstat results. The archived case configs and fixtures retain their
-original workload semantics; choose a compatible Vector binary or an explicit
-`--config` when using them.
+hyperfine or dstat results. The case configs target Vector 0.61.0; updated remap
+and real-world workloads require fresh baselines. Use an explicit `--config`
+when evaluating another workload definition.
 
 `profile` supports `perf`, `stat`, `massif`, and `dhat`. Profiling tools remain
 external dependencies and generally require Linux. For the continuously running

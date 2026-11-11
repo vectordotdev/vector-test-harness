@@ -9,7 +9,11 @@ This test verifies that wrapped JSON documents are parsed correctly:
 This is a _very_ important for environments that wrap log output in a JSON document, such
 as Docker and Kubernetes.
 
-## Results
+## Historical results
+
+These results describe earlier Vector versions and workload definitions. They
+have not been re-measured with the Vector 0.61 configurations; establish a new
+baseline before comparing performance or claiming current correctness.
 
 |     Subject | Result  |
 |------------:|:-------:|

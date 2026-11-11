@@ -60,7 +60,7 @@
         action: stop
 
     - name: Capture summary
-      include: "capture_summary/{{ test_subject }}.yml"
+      include_tasks: "capture_summary/{{ test_subject }}.yml"
 
     - debug:
         var: summary

@@ -57,8 +57,11 @@ implemented in the Rust modules, with shared data in `config/` and SQL in
   hardcoded SHAs and workstation paths are not defaults. Builds use isolated
   clones under `.cache/builds/` and preserve other Vector checkouts.
 - Native standalone timing results have method `wall-clock-with-streamed-input-v1`
-  and a separate JSON artifact. Profiling is invoked separately. Case configs
-  themselves have not been modernized in this consolidation.
+  and a separate JSON artifact. Profiling is invoked separately.
+- Case configurations now target Vector 0.61.0. Removed transforms and conditions
+  have been migrated to current APIs, real-world variants deploy YAML, and file
+  sources use explicit checkpoint/read-position options. Remap and real-world
+  workload updates require new baselines; historical results remain historical.
 - Rebuild AMIs and Docker fixtures so they include `vth-guest`. The guest source is
   dependency-free and compiled natively for each environment.
 

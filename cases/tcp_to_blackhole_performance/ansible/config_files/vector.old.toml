@@ -1,8 +1,9 @@
 [sources.in]
-  type    = "tcp"
+  type    = "socket"
+  mode    = "tcp"
   address = "0.0.0.0:{{ subject_port }}"
 
 [sinks.out]
   inputs       = ["in"]
   type         = "blackhole"
-  print_amount = 10000
+  print_interval_secs = 1

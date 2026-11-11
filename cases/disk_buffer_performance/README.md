@@ -19,7 +19,11 @@ Therefore, for the purpose of this test, we configured each subject to sync to d
 aggressively as possible. This more accurately embodies the goal of disk-based buffers and it
 aligns durability guarantees across subjects since this is the default behavior of Vector.
 
-## Results
+## Historical results
+
+These results describe earlier Vector versions and workload definitions. They
+have not been re-measured with the Vector 0.61 configurations; establish a new
+baseline before comparing performance or claiming current correctness.
 
 ```
 $ just compare -t disk_buffer_performance

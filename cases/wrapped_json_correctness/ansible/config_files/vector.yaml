@@ -2,22 +2,36 @@ sources:
   in:
     type: socket
     mode: tcp
-    address: "127.0.0.1:{{ subject_port }}"
-
+    address: 127.0.0.1:{{ subject_port }}
 transforms:
   parse_wrapped_json:
-    inputs: ["in"]
+    inputs:
+    - in
     type: remap
     source: |
       . = merge!(., parse_json!(string!(.message)))
       . = merge!(., parse_json!(string!(.log)))
       del(.log)
-
 sinks:
   out:
-    inputs: ["parse_wrapped_json"]
+    inputs:
+    - parse_wrapped_json
     type: socket
     mode: tcp
-    address: "127.0.0.1:{{ tcp_consumer_port }}"
+    address: 127.0.0.1:{{ tcp_consumer_port }}
     encoding:
       codec: json
+tests:
+- name: wrapped JSON exposes the nested application message
+  inputs:
+  - insert_at: parse_wrapped_json
+    type: log
+    log_fields:
+      message: '{"log": "{\"message\": \"Hello world\"}"}'
+  outputs:
+  - extract_from: parse_wrapped_json
+    conditions:
+    - type: vrl
+      source: |
+        assert_eq!(.message, "Hello world")
+        assert!(!exists(.log))

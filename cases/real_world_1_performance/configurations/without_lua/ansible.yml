@@ -13,4 +13,4 @@ subject_unfurler_port: 9000
 subject_audit_port: 9000
 consumer_port: 9000
 test_file: "/tmp/fake.log"
-vector_config_file: "vector.without_lua.toml"
+vector_config_file: "vector.without_lua.yaml"

@@ -14,7 +14,11 @@ reloading configuration changes.
 7. Assert that the first TCP server received the first line and the second TCP server
    received the second line.
 
-## Results
+## Historical results
+
+These results describe earlier Vector versions and workload definitions. They
+have not been re-measured with the Vector 0.61 configurations; establish a new
+baseline before comparing performance or claiming current correctness.
 
 |     Subject | Result  |
 |------------:|:-------:|

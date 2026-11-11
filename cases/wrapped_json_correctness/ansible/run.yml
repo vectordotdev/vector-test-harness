@@ -15,7 +15,7 @@
     # process of verifying behavior. The method used is irrelevant to the result
     # and it could differ across subjects.
     - name: "Test {{ test_subject }}"
-      include: "run/{{ test_subject }}.yml"
+      include_tasks: "run/{{ test_subject }}.yml"
 
     - include_role:
         name: test_servers

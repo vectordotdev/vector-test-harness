@@ -1,0 +1,462 @@
+# Vector 0.61 workload variant. Historical measurements used the former TOML definition.
+data_dir: /var/lib/vector
+sources:
+  in:
+    type: syslog
+    mode: tcp
+    address: 0.0.0.0:{{ subject_port }}
+transforms:
+  company_api:
+    type: filter
+    inputs:
+    - in
+    condition: .appname == "company-api"
+  company_api_json:
+    type: remap
+    inputs:
+    - company_api
+    drop_on_abort: true
+    source: |
+      parsed = object!(parse_json!(string!(.message)))
+      del(.message)
+      . = merge(., parsed)
+  company_api_timestamp:
+    type: remap
+    inputs:
+    - company_api_json
+    source: |
+      value = .timestamp
+      if !is_timestamp(value) {
+        if is_integer(value) {
+          .timestamp = from_unix_timestamp!(value)
+        } else if is_float(value) {
+          .timestamp = from_unix_timestamp!(to_int(to_float!(value) * 1000000000), unit: "nanoseconds")
+        } else {
+          text = string!(value)
+          .timestamp = parse_timestamp(text, format: "%+") ?? parse_timestamp!(text, format: "%s")
+        }
+      }
+  company_api_rename:
+    type: remap
+    inputs:
+    - company_api_timestamp
+    source: |
+      .time = del(.timestamp)
+      .hostname = del(.host)
+      .metadata_trace_id = del(.metadata.trace_id)
+      .metadata_guild_id = del(.metadata.guild_id)
+      .metadata_channel_id = del(.metadata.channel_id)
+      .metadata_method = del(.metadata.method)
+  company_admin:
+    type: filter
+    inputs:
+    - in
+    condition: .appname == "company-admin"
+  company_admin_json:
+    type: remap
+    inputs:
+    - company_admin
+    drop_on_abort: true
+    source: |
+      parsed = object!(parse_json!(string!(.message)))
+      del(.message)
+      . = merge(., parsed)
+  company_admin_timestamp:
+    type: remap
+    inputs:
+    - company_admin_json
+    source: |
+      value = .timestamp
+      if !is_timestamp(value) {
+        if is_integer(value) {
+          .timestamp = from_unix_timestamp!(value)
+        } else if is_float(value) {
+          .timestamp = from_unix_timestamp!(to_int(to_float!(value) * 1000000000), unit: "nanoseconds")
+        } else {
+          text = string!(value)
+          .timestamp = parse_timestamp(text, format: "%+") ?? parse_timestamp!(text, format: "%s")
+        }
+      }
+  company_admin_rename:
+    type: remap
+    inputs:
+    - company_admin_timestamp
+    source: |
+      .time = del(.timestamp)
+      .hostname = del(.host)
+      .metadata_trace_id = del(.metadata.trace_id)
+      .metadata_method = del(.metadata.method)
+  company_media_proxy:
+    type: filter
+    inputs:
+    - in
+    condition: .appname == "company-media-proxy"
+  company_media_proxy_json:
+    type: remap
+    inputs:
+    - company_media_proxy
+    drop_on_abort: true
+    source: |
+      parsed = object!(parse_json!(string!(.message)))
+      del(.message)
+      . = merge(., parsed)
+  company_media_proxy_timestamp:
+    type: remap
+    inputs:
+    - company_media_proxy_json
+    source: |
+      value = .ts
+      if !is_timestamp(value) {
+        if is_integer(value) {
+          .ts = from_unix_timestamp!(value)
+        } else if is_float(value) {
+          .ts = from_unix_timestamp!(to_int(to_float!(value) * 1000000000), unit: "nanoseconds")
+        } else {
+          text = string!(value)
+          .ts = parse_timestamp(text, format: "%+") ?? parse_timestamp!(text, format: "%s")
+        }
+      }
+  company_media_proxy_rename:
+    type: remap
+    inputs:
+    - company_media_proxy_timestamp
+    source: |
+      .time = del(.ts)
+      .hostname = del(.host)
+  company_unfurler:
+    type: filter
+    inputs:
+    - in
+    condition: .appname == "company-unfurler"
+  company_unfurler_hostname:
+    type: remap
+    inputs:
+    - company_unfurler
+    source: |
+      .hostname = del(.host)
+  company_unfurler_json:
+    type: remap
+    inputs:
+    - company_unfurler_hostname
+    drop_on_abort: true
+    source: |
+      parsed = object!(parse_json!(string!(.message)))
+      del(.message)
+      . = merge(., parsed)
+  company_unfurler_timestamp:
+    type: remap
+    inputs:
+    - company_unfurler_json
+    source: |
+      value = .ts
+      if !is_timestamp(value) {
+        if is_integer(value) {
+          .ts = from_unix_timestamp!(value)
+        } else if is_float(value) {
+          .ts = from_unix_timestamp!(to_int(to_float!(value) * 1000000000), unit: "nanoseconds")
+        } else {
+          text = string!(value)
+          .ts = parse_timestamp(text, format: "%+") ?? parse_timestamp!(text, format: "%s")
+        }
+      }
+  company_unfurler_rename:
+    type: remap
+    inputs:
+    - company_unfurler_timestamp
+    source: |
+      .time = del(.ts)
+  company_unfurler_filter:
+    type: filter
+    inputs:
+    - company_unfurler_rename
+    condition: .msg == "unfurl"
+  audit:
+    type: filter
+    inputs:
+    - in
+    condition: .appname == "audit"
+  audit_timestamp:
+    type: remap
+    inputs:
+    - audit
+    source: |
+      value = .timestamp
+      if !is_timestamp(value) {
+        if is_integer(value) {
+          .timestamp = from_unix_timestamp!(value)
+        } else if is_float(value) {
+          .timestamp = from_unix_timestamp!(to_int(to_float!(value) * 1000000000), unit: "nanoseconds")
+        } else {
+          text = string!(value)
+          .timestamp = parse_timestamp(text, format: "%+") ?? parse_timestamp!(text, format: "%s")
+        }
+      }
+  audit_rename:
+    type: remap
+    inputs:
+    - audit_timestamp
+    source: |
+      .tag = del(.appname)
+      .hostname = del(.host)
+      .content = del(.message)
+      .time = del(.timestamp)
+sinks:
+  company_api_http:
+    type: http
+    inputs:
+    - company_api_rename
+    uri: http://{{ consumer_ip }}:{{ consumer_port }}
+    encoding:
+      codec: json
+      only_fields:
+      - time
+      - endpoint
+      - hostname
+      - http_cf_ray
+      - http_debug_options
+      - http_content_length
+      - http_method
+      - http_referrer
+      - http_remote_addr
+      - http_response_time
+      - http_route
+      - http_status_code
+      - http_user_agent
+      - http_version
+      - ip_country
+      - ip_metro
+      - user_id
+      - metadata_trace_id
+      - metadata_guild_id
+      - metadata_channel_id
+      - metadata_method
+      timestamp_format: unix
+    request:
+      rate_limit_duration_secs: 5
+      rate_limit_num: 60
+      concurrency: 100
+    buffer:
+      type: memory
+      max_events: 5000
+      when_full: block
+    batch:
+      timeout_secs: 5
+      max_bytes: 5245000
+    framing:
+      method: newline_delimited
+  company_admin_http:
+    type: http
+    inputs:
+    - company_admin_rename
+    uri: http://{{ consumer_ip }}:{{ consumer_port }}
+    encoding:
+      codec: json
+      only_fields:
+      - time
+      - endpoint
+      - hostname
+      - http_cf_ray
+      - http_debug_options
+      - http_content_length
+      - http_method
+      - http_referrer
+      - http_remote_addr
+      - http_response_time
+      - http_route
+      - http_status_code
+      - http_user_agent
+      - http_version
+      - user_id
+      - metadata_trace_id
+      - metadata_method
+      timestamp_format: unix
+    framing:
+      method: newline_delimited
+  company_media_proxy_http:
+    type: http
+    inputs:
+    - company_media_proxy_rename
+    uri: http://{{ consumer_ip }}:{{ consumer_port }}
+    encoding:
+      codec: json
+      only_fields:
+      - time
+      - hostname
+      - msg
+      - bhash
+      - bhash_duration
+      - input_type
+      - input_size_bytes
+      - input_height_px
+      - input_width_px
+      - output_type
+      - output_size_bytes
+      - output_height_px
+      - output_width_px
+      - downloaded_in_ms
+      - resized_in_ms
+      - request_type
+      - source
+      - source_host
+      - stacktrace
+      timestamp_format: unix
+    request:
+      rate_limit_duration_secs: 5
+      rate_limit_num: 60
+      concurrency: 100
+    buffer:
+      type: memory
+      max_events: 5000
+      when_full: block
+    batch:
+      timeout_secs: 5
+      max_bytes: 5245000
+    framing:
+      method: newline_delimited
+  company_unfurler_http:
+    type: http
+    inputs:
+    - company_unfurler_filter
+    uri: http://{{ consumer_ip }}:{{ consumer_port }}
+    encoding:
+      codec: json
+      only_fields:
+      - time
+      - hostname
+      - host
+      - url
+      - msg
+      - success
+      timestamp_format: unix
+    request:
+      rate_limit_duration_secs: 5
+      rate_limit_num: 60
+      concurrency: 100
+    buffer:
+      type: memory
+      max_events: 5000
+      when_full: block
+    framing:
+      method: newline_delimited
+  audit_http:
+    type: http
+    inputs:
+    - audit_rename
+    uri: http://{{ consumer_ip }}:{{ consumer_port }}
+    encoding:
+      codec: json
+      only_fields:
+      - time
+      - hostname
+      - content
+      - tag
+      - pid
+      timestamp_format: unix
+    request:
+      rate_limit_duration_secs: 5
+      rate_limit_num: 60
+      concurrency: 100
+    buffer:
+      type: memory
+      max_events: 5000
+      when_full: block
+    framing:
+      method: newline_delimited
+tests:
+- name: company_api processing
+  inputs:
+  - insert_at: company_api
+    type: log
+    log_fields:
+      message: '{"ts": "2026-11-11T00:00:00.125Z", "msg": "unfurl", "metadata": {"trace_id":
+        "trace123", "guild_id": "guild123", "channel_id": "channel123", "method":
+        "method"}}'
+      appname: company-api
+      host: testhost
+      timestamp: '2026-11-11T00:00:00.125Z'
+  outputs:
+  - extract_from: company_api_rename
+    conditions:
+    - type: vrl
+      source: |
+        assert_eq!(.hostname, "testhost")
+        assert!(is_timestamp(.time))
+        assert_eq!(.metadata_trace_id, "trace123")
+        assert_eq!(.metadata_method, "method")
+        assert_eq!(.metadata_guild_id, "guild123")
+        assert_eq!(.metadata_channel_id, "channel123")
+- name: company_admin processing
+  inputs:
+  - insert_at: company_admin
+    type: log
+    log_fields:
+      message: '{"ts": "2026-11-11T00:00:00.125Z", "msg": "unfurl", "metadata": {"trace_id":
+        "trace123", "guild_id": "guild123", "channel_id": "channel123", "method":
+        "method"}}'
+      appname: company-admin
+      host: testhost
+      timestamp: '2026-11-11T00:00:00.125Z'
+  outputs:
+  - extract_from: company_admin_rename
+    conditions:
+    - type: vrl
+      source: |
+        assert_eq!(.hostname, "testhost")
+        assert!(is_timestamp(.time))
+        assert_eq!(.metadata_trace_id, "trace123")
+        assert_eq!(.metadata_method, "method")
+- name: company_media_proxy processing
+  inputs:
+  - insert_at: company_media_proxy
+    type: log
+    log_fields:
+      message: '{"ts": "2026-11-11T00:00:00.125Z", "msg": "unfurl", "metadata": {"trace_id":
+        "trace123", "guild_id": "guild123", "channel_id": "channel123", "method":
+        "method"}}'
+      appname: company-media-proxy
+      host: testhost
+      timestamp: '2026-11-11T00:00:00.125Z'
+  outputs:
+  - extract_from: company_media_proxy_rename
+    conditions:
+    - type: vrl
+      source: |
+        assert_eq!(.hostname, "testhost")
+        assert!(is_timestamp(.time))
+- name: company_unfurler processing
+  inputs:
+  - insert_at: company_unfurler
+    type: log
+    log_fields:
+      message: '{"ts": "2026-11-11T00:00:00.125Z", "msg": "unfurl", "metadata": {"trace_id":
+        "trace123", "guild_id": "guild123", "channel_id": "channel123", "method":
+        "method"}}'
+      appname: company-unfurler
+      host: testhost
+      timestamp: '2026-11-11T00:00:00.125Z'
+  outputs:
+  - extract_from: company_unfurler_filter
+    conditions:
+    - type: vrl
+      source: |
+        assert_eq!(.hostname, "testhost")
+        assert!(is_timestamp(.time))
+        assert_eq!(.msg, "unfurl")
+- name: audit processing
+  inputs:
+  - insert_at: audit
+    type: log
+    log_fields:
+      message: audit event
+      appname: audit
+      host: testhost
+      timestamp: '2026-11-11T00:00:00.125Z'
+  outputs:
+  - extract_from: audit_rename
+    conditions:
+    - type: vrl
+      source: |
+        assert_eq!(.hostname, "testhost")
+        assert!(is_timestamp(.time))
+        assert_eq!(.tag, "audit")
+        assert_eq!(.content, "audit event")

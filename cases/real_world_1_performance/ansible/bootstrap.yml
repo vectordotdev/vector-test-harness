@@ -15,31 +15,31 @@
   become: true
   tasks:
     - set_fact:
-        line_content: '<118>3 2020-03-13T20:45:38.119Z my.host.com company-api 2004 ID960 - {"metadata": {"trace_id": "trace123", "guide_id": "guild123", "channel_id": "channel123", "method": "method"}}'
+        line_content: '<118>1 2020-03-13T20:45:38.119Z my.host.com company-api 2004 ID960 - {"metadata": {"trace_id": "trace123", "guild_id": "guild123", "channel_id": "channel123", "method": "method"}}'
 
 - hosts: '{{ test_namespace }}:&tag_TestRole_producer:&tag_TestIndex_1'
   become: true
   tasks:
     - set_fact:
-        line_content: '<118>3 2020-03-13T20:45:38.119Z my.host.com company-admin 2004 ID960 - {"metadata": {"trace_id": "trace123", "guide_id": "guild123", "channel_id": "channel123", "method": "method"}}'
+        line_content: '<118>1 2020-03-13T20:45:38.119Z my.host.com company-admin 2004 ID960 - {"metadata": {"trace_id": "trace123", "guild_id": "guild123", "channel_id": "channel123", "method": "method"}}'
 
 - hosts: '{{ test_namespace }}:&tag_TestRole_producer:&tag_TestIndex_2'
   become: true
   tasks:
     - set_fact:
-        line_content: '<118>3 2020-03-13T20:45:38.119Z my.host.com company-media-proxy 2004 ID960 - {"ts": "2020-03-13T20:45:38.119Z"}'
+        line_content: '<118>1 2020-03-13T20:45:38.119Z my.host.com company-media-proxy 2004 ID960 - {"ts": "2020-03-13T20:45:38.119Z"}'
 
 - hosts: '{{ test_namespace }}:&tag_TestRole_producer:&tag_TestIndex_3'
   become: true
   tasks:
     - set_fact:
-        line_content: '<118>3 2020-03-13T20:45:38.119Z my.host.com company-unfurler 2004 ID960 - {"ts": "2020-03-13T20:45:38.119Z", "msg": "unfurl"}'
+        line_content: '<118>1 2020-03-13T20:45:38.119Z my.host.com company-unfurler 2004 ID960 - {"ts": "2020-03-13T20:45:38.119Z", "msg": "unfurl"}'
 
 - hosts: '{{ test_namespace }}:&tag_TestRole_producer:&tag_TestIndex_4'
   become: true
   tasks:
     - set_fact:
-        line_content: '<118>3 2020-03-13T20:45:38.119Z my.host.com company-admin 2004 ID960 - {"metadata": {"trace_id": "trace123", "guide_id": "guild123", "channel_id": "channel123", "method": "method"}}'
+        line_content: '<118>1 2020-03-13T20:45:38.119Z my.host.com audit 2004 ID960 - {"metadata": {"trace_id": "trace123", "guild_id": "guild123", "channel_id": "channel123", "method": "method"}}'
 
 - hosts: '{{ test_namespace }}:&tag_TestRole_producer'
   become: true

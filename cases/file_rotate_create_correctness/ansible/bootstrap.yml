@@ -39,4 +39,4 @@
 
     - role: vector
       action: configure
-      configuration_file: "config_files/vector.toml"
+      configuration_file: "config_files/vector.yaml"

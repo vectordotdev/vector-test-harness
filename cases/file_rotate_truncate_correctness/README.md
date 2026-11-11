@@ -16,7 +16,11 @@ Failure to do so results in data loss as well as duplicate data.
 7. Assert that the downstream service received both new unique lines _and_ did not receive
    duplicate data.
 
-## Results
+## Historical results
+
+These results describe earlier Vector versions and workload definitions. They
+have not been re-measured with the Vector 0.61 configurations; establish a new
+baseline before comparing performance or claiming current correctness.
 
 |     Subject | Result  |
 |------------:|:-------:|
