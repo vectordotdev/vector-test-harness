@@ -16,6 +16,13 @@
     backup: yes # to provide stable timestamps
     mode: preserve
 
+- name: Add shared Rust sources requested by the test image
+  copy:
+    src: '{{ item.src }}'
+    dest: '{{ remote_build_context.path }}/{{ item.dest }}'
+    mode: '0644'
+  loop: '{{ image_build_context_extra_files | default([]) }}'
+
 - name: Build test docker container image
   docker_image:
     name: '{{ image_name }}'

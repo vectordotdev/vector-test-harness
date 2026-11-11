@@ -17,7 +17,7 @@ files and send it over TCP.
 ### Multi-file
 
 ```
-$ bin/compare -t file_to_tcp_performance -c multi_file
+$ just compare -t file_to_tcp_performance -c multi_file
 
 | Metric           | filebeat   | fluentbit | fluentd   | logstash   | splunk_hf | splunk_uf | vector      |
 |:-----------------|:-----------|:----------|:----------|:-----------|:----------|:----------|:------------|
@@ -47,14 +47,14 @@ vector = 0.2.0
 ### Single-file
 
 ```
-$ bin/compare -t file_to_tcp_performance -c single_file
+$ just compare -t file_to_tcp_performance -c single_file
 
 ```
 
 ## Try It
 
 ```bash
-bin/test -t file_to_tcp_performance -c <multi_file|single_file>
+just run -t file_to_tcp_performance -c <multi_file|single_file>
 ```
 
 ## Resources

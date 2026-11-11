@@ -13,7 +13,7 @@ This test measures the TCP output performance for each subject.
 ## Results
 
 ```
-$ bin/comare -t tcp_to_tcp_performance
+$ just compare -t tcp_to_tcp_performance
 
 | Metric          | filebeat   | fluentbit | fluentd  | logstash | splunk_hf | splunk_uf   | vector    |
 |:----------------|:-----------|:----------|:---------|:---------|:----------|:------------|:----------|
@@ -43,7 +43,7 @@ vector = 0.2.0
 ## Try It
 
 ```bash
-bin/test -t tcp_to_tcp_performance
+just run -t tcp_to_tcp_performance
 ```
 
 ## Resources

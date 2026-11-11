@@ -1,0 +1,38 @@
+[package]
+name = "vector-test-harness"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.94"
+license = "MPL-2.0"
+publish = false
+default-run = "vth"
+description = "End-to-end correctness and performance harness for Vector"
+
+[[bin]]
+name = "vth"
+path = "src/main.rs"
+
+[[bin]]
+name = "vth-guest"
+path = "src/guest.rs"
+
+[dependencies]
+anyhow = "1"
+clap = { version = "4", features = ["derive"] }
+csv = "1"
+ctrlc = "3"
+dotenvy = "0.15"
+flate2 = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+shell-words = "1"
+
+[dev-dependencies]
+tempfile = "3"
+
+[profile.release]
+strip = true
+
+[lints.rust]
+unsafe_code = "forbid"

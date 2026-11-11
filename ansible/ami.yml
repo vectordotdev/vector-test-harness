@@ -1,6 +1,12 @@
 ---
 - hosts: default
   become: true
+  pre_tasks:
+    - name: Update the base image before installing benchmark tools
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: 'yes'
+        force_apt_get: true
   roles:
     - no_auto_update
     - utilities

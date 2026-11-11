@@ -1,59 +1,30 @@
-FROM debian:bookworm-slim
+FROM rust:1.94-bookworm AS build
+WORKDIR /build
+COPY Cargo.toml Cargo.lock ./
+COPY src ./src
+COPY queries ./queries
+RUN cargo build --locked --release --bins
 
-# Prepare system.
+FROM debian:bookworm-slim
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
-    python3 \
-    python3-pip \
-    python3-setuptools \
-    python3-wheel \
-    curl \
-    ca-certificates \
-    unzip \
-    ssh \
-    ruby \
+    python3 python3-pip python3-setuptools python3-wheel \
+    curl ca-certificates unzip ssh \
   && rm -rf /var/lib/apt/lists/*
 
-# Install Ansible, AWS CLI and boto3.
+# These remain external infrastructure tools; harness logic lives in Rust.
 RUN python3 -m pip install --no-cache-dir --break-system-packages \
-    ansible \
-    boto3 \
-    botocore \
-    awscli \
-  && ansible --version \
-  && aws --version
+    ansible boto3 botocore awscli
 
-# Install Terraform.
 ARG TERRAFORM_VERSION=1.9.8
-RUN curl -fsSL "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" -o terraform.zip \
-  && unzip -o terraform.zip -d /usr/local/bin/ \
-  && rm -rf terraform.zip \
-  && terraform version
+ARG TARGETARCH
+RUN curl -fsSL "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_${TARGETARCH}.zip" -o /tmp/terraform.zip \
+  && unzip -o /tmp/terraform.zip -d /usr/local/bin/ \
+  && rm /tmp/terraform.zip
 
-# Install jq.
-ARG JQ_VERSION=1.7.1
-RUN curl -fsSL "https://github.com/jqlang/jq/releases/download/jq-${JQ_VERSION}/jq-linux-amd64" -o /usr/local/bin/jq \
-  && chmod +x /usr/local/bin/jq \
-  && jq --version
-
-# Install ruby gems.
-RUN gem install --no-document \
-  table_print
-
-# Expose Python 3 as `python`.
-RUN ln -sT /usr/bin/python3 /usr/local/bin/python
-
-# Print the state after the installation to simplify troubleshooting.
-RUN set -x \
-  && ls -la / \
-  && ls -la /usr/local/bin
-
-# Setup the workspace.
+COPY --from=build /build/target/release/vth /usr/local/bin/vth
+COPY --from=build /build/target/release/vth-guest /usr/local/bin/vth-guest
 WORKDIR /vector-test-harness
 COPY . .
-
-# Set the entrypoint.
-ENTRYPOINT [ "/vector-test-harness/docker/entrypoint" ]
-
-# By default, print usage hint, and force users to specify command manually.
-CMD [ "echo", "Usage: bin/test ..." ]
+ENTRYPOINT ["/usr/local/bin/vth", "container"]
+CMD ["--help"]

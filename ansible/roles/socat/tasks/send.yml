@@ -2,7 +2,8 @@
 - name: "Sending data to {{ address }} for {{ timeout }} seconds"
   command:
     argv: [
-      "socat_loop",
+      "vth-guest",
+      "socat-loop",
       "{{ timeout }}",
       "{{ file }}",
       "-u",

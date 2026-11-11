@@ -22,7 +22,7 @@ aligns durability guarantees across subjects since this is the default behavior 
 ## Results
 
 ```
-$ bin/comare -t disk_buffer_performance
+$ just compare -t disk_buffer_performance
 
 | Metric          | filebeat   | fluentbit | fluentd  | logstash | splunk_hf | splunk_uf    | vector   |
 |:----------------|:-----------|:----------|:---------|:---------|:----------|:-------------|:---------|
@@ -53,7 +53,7 @@ vector = 0.2.0
 ## Try It
 
 ```bash
-bin/test -t disk_buffer_performance
+just run -t disk_buffer_performance
 ```
 
 ## Resources

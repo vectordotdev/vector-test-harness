@@ -19,6 +19,9 @@
     - role: test_docker_container
       action: build
       image_build_context_path: "image/"
+      image_build_context_extra_files:
+        - src: '{{ playbook_dir }}/../../../src/guest.rs'
+          dest: vth-guest.rs
 
     - role: docker
       action: stop

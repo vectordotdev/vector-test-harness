@@ -1,8 +1,34 @@
 ---
-- name: Install socat_loop command
-  copy:
-    src: socat_loop
-    dest: /usr/local/bin/socat_loop
-    owner: root
-    group: root
-    mode: '0755'
+- name: Install the compiler for the dependency-free Rust guest helpers
+  ansible.builtin.apt:
+    name: rustc
+    state: present
+
+- name: Create a temporary guest helper build directory
+  ansible.builtin.tempfile:
+    state: directory
+    suffix: vth-guest
+  register: vth_guest_build
+
+- block:
+    - name: Copy the shared Rust guest helper source
+      ansible.builtin.copy:
+        src: '{{ role_path }}/../../../src/guest.rs'
+        dest: '{{ vth_guest_build.path }}/guest.rs'
+        mode: '0644'
+
+    - name: Compile the guest helpers for this machine
+      ansible.builtin.command:
+        argv:
+          - rustc
+          - --edition=2021
+          - -O
+          - --crate-name=vth_guest
+          - '{{ vth_guest_build.path }}/guest.rs'
+          - -o
+          - /usr/local/bin/vth-guest
+  always:
+    - name: Remove the temporary guest helper build directory
+      ansible.builtin.file:
+        path: '{{ vth_guest_build.path }}'
+        state: absent
