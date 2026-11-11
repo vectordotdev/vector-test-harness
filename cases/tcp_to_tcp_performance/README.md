@@ -62,10 +62,10 @@ just run -t tcp_to_tcp_performance
 
 
 [development]: /README.md#development
-[docs]: https://docs.vector.dev
+[docs]: https://vector.dev/docs/
 [how_it_works]: /README.md#how-it-works
 [performance_data]: /README.md#performance-data
-[repo]: https://github.com/timberio/vector
+[repo]: https://github.com/vectordotdev/vector
 [setup]: /README.md#setup
 [usage]: /README.md#usage
 [website]: https://vector.dev

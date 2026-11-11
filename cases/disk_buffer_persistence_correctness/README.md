@@ -56,8 +56,8 @@ just run -t disk_buffer_persistence_correctness
 
 
 [development]: /README.md#development
-[docs]: https://docs.vector.dev
+[docs]: https://vector.dev/docs/
 [how_it_works]: /README.md#how-it-works
-[repo]: https://github.com/timberio/vector
+[repo]: https://github.com/vectordotdev/vector
 [setup]: /README.md#setup
 [website]: https://vector.dev

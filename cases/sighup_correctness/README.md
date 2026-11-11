@@ -37,10 +37,16 @@ baseline before comparing performance or claiming current correctness.
 
 ## Try It
 
-You can run this test via:
+Run the local Vector check without cloud infrastructure:
 
+```sh
+just check-case sighup_correctness --vector-bin /path/to/vector
 ```
-test -t sighup_correctness
+
+For the remote case:
+
+```sh
+just run -t sighup_correctness -s vector
 ```
 
 ## Resources
@@ -54,8 +60,8 @@ test -t sighup_correctness
 
 
 [development]: /README.md#development
-[docs]: https://docs.vector.dev
+[docs]: https://vector.dev/docs/
 [how_it_works]: /README.md#how-it-works
-[repo]: https://github.com/timberio/vector
+[repo]: https://github.com/vectordotdev/vector
 [setup]: /README.md#setup
 [website]: https://vector.dev

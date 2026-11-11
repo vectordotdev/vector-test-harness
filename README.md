@@ -4,156 +4,262 @@
 
 # Vector Test Harness
 
-A Rust command-line harness for Vector end-to-end correctness tests, performance
-benchmarks, and profiling experiments. `vth` owns orchestration and analysis;
-Terraform and Ansible define the existing remote environments and workloads.
-The optional `justfile` provides convenient commands for the same Rust CLI.
+A Rust CLI for Vector correctness checks, performance benchmarks, and profiling.
+`vth` runs local checks and workloads, orchestrates remote cases through Terraform
+and Ansible, and analyzes recorded results. An optional [justfile](justfile)
+provides shortcuts for the same commands.
+
+[Setup](#setup) · [Commands](#usage) · [Cases](#cases) ·
+[Local checks](#local-correctness-checks) · [Remote runs](#how-it-works) ·
+[Results](#performance-data) · [Profiling](#standalone-performance-experiments)
 
 > [!NOTE]
-> Case configurations target Vector 0.61.0. Cloud execution, other subject
-> installers, and historical performance claims still require validation in the
-> appropriate AWS account and on controlled Linux benchmark machines. Updated
-> workloads require fresh performance baselines.
+> The Vector configs target **0.61.0**. Local wrapped-JSON and SIGHUP checks have
+> passed with that version on macOS arm64. Cloud execution, other subject
+> installers, and Linux profiling require validation in their target environments.
+> Historical results in case READMEs describe older versions and workloads;
+> establish fresh baselines for the current configs.
 
-## Getting started
+## Setup
 
-Install Rust 1.94+, Terraform 1.0+, Ansible 2.16+, and the AWS CLI. Packer is
-needed for AMI builds; `just` is optional. See [the setup guide](docs/setup.md)
-for AWS prerequisites and [the migration guide](docs/migration.md) for old commands.
+Build and install `vth` from this checkout with Rust **1.94+**:
 
 ```sh
-cargo build --locked --bins
-cargo run --locked --bin vth -- --help
-just doctor
-just list
+cargo install --locked --path . --bin vth
+vth --help
+vth list
 ```
 
-All recipes delegate to Rust. Without `just`, use
-`cargo run --locked --bin vth -- <command> ...`, or install the CLI with
-`cargo install --locked --path . --bin vth`.
+Run commands from this checkout, or pass `--root /path/to/vector-test-harness`.
+The installed binary still needs the repository's configs and case files. For
+local development without installing, use
+`cargo run --locked --bin vth -- <command> ...`.
+
+Install additional tools for the workflows you use:
+
+| Workflow | Additional requirements |
+| --- | --- |
+| List cases or analyze saved results | None. |
+| Local correctness checks | A Vector binary; macOS or Linux. |
+| Standalone benchmarks | A Vector binary; Git and its build dependencies if using `vth build`. |
+| Profiling and flamegraphs | Linux with `perf` or Valgrind; Inferno tools for flamegraphs; `file_gen` for continuous file input. |
+| Remote cases | AWS CLI and credentials, Terraform 1.0+, Ansible with its AWS inventory dependencies, and SSH. See the [setup guide](docs/setup.md) for compatible Ansible/SDK versions. Automatic egress-IP discovery also uses `curl`. |
+| Cloud results | AWS CLI and credentials with access to the results bucket and, for comparison/export, Athena. |
+| AMI builds | Remote prerequisites plus Packer and its Amazon/Ansible plugins. |
+
+`just` is optional. `vth doctor` checks installed tools without contacting AWS;
+it reports missing remote prerequisites even if you only intend to run locally.
+See the [cloud setup guide](docs/setup.md) for account, inventory, AMI, and
+container setup, and the [migration guide](docs/migration.md) for old entry points.
+
+## Usage
+
+Use `vth <command> --help` for flags. `--root`, `--no-dotenv`, and `--dry-run` are
+global options. Dry runs validate inputs and print JSON command/filesystem plans
+without running external tools or writing files; referenced local files must
+still exist. Guest helpers execute directly and do not support dry runs.
+
+| Command | `just` shortcut | Function |
+| --- | --- | --- |
+| `vth list` | `just list` | List remote cases and standalone workloads. |
+| `vth meta <mode>` | `just harness meta <mode>` | Print `test-cases` or `test-subjects` for scripting. |
+| `vth check <case>` | `just check-case <case>` | Run one of the two local Vector correctness checks. |
+| `vth run` | `just run` | Provision, bootstrap, and run a remote case; `test` is an alias. |
+| `vth teardown` | `just teardown` | Destroy resources for one case, configuration, and user. |
+| `vth bootstrap-aws` | `just bootstrap-aws` | Create account prerequisites and write `.env`. |
+| `vth build-amis` | `just build-amis` | Build the benchmark AMI with Packer. |
+| `vth global-bootstrap` | `just global-bootstrap` | Provision the legacy shared Athena/results infrastructure. |
+| `vth results` | `just results` | Summarize dstat CSVs from S3 or local files. |
+| `vth compare` | `just compare` | Compare recorded remote measurements through Athena or a saved response. |
+| `vth export` | `just export-results` | Write website-compatible results JSON and optionally upload it. |
+| `vth build` | `just build` | Build an explicit revision in an isolated clone. |
+| `vth bench <case>` | `just bench <case>` | Time a finite stdin workload, optionally against a baseline binary. |
+| `vth profile <case>` | `just profile <case>` | Run `perf`, `perf stat`, Massif, or DHAT on a workload. |
+| `vth flamegraph` | `just flamegraph` | Generate flamegraphs and optional baseline/candidate differences. |
+| `vth generate` | `just generate` | Run `file_gen` for the continuous file workload. |
+| `vth ssh` | `just ssh` | Connect to a remote machine using the configured SSH identity. |
+| `vth doctor` | `just doctor` | Report installed infrastructure and profiling tools. |
+| `vth lint` | `just lint` | Check Terraform formatting. |
+| `vth helper ...` | `just harness helper ...` | Run guest utilities; also available through `vth-guest`. |
+
+**`just check` runs Rust formatting and Clippy.** Use `just check-case` for local
+correctness cases. `just harness ...` forwards any `vth` command.
+
+## Cases
+
+### Remote cases
+
+These definitions run with `vth run -t <case> -c <configuration> -s vector`.
+The configuration defaults to `default`; **`file_to_tcp_performance` requires
+`-c single_file` or `-c multi_file`**. The two cases marked “also local” can also
+run through `vth check` without cloud infrastructure.
+
+| Case | Kind | What it exercises | Configurations |
+| --- | --- | --- | --- |
+| [disk_buffer_performance](cases/disk_buffer_performance/) | Performance | TCP forwarding with a disk buffer. | `default` |
+| [disk_buffer_persistence_correctness](cases/disk_buffer_persistence_correctness/) | Correctness | Deliver buffered records after a downstream outage and subject restart. | `default` |
+| [docker_partial_events_merging_correctness](cases/docker_partial_events_merging_correctness/) | Correctness | Merge a large Docker log record and verify its complete payload. | `default` |
+| [file_rotate_create_correctness](cases/file_rotate_create_correctness/) | Correctness | Follow a renamed file and its replacement, including late writes to the old file. | `default` |
+| [file_rotate_truncate_correctness](cases/file_rotate_truncate_correctness/) | Correctness | Follow copy-truncate rotation and late writes to the copied file. | `default` |
+| [file_to_tcp_performance](cases/file_to_tcp_performance/) | Performance | Tail files and forward their contents over TCP. | `single_file`, `multi_file` |
+| [file_truncate_correctness](cases/file_truncate_correctness/) | Correctness | Read new records after a file is truncated. | `default` |
+| [lua_base_performance](cases/lua_base_performance/) | Performance | Add a field with a Lua hook between TCP input and output. | `default` |
+| [real_world_1_performance](cases/real_world_1_performance/) | Performance | Route and normalize five syslog streams into HTTP sinks. | `default`, `high_concurrency`, `high_concurrency_with_pipelines`, `one_sink`, `without_lua`, `without_transforms`, `without_transforms_and_rate_limiting` |
+| [regex_parsing_performance](cases/regex_parsing_performance/) | Performance | Extract fields from log messages with a regex and emit JSON. | `default`, `sandbox` |
+| [sighup_correctness](cases/sighup_correctness/) | Correctness; also local | Reload config with SIGHUP and switch TCP destinations. | `default` |
+| [tcp_to_blackhole_performance](cases/tcp_to_blackhole_performance/) | Performance | Receive TCP records and discard them. | `default` |
+| [tcp_to_http_performance](cases/tcp_to_http_performance/) | Performance | Forward TCP input over HTTP. | `default`, `high_concurrency` |
+| [tcp_to_tcp_performance](cases/tcp_to_tcp_performance/) | Performance | Forward TCP input to a TCP consumer. | `default`, `high_concurrency`, `16_cores` |
+| [wrapped_json_correctness](cases/wrapped_json_correctness/) | Correctness; also local | Decode a JSON envelope and its nested `log` payload. | `default` |
+
+Subject support varies by case. Omitting `-s` runs every subject supported by that
+case's bootstrap playbook. The [subject catalog](config/subjects.json) records
+preinstalled comparison versions; it does not represent current releases or
+certify their installers. Real-world [variant details](cases/real_world_1_performance/README.md)
+explain the retained `without_lua` alias and workload differences.
+
+### Standalone workloads
+
+These live under `cases/performance/`. Pass the short name to `bench` or `profile`,
+for example `vth bench stdin_to_blackhole --vector-bin /path/to/vector`.
+`vth list` prints them with a `performance/` prefix to identify their location.
+
+| Case | Commands | What it exercises |
+| --- | --- | --- |
+| [stdin_to_blackhole](cases/performance/stdin_to_blackhole/) | `bench`, `profile` | Stream the finite shared gzip fixture through stdin into a blackhole sink. |
+| [klog_remap_to_blackhole](cases/performance/klog_remap_to_blackhole/) | `bench`, `profile` | Compare one-node and two-node remapping of text/JSON klog records, plus a stdin baseline. |
+| [file_to_blackhole](cases/performance/file_to_blackhole/) | `generate` + `profile` | Continuously tail generated files into a blackhole sink, exposing internal metrics. |
 
 ## Local correctness checks
 
-Run the existing wrapped-JSON and SIGHUP cases with a supplied Vector binary on
-macOS or Linux. These checks need Rust and Vector; they run entirely on loopback
-without AWS, Terraform, Ansible, or Docker.
-
 ```sh
-just check-case wrapped_json_correctness --vector-bin /path/to/vector
-just check-case sighup_correctness --vector-bin /path/to/vector --timeout-secs 30
+vth check wrapped_json_correctness --vector-bin /path/to/vector
+vth check sighup_correctness --vector-bin /path/to/vector --timeout-secs 30
 ```
 
-`vth check` renders the case's existing Vector config with isolated ports and a
+The runner renders the existing case config with isolated loopback ports and a
 per-run data directory. Wrapped JSON must produce exactly one event with the
 unwrapped message and no `log` field. SIGHUP must deliver exactly one record to
-each of two receivers, switching destinations after Vector confirms the reload.
-Both checks validate payloads as well as counts, then drain output during
-graceful shutdown. Readiness, delivery, and reload use bounded condition waits.
-Both cases have been exercised with Vector 0.61.0 on macOS.
+each of two receivers, switching after Vector confirms the reload. Both checks
+assert payloads and counts, wait for readiness/delivery/reload conditions, and
+drain output during graceful shutdown. An unexpected Vector exit fails the check,
+even with exit code zero. The default case budget is 30 seconds.
 
-Artifacts are retained under `.cache/runs/check-<case>-<id>/`. Use `--output` to
-select a new directory; an existing directory is never overwritten. Each run
-saves its inputs, expected and received records, rendered configs, raw TCP output,
-Vector logs, command, and binary/config hashes. `result.json` records the outcome,
-phase, differences, and process cleanup. `complete` means the run reached output
-verification after shutdown; an incomplete run cannot pass. Exit codes are `0`
-for success, `1` for incorrect output or an unexpected Vector exit, and `2` for a
-timeout, interruption, or runner error after setup. `--dry-run` previews the
-command without starting Vector or creating artifacts.
+Artifacts remain under `.cache/runs/check-<case>-<id>/`, or a new directory selected
+with `--output`. Existing directories are never overwritten. Each run saves
+inputs, expected/received records, rendered configs, raw TCP output, Vector logs,
+the command, and binary/config-source hashes. `result.json` records the outcome,
+phase, differences, and cleanup. `complete` means execution reached verification
+after shutdown; it does not mean the assertions passed. Timeouts and interrupted
+or incomplete runs cannot pass.
 
-## Remote cases
+Exit codes are `0` for success, `1` for incorrect output or an unexpected Vector
+exit, and `2` for a timeout, interruption, or runner error after setup. Input
+validation errors are reported before the run starts. Local checks currently
+support only the two cases listed above.
 
-Copy `.env.example` to `.env` and configure the account, buckets, SSH identity,
-and user ID. Existing `VECTOR_TEST_*` variables remain supported. Explicit CLI
-options take precedence over environment variables; the environment takes
-precedence over `.env`. The harness parses `.env` as data and never executes
-`.envrc` or shell commands in configuration. `--no-dotenv` disables loading.
+## How it works
 
-```sh
-just run -t tcp_to_tcp_performance -s vector -v 0.61.0
-just run -t tcp_to_tcp_performance -s vector --run-only
-just results -t tcp_to_tcp_performance
-just compare -t tcp_to_tcp_performance -s vector -v 0.60.0 -v 0.61.0
-just teardown -t tcp_to_tcp_performance --yes
-```
+Remote cases provision AWS machines with Terraform, configure them with Ansible,
+then run selected subjects sequentially. Producers, consumers, and profiling
+steps are defined by each case's playbooks. These runs remain separate from the
+local `check`, `bench`, and `profile` commands.
 
-`run` provisions with Terraform, bootstraps with Ansible, then runs the selected
-subjects sequentially. `--bootstrap-only`, `--run-only`, and `--skip-terraform`
-retain their previous meanings. Use `--vector-deb /path/to/vector.deb -v dev-name`
-for a custom package. Versions must identify the tested artifact; `latest` is
-rejected.
+Set up credentials, buckets, SSH identity, and user ID following the
+[cloud setup guide](docs/setup.md). `vth bootstrap-aws` can create account
+prerequisites, or copy `.env.example` to `.env` for existing resources. It does
+not provision the shared Athena dataset; `global-bootstrap` is a separate legacy
+workflow with its own Terraform backend.
 
-Resources and state remain scoped by case, configuration, and user ID. Both
-creation and teardown initialize the same backend key. `--ssh-cidr` (or
-`VECTOR_TEST_SSH_CIDR`) overrides automatic egress-IP detection.
-
-Inspect the commands without running external tools or writing files:
+Explicit CLI options override supported environment settings, which override
+`.env`. The file is parsed as data; `vth` never executes `.envrc` or shell code
+from `.env`. Use `--no-dotenv` to disable file loading.
 
 ```sh
-just run -t tcp_to_tcp_performance -s vector --dry-run
-just teardown -t tcp_to_tcp_performance --yes --dry-run
+vth run -t tcp_to_tcp_performance -s vector -v 0.61.0 --dry-run
+vth run -t tcp_to_tcp_performance -s vector -v 0.61.0
+vth run -t file_to_tcp_performance -c single_file -s vector -v 0.61.0
+vth run -t tcp_to_tcp_performance -s vector -v 0.61.0 --run-only
+vth teardown -t tcp_to_tcp_performance --yes
 ```
 
-Dry runs produce JSON lines containing argv arrays and planned filesystem actions.
-They still validate configuration and case files. AWS credentials are unnecessary
-for dry runs. No provisioning is performed by the harness's own test suite.
+`--bootstrap-only` stops after setup, `--run-only` uses configured machines, and
+`--skip-terraform` skips provisioning while retaining Ansible bootstrap. Remote
+runs default to Vector 0.61.0; use `-v <version>` to identify the artifact being
+tested. `latest` is rejected. Use `--vector-deb /path/to/vector.deb -v dev-name`
+for a custom package.
 
-Remote cases continue to run in isolated AWS environments. Performance
-measurements should use controlled Linux benchmark machines.
+Terraform state and resources are scoped by case, configuration, and user ID.
+Use the same `-t`, `-c`, and `-u` values for teardown. Omitting `--yes` retains
+Terraform's interactive confirmation. `--ssh-cidr` or `VECTOR_TEST_SSH_CIDR`
+overrides automatic egress-IP discovery. Dry runs need configuration values but
+no AWS credentials.
 
-## Results
+Remote machines need an AMI containing the Rust `vth-guest` helper. Rebuild with
+`vth build-amis` if the selected image predates the Rust migration. Docker log
+fixtures likewise need an image containing the current helper.
 
-`compare` uses the existing Athena query. `export` preserves the website's
-`performance_tests` structure and publishes to `summaries/latest.json` unless
-`--no-upload` is supplied. Athena failures and timeouts produce errors; all
-result pages are read.
+## Performance data
 
-Offline analysis is available too:
+`vth results` summarizes dstat measurements. `vth compare` queries recorded
+measurements; it does not run either Vector binary. `vth export` writes the
+website's `performance_tests` JSON and uploads it to
+`s3://<results-bucket>/summaries/latest.json` unless `--no-upload` is supplied.
 
 ```sh
-just results -t tcp_to_tcp_performance --input /path/to/dstat.csv --json
-just compare --input /path/to/athena-response.json
-just export-results --input /path/to/athena-response.json --no-upload
+vth results -t tcp_to_tcp_performance
+vth compare -t tcp_to_tcp_performance -s vector -v 0.60.0 -v 0.61.0
+vth results -t tcp_to_tcp_performance --input /path/to/dstat.csv --json
+vth compare --input /path/to/athena-response.json
+vth export --input /path/to/athena-response.json --no-upload
 ```
 
-The dstat summary retains the old positive-sample selection and warmup/tail
-trimming. This migration does not change historical measurement formulas or
-S3 partitions. S3 summaries identify configurations separately. Historical keys
-contain no user ID, so `results --user-id` reports an error rather than silently
-ignoring that filter.
+The `--input` examples above work offline and use existing measurements. Dstat
+reports retain positive-sample selection and warmup/tail trimming; see
+[measurement compatibility](docs/migration.md#compatibility-and-deliberate-changes).
+Historical S3 keys have no user ID partition, so `results --user-id` cannot filter
+them and is rejected.
 
-Athena defaults remain database `vector_tests` and query output
+Athena defaults to database `vector_tests` and query output
 `s3://vector-test-athena-results`. Override these with
-`VECTOR_TEST_ATHENA_DATABASE` and `VECTOR_TEST_ATHENA_OUTPUT`.
+`VECTOR_TEST_ATHENA_DATABASE` and `VECTOR_TEST_ATHENA_OUTPUT` for your account.
+Failed queries and timeouts are errors; paginated query results are combined.
 
 ## Standalone performance experiments
 
-The old per-case build/profiling scripts now share Rust commands. Supply a binary
-or build an explicit revision in an isolated clone. The build checks that Cargo
-uses that clone's own `target` and records the resolved commit and build settings.
+Supply a binary or build an explicit revision. `vth build` uses an isolated clone
+under `.cache/builds/`, requires its own Cargo `target`, and records the resolved
+commit and build settings. Establish fresh performance baselines for the chosen
+configs and binaries.
 
 ```sh
-just build --revision <commit> --no-default-features --features sources-stdin,sinks-blackhole
-just bench stdin_to_blackhole --vector-bin /path/to/vector --runs 10
-just bench klog_remap_to_blackhole --vector-bin /path/to/candidate --baseline-bin /path/to/baseline
-just profile klog_remap_to_blackhole --vector-bin /path/to/vector --tool perf
-just flamegraph --input /path/to/profile.perf.data --baseline /path/to/baseline.perf.data
+vth build --revision <commit>
+vth bench stdin_to_blackhole --vector-bin /path/to/vector --runs 10
+vth bench klog_remap_to_blackhole --vector-bin /path/to/candidate --baseline-bin /path/to/baseline
+vth profile klog_remap_to_blackhole --vector-bin /path/to/vector --tool perf
+vth flamegraph --input /path/to/candidate.perf.data --baseline /path/to/baseline.perf.data
 ```
 
-`bench` records each repetition, alternates baseline/candidate order, and writes
-`benchmark.json` with artifact hashes and explicit measurement-method metadata.
-These timings have a new method identity and must not be pooled with historical
-hyperfine or dstat results. The case configs target Vector 0.61.0; updated remap
-and real-world workloads require fresh baselines. Use an explicit `--config`
-when evaluating another workload definition.
+`bench` defaults to one warmup and ten measured repetitions per config/binary,
+alternates baseline/candidate order, and writes `benchmark.json` under a unique
+`.cache/runs/<case>-<id>/` directory or the selected `--output` directory. Artifacts
+include individual timings, hashes, and the method
+`wall-clock-with-streamed-input-v1`. These timings include process execution and
+input streaming; keep them separate from historical hyperfine/dstat results.
 
-`profile` supports `perf`, `stat`, `massif`, and `dhat`. Profiling tools remain
-external dependencies and generally require Linux. For the continuously running
-file workload, use `generate --filegen-bin /path/to/file_gen` and
-`profile file_to_blackhole --vector-bin /path/to/vector`. Generated logs are only
-removed when `generate --reset-logs` is explicitly requested.
+For klog, all three configs under `configs/` run by default; `--config` selects
+one. `--input` overrides a finite workload's plain-text or gzip fixture. The
+continuously running file case uses `generate` and `profile` in separate terminals
+instead of `bench`:
 
-See [standalone workflows](cases/performance/README.md) for more examples.
+```sh
+vth generate --filegen-bin /path/to/file_gen
+vth profile file_to_blackhole --vector-bin /path/to/vector --tool perf
+```
+
+`generate` keeps existing logs unless `--reset-logs` is supplied. Profiling supports
+`perf`, `stat`, `massif`, and `dhat`; flamegraphs use `perf` and Inferno. See the
+[standalone guide](cases/performance/README.md) for details.
 
 ## Development
 
@@ -164,19 +270,26 @@ just test
 just lint
 ```
 
-The Rust tests exercise command construction, remote lifecycle failures, Athena
-pagination, CSV analysis, website exports, gzip input, and guest helpers using
-local Rust test doubles. `lint` checks Terraform formatting separately.
+Without `just`, run `cargo fmt --all`, `cargo clippy --locked --all-targets -- -D warnings`,
+`cargo test --locked`, and `vth lint`, respectively. The Rust suite covers local
+correctness comparisons and process cleanup, command construction, remote
+lifecycle failures, Athena pagination, CSV analysis, exports, gzip input, and
+guest helpers. External infrastructure tools are replaced with local Rust test
+doubles; the suite does not provision AWS resources or establish benchmark results.
 
-Add remote cases under `cases/<name>/` with the existing `terraform/`, `ansible/`,
-and `configurations/<variant>/` structure. The shared subject/version catalog is
-in `config/subjects.json`, metric presentation metadata is in
-`config/metrics.json`, and historical analysis queries are in `queries/`.
+Add remote cases under `cases/<name>/` with `terraform/`, `ansible/`, and
+`configurations/<variant>/`. Add standalone workloads under `cases/performance/`.
+Local correctness support is explicitly selected in [the CLI](src/cli.rs) and
+[runner](src/correctness.rs); creating a case directory alone does not add a
+`vth check` case. Embedded Vector unit tests in configs run with Vector after
+rendering any templates.
 
-The small dependency-free `vth-guest` binary implements the VM's timed socat loop,
-parallel argv execution, and Docker long-message fixture. AMI and fixture image
-builds compile it from the same Rust source. **Rebuild the AMI before running
-migrated cloud cases**, since older images only contain the shell helper.
+The [subject catalog](config/subjects.json), [metric definitions](config/metrics.json),
+and [Athena queries](queries/) supply shared metadata. The dependency-free
+`vth-guest` provides the timed socat loop, parallel argv execution, and Docker
+long-message fixture. AMI and fixture builds compile it from the same Rust source.
+The Dockerfile uses the internal `vth container` entrypoint to prepare optional
+SSH identities and forward to the regular CLI.
 
 ## License
 

@@ -2,9 +2,14 @@
 
 ## Tools
 
-Install Rust 1.94+, Terraform 1.0+, Ansible 2.16+, and the AWS CLI. Install Packer
-and its Amazon/Ansible plugins to build AMIs. Ansible needs the AWS collection and
-Python boto3/botocore packages. `just` is optional.
+For cloud runs, install Rust 1.94+, Terraform 1.0+, Ansible, the AWS CLI, and SSH.
+Install Packer and its Amazon/Ansible plugins to build AMIs. Ansible needs the
+`amazon.aws` collection and Python boto3/botocore packages. Choose compatible
+Ansible, Python, and SDK versions using the installed collection's
+[upstream requirements](https://github.com/ansible-collections/amazon.aws#requirements);
+Ansible 2.16 is not a sufficient minimum for every collection release.
+`just` is optional. Local checks and saved-result analysis have fewer dependencies;
+see the [workflow requirements](../README.md#setup).
 
 ```sh
 cargo build --locked --bins
