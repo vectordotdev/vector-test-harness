@@ -35,7 +35,7 @@ Subject is configured to read logs that an actual Docker container prints to std
 You can run this test via:
 
 ```
-just run -t docker_partial_events_merging_correctness -s vector
+vth run -t docker_partial_events_merging_correctness -s vector
 ```
 
 ## Resources

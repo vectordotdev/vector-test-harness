@@ -33,7 +33,7 @@ checks assert exactly one output per normalizer and zero outputs across the four
 malformed-JSON paths, using `expected_event_count` alongside field assertions.
 The Lua and regex microbenchmarks remain separate cases.
 
-Run a selected variant with `just run -t real_world_1_performance -c <configuration> -s vector`.
+Run a selected variant with `vth run -t real_world_1_performance -c <configuration> -s vector`.
 Validate the Ansible-rendered config with Vector 0.61 before provisioning.
 
 These definitions replace the historical pipelines and allowlists, and the

@@ -42,7 +42,7 @@ baseline before comparing performance or claiming current correctness.
 ## Try It
 
 ```bash
-just run -t disk_buffer_persistence_correctness
+vth run -t disk_buffer_persistence_correctness
 ```
 
 ## Resources

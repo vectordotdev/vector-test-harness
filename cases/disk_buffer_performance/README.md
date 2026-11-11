@@ -26,7 +26,7 @@ have not been re-measured with the Vector 0.61 configurations; establish a new
 baseline before comparing performance or claiming current correctness.
 
 ```
-$ just compare -t disk_buffer_performance
+$ vth compare -t disk_buffer_performance
 
 | Metric          | filebeat   | fluentbit | fluentd  | logstash | splunk_hf | splunk_uf    | vector   |
 |:----------------|:-----------|:----------|:---------|:---------|:----------|:-------------|:---------|
@@ -57,7 +57,7 @@ vector = 0.2.0
 ## Try It
 
 ```bash
-just run -t disk_buffer_performance
+vth run -t disk_buffer_performance
 ```
 
 ## Resources

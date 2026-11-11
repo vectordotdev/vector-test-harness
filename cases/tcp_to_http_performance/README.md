@@ -17,7 +17,7 @@ have not been re-measured with the Vector 0.61 configurations; establish a new
 baseline before comparing performance or claiming current correctness.
 
 ```
-$ just compare -t tcp_to_http_performance
+$ vth compare -t tcp_to_http_performance
 
 | Metric           | fluentbit  | fluentd    | logstash     | vector      |
 |:-----------------|:-----------|:-----------|:-------------|:------------|
@@ -48,7 +48,7 @@ vector = 0.2.0-6-g434bed8
 ## Try It
 
 ```bash
-just run -t tcp_to_http_performance
+vth run -t tcp_to_http_performance
 ```
 
 ## Resources

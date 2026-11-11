@@ -6,8 +6,7 @@
 
 A Rust CLI for Vector correctness checks, performance benchmarks, and profiling.
 `vth` runs local checks and workloads, orchestrates remote cases through Terraform
-and Ansible, and analyzes recorded results. An optional [justfile](justfile)
-provides shortcuts for the same commands.
+and Ansible, and analyzes recorded results.
 
 [Setup](#setup) · [Commands](#usage) · [Cases](#cases) ·
 [Local checks](#local-correctness-checks) · [Remote runs](#how-it-works) ·
@@ -47,8 +46,8 @@ Install additional tools for the workflows you use:
 | Cloud results | AWS CLI and credentials with access to the results bucket and, for comparison/export, Athena. |
 | AMI builds | Remote prerequisites plus Packer and its Amazon/Ansible plugins. |
 
-`just` is optional. `vth doctor` checks installed tools without contacting AWS;
-it reports missing remote prerequisites even if you only intend to run locally.
+`vth doctor` checks installed tools without contacting AWS; it reports missing
+remote prerequisites even if you only intend to run locally.
 See the [cloud setup guide](docs/setup.md) for account, inventory, AMI, and
 container setup, and the [migration guide](docs/migration.md) for old entry points.
 
@@ -59,31 +58,28 @@ global options. Dry runs validate inputs and print JSON command/filesystem plans
 without running external tools or writing files; referenced local files must
 still exist. Guest helpers execute directly and do not support dry runs.
 
-| Command | `just` shortcut | Function |
-| --- | --- | --- |
-| `vth list` | `just list` | List remote cases and standalone workloads. |
-| `vth meta <mode>` | `just harness meta <mode>` | Print `test-cases` or `test-subjects` for scripting. |
-| `vth check <case>` | `just check-case <case>` | Run one of the two local Vector correctness checks. |
-| `vth run` | `just run` | Provision, bootstrap, and run a remote case; `test` is an alias. |
-| `vth teardown` | `just teardown` | Destroy resources for one case, configuration, and user. |
-| `vth bootstrap-aws` | `just bootstrap-aws` | Create account prerequisites and write `.env`. |
-| `vth build-amis` | `just build-amis` | Build the benchmark AMI with Packer. |
-| `vth global-bootstrap` | `just global-bootstrap` | Provision the legacy shared Athena/results infrastructure. |
-| `vth results` | `just results` | Summarize dstat CSVs from S3 or local files. |
-| `vth compare` | `just compare` | Compare recorded remote measurements through Athena or a saved response. |
-| `vth export` | `just export-results` | Write website-compatible results JSON and optionally upload it. |
-| `vth build` | `just build` | Build an explicit revision in an isolated clone. |
-| `vth bench <case>` | `just bench <case>` | Time a finite stdin workload, optionally against a baseline binary. |
-| `vth profile <case>` | `just profile <case>` | Run `perf`, `perf stat`, Massif, or DHAT on a workload. |
-| `vth flamegraph` | `just flamegraph` | Generate flamegraphs and optional baseline/candidate differences. |
-| `vth generate` | `just generate` | Run `file_gen` for the continuous file workload. |
-| `vth ssh` | `just ssh` | Connect to a remote machine using the configured SSH identity. |
-| `vth doctor` | `just doctor` | Report installed infrastructure and profiling tools. |
-| `vth lint` | `just lint` | Check Terraform formatting. |
-| `vth helper ...` | `just harness helper ...` | Run guest utilities; also available through `vth-guest`. |
-
-**`just check` runs Rust formatting and Clippy.** Use `just check-case` for local
-correctness cases. `just harness ...` forwards any `vth` command.
+| Command | Function |
+| --- | --- |
+| `vth list` | List remote cases and standalone workloads. |
+| `vth meta <mode>` | Print `test-cases` or `test-subjects` for scripting. |
+| `vth check <case>` | Run one of the two local Vector correctness checks. |
+| `vth run` | Provision, bootstrap, and run a remote case; `test` is an alias. |
+| `vth teardown` | Destroy resources for one case, configuration, and user. |
+| `vth bootstrap-aws` | Create account prerequisites and write `.env`. |
+| `vth build-amis` | Build the benchmark AMI with Packer. |
+| `vth global-bootstrap` | Provision the legacy shared Athena/results infrastructure. |
+| `vth results` | Summarize dstat CSVs from S3 or local files. |
+| `vth compare` | Compare recorded remote measurements through Athena or a saved response. |
+| `vth export` | Write website-compatible results JSON and optionally upload it. |
+| `vth build` | Build an explicit revision in an isolated clone. |
+| `vth bench <case>` | Time a finite stdin workload, optionally against a baseline binary. |
+| `vth profile <case>` | Run `perf`, `perf stat`, Massif, or DHAT on a workload. |
+| `vth flamegraph` | Generate flamegraphs and optional baseline/candidate differences. |
+| `vth generate` | Run `file_gen` for the continuous file workload. |
+| `vth ssh` | Connect to a remote machine using the configured SSH identity. |
+| `vth doctor` | Report installed infrastructure and profiling tools. |
+| `vth lint` | Check Terraform formatting. |
+| `vth helper ...` | Run guest utilities; also available through `vth-guest`. |
 
 ## Cases
 
@@ -264,18 +260,21 @@ vth profile file_to_blackhole --vector-bin /path/to/vector --tool perf
 ## Development
 
 ```sh
-just fmt
-just check
-just test
-just lint
+cargo fmt --all
+cargo clippy --locked --all-targets -- -D warnings
+cargo test --locked
+cargo run --locked --bin vth -- lint
 ```
 
-Without `just`, run `cargo fmt --all`, `cargo clippy --locked --all-targets -- -D warnings`,
-`cargo test --locked`, and `vth lint`, respectively. The Rust suite covers local
-correctness comparisons and process cleanup, command construction, remote
-lifecycle failures, Athena pagination, CSV analysis, exports, gzip input, and
-guest helpers. External infrastructure tools are replaced with local Rust test
-doubles; the suite does not provision AWS resources or establish benchmark results.
+Use `cargo fmt --all -- --check` to check formatting without rewriting files.
+While developing the CLI, `cargo run --locked --bin vth -- <command> ...` rebuilds
+it before execution.
+
+The Rust suite covers local correctness comparisons and process cleanup, command
+construction, remote lifecycle failures, Athena pagination, CSV analysis, exports,
+gzip input, and guest helpers. External infrastructure tools are replaced with
+local Rust test doubles; the suite does not provision AWS resources or establish
+benchmark results.
 
 Add remote cases under `cases/<name>/` with `terraform/`, `ansible/`, and
 `configurations/<variant>/`. Add standalone workloads under `cases/performance/`.

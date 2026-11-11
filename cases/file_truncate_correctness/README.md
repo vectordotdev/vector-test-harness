@@ -32,7 +32,7 @@ baseline before comparing performance or claiming current correctness.
 You can run this test via:
 
 ```
-just run -t file_truncate_correctness -s vector
+vth run -t file_truncate_correctness -s vector
 ```
 
 ## Resources

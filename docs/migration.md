@@ -4,8 +4,8 @@ Harness orchestration and analysis now live in the Rust `vth` CLI. Infrastructur
 remains declarative Terraform and Ansible; AWS, SSH, Packer, Cargo, perf, Valgrind,
 and Inferno remain external tools.
 
-Use `cargo run --locked --bin vth -- ...`, an installed `vth`, or the optional
-`just` recipes. `just harness ...` forwards any command, including `meta`.
+Use an installed `vth`, or `cargo run --locked --bin vth -- ...` while developing
+the CLI.
 
 | Previous entry point | Rust replacement |
 | --- | --- |

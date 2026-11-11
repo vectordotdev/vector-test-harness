@@ -17,7 +17,7 @@ have not been re-measured with the Vector 0.61 configurations; establish a new
 baseline before comparing performance or claiming current correctness.
 
 ```
-$ just compare -t tcp_to_tcp_performance
+$ vth compare -t tcp_to_tcp_performance
 
 | Metric          | filebeat   | fluentbit | fluentd  | logstash | splunk_hf | splunk_uf   | vector    |
 |:----------------|:-----------|:----------|:---------|:---------|:----------|:------------|:----------|
@@ -47,7 +47,7 @@ vector = 0.2.0
 ## Try It
 
 ```bash
-just run -t tcp_to_tcp_performance
+vth run -t tcp_to_tcp_performance
 ```
 
 ## Resources

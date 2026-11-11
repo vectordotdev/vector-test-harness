@@ -40,13 +40,13 @@ baseline before comparing performance or claiming current correctness.
 Run the local Vector check without cloud infrastructure:
 
 ```sh
-just check-case sighup_correctness --vector-bin /path/to/vector
+vth check sighup_correctness --vector-bin /path/to/vector
 ```
 
 For the remote case:
 
 ```sh
-just run -t sighup_correctness -s vector
+vth run -t sighup_correctness -s vector
 ```
 
 ## Resources

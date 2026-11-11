@@ -45,13 +45,13 @@ The subject is configured to:
 Run the local Vector check without cloud infrastructure:
 
 ```sh
-just check-case wrapped_json_correctness --vector-bin /path/to/vector
+vth check wrapped_json_correctness --vector-bin /path/to/vector
 ```
 
 For the remote case:
 
 ```sh
-just run -t wrapped_json_correctness -s vector
+vth run -t wrapped_json_correctness -s vector
 ```
 
 ## Resources
