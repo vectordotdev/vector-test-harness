@@ -1,0 +1,57 @@
+# Vector 0.61 workload variant. Historical measurements used the former TOML definition.
+data_dir: /var/lib/vector
+sources:
+  in:
+    type: syslog
+    mode: tcp
+    address: 0.0.0.0:{{ subject_port }}
+transforms:
+  company_api:
+    type: filter
+    inputs:
+    - in
+    condition: .appname == "company-api"
+sinks:
+  company_api_http:
+    type: http
+    inputs:
+    - company_api
+    uri: http://{{ consumer_ip }}:{{ consumer_port }}
+    encoding:
+      codec: json
+      only_fields:
+      - time
+      - endpoint
+      - hostname
+      - http_cf_ray
+      - http_debug_options
+      - http_content_length
+      - http_method
+      - http_referrer
+      - http_remote_addr
+      - http_response_time
+      - http_route
+      - http_status_code
+      - http_user_agent
+      - http_version
+      - ip_country
+      - ip_metro
+      - user_id
+      - metadata_trace_id
+      - metadata_guild_id
+      - metadata_channel_id
+      - metadata_method
+      timestamp_format: unix
+    request:
+      rate_limit_duration_secs: 5
+      rate_limit_num: 60
+      concurrency: 100
+    buffer:
+      type: memory
+      max_events: 5000
+      when_full: block
+    batch:
+      timeout_secs: 5
+      max_bytes: 5245000
+    framing:
+      method: newline_delimited

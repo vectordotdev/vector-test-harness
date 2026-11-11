@@ -11,7 +11,11 @@ for this purposes.
 3. Each subject is started and ran for 60 seconds.
 4. [Performance data][performance_data] is collected and persisted to S3 for analysis.
 
-## Results
+## Historical results
+
+These results describe earlier Vector versions and workload definitions. They
+have not been re-measured with the Vector 0.61 configurations; establish a new
+baseline before comparing performance or claiming current correctness.
 
 ```
 $ just compare -t tcp_to_blackhole_performance

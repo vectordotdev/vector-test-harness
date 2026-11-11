@@ -16,5 +16,5 @@ sinks:
       codec: text
     buffer:
       type: disk
-      max_size: 104857600  # 100MiB
+      max_size: 536870912  # 512MiB; exceeds the disk-buffer minimum of 268435488 bytes.
       when_full: block

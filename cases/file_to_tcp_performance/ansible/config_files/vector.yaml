@@ -3,7 +3,8 @@ sources:
     type: file
     include:
       - "{{ test_files_root }}*.log"
-    start_at_beginning: true
+    read_from: beginning
+    ignore_checkpoints: true
 
 sinks:
   out:

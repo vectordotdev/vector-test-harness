@@ -4,7 +4,7 @@
 - hosts: '{{ test_namespace }}:&tag_TestRole_subject'
   become: true
   tasks:
-    - name: "Create {{ test_file_count }} test log files"
+    - name: Create the test log file
       include_role:
         name: flog
       vars:
@@ -52,11 +52,11 @@
         action: stop
 
     - name: Capture last_message
-      include: "capture_last_message/{{ test_subject }}.yml"
+      include_tasks: "capture_last_message/{{ test_subject }}.yml"
 
     - debug:
         var: last_message
 
     - assert:
         that:
-          - last_message | search("Hello world")
+          - last_message is search("Hello world")

@@ -11,7 +11,11 @@ truncation. Failing to do so typically results loss of any new data written to t
 4. A unique new line is added to the test log file.
 5. Assert that the downstream service received the unique new line.
 
-## Results
+## Historical results
+
+These results describe earlier Vector versions and workload definitions. They
+have not been re-measured with the Vector 0.61 configurations; establish a new
+baseline before comparing performance or claiming current correctness.
 
 |     Subject | Result  |
 |------------:|:-------:|

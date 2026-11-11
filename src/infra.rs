@@ -214,7 +214,7 @@ pub fn run(runtime: &Runtime, args: RunArgs) -> Result<()> {
     let version = args
         .vector_version
         .or_else(|| runtime.get("VECTOR_VERSION_TO_TEST"))
-        .unwrap_or_else(|| "0.55.0".into());
+        .unwrap_or_else(|| "0.61.0".into());
     ensure!(
         !version.contains("latest"),
         "specify an exact Vector version; 'latest' cannot identify historical results"

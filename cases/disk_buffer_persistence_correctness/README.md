@@ -19,7 +19,11 @@ downstream services fail.
 This test is not designed to verify at least once delivery, some data loss is acceptable.
 This test verifies that data is reasonably persisted to disk and made available between restarts.
 
-## Results
+## Historical results
+
+These results describe earlier Vector versions and workload definitions. They
+have not been re-measured with the Vector 0.61 configurations; establish a new
+baseline before comparing performance or claiming current correctness.
 
 |     Subject | Result  |
 |------------:|:-------:|

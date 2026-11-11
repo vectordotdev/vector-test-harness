@@ -16,7 +16,11 @@ and place the extracted values in named keys.
 4. The test subject is sent valid Apache common lines for 60 seconds.
 5. [Performance data][performance_data] is collected and persisted to S3 for analysis.
 
-## Results
+## Historical results
+
+These results describe earlier Vector versions and workload definitions. They
+have not been re-measured with the Vector 0.61 configurations; establish a new
+baseline before comparing performance or claiming current correctness.
 
 * **Note: Splunk Universal Forwarder does not support parsing**
 * **Note: Filebeat does not support parsing**

@@ -59,8 +59,8 @@ Versions come from `config/subjects.json`. The AMI build also installs the Rust
 
 ```sh
 just list
-just run -t tcp_to_tcp_performance -s vector -v 0.55.0 --dry-run
-just run -t tcp_to_tcp_performance -s vector -v 0.55.0
+just run -t tcp_to_tcp_performance -s vector -v 0.61.0 --dry-run
+just run -t tcp_to_tcp_performance -s vector -v 0.61.0
 just results -t tcp_to_tcp_performance
 ```
 

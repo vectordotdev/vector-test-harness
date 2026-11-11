@@ -1,9 +1,13 @@
 # Standalone performance workflows
 
-These archived workloads share the Rust harness's build, timing, and profiling
-commands. Run comparable measurements on controlled Linux machines. The configs
-retain their original syntax and behavior, so supply a compatible Vector binary
-or an explicit updated `--config`; modernizing them is separate work.
+These workloads share the Rust harness's build, timing, and profiling commands.
+Run comparable measurements on controlled Linux machines. The configs target
+Vector 0.61. The remap variants handle both plain klog and structured JSON input,
+and include tests for plain, structured, and wrapped container records.
+
+The multi-node and single-node remap variants perform the same processing. Text
+records pass through reduction once; JSON records pass directly to the sink.
+The modernized workload definitions require new performance baselines.
 
 ```sh
 just build --revision <commit>

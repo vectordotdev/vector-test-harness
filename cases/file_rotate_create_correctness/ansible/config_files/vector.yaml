@@ -5,8 +5,9 @@ sources:
     type: file
     include:
       - "{{ test_file_location }}*"
-    start_at_beginning: true
-    fingerprinting:
+    read_from: beginning
+    ignore_checkpoints: true
+    fingerprint:
       strategy: device_and_inode
 
 sinks:
