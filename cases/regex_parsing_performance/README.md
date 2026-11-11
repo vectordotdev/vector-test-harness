@@ -22,7 +22,7 @@ and place the extracted values in named keys.
 * **Note: Filebeat does not support parsing**
 
 ```
-$ bin/compare -t regex_parsing_performance
+$ just compare -t regex_parsing_performance
 
 | Metric          | fluentbit   | fluentd  | logstash  | splunk_hf | vector     |
 |:----------------|:------------|:---------|:----------|:----------|:-----------|
@@ -50,7 +50,7 @@ vector = 0.55.0
 ## Try It
 
 ```bash
-bin/test -t regex_parsing_performance
+just run -t regex_parsing_performance
 ```
 
 ## Resources

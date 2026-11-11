@@ -32,10 +32,6 @@
   ],
   "provisioners": [
     {
-      "type": "shell",
-      "script": "bootstrap.sh"
-    },
-    {
       "type": "ansible",
       "playbook_file": "../ansible/ami.yml",
       "extra_arguments": [

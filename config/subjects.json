@@ -1,0 +1,10 @@
+[
+  {"slug":"filebeat", "name":"Filebeat", "preinstalled_version":"8.14.3"},
+  {"slug":"fluentbit", "name":"FluentBit", "preinstalled_version":"3.2.7"},
+  {"slug":"fluentd", "name":"FluentD", "preinstalled_version":"4.5.2-1"},
+  {"slug":"logstash", "name":"Logstash", "preinstalled_version":"8.17.3"},
+  {"slug":"splunk_heavy_forwarder", "name":"Splunk HF", "preinstalled_version":"9.2.2-d76edf6f0a15"},
+  {"slug":"splunk_universal_forwarder", "name":"Splunk UF", "preinstalled_version":"9.2.2-d76edf6f0a15"},
+  {"slug":"telegraf", "name":"Telegraf", "preinstalled_version":"1.33.2-1"},
+  {"slug":"vector", "name":"Vector"}
+]

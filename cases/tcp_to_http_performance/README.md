@@ -13,7 +13,7 @@ This test measures the HTTP output performance for each subject.
 ## Results
 
 ```
-$ bin/comare -t tcp_to_http_performance
+$ just compare -t tcp_to_http_performance
 
 | Metric           | fluentbit  | fluentd    | logstash     | vector      |
 |:-----------------|:-----------|:-----------|:-------------|:------------|
@@ -44,7 +44,7 @@ vector = 0.2.0-6-g434bed8
 ## Try It
 
 ```bash
-bin/test -t tcp_to_http_performance
+just run -t tcp_to_http_performance
 ```
 
 ## Resources

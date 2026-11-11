@@ -14,7 +14,7 @@ for this purposes.
 ## Results
 
 ```
-$ bin/compare -t tcp_to_blackhole_performance
+$ just compare -t tcp_to_blackhole_performance
 
 | Metric          | fluentbit | fluentd   | logstash  | vector    |
 |:----------------|:----------|:----------|:----------|:----------|
@@ -41,7 +41,7 @@ vector = 0.2.0-6-g434bed8
 ## Try It
 
 ```bash
-bin/test -t tcp_to_blackhole_performance
+just run -t tcp_to_blackhole_performance
 ```
 
 ## Resources

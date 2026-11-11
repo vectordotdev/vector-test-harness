@@ -38,7 +38,7 @@ This test verifies that data is reasonably persisted to disk and made available 
 ## Try It
 
 ```bash
-bin/test -t disk_buffer_persistence_correctness
+just run -t disk_buffer_persistence_correctness
 ```
 
 ## Resources

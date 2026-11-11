@@ -27,7 +27,7 @@
 
     - name: Warmup {{ test_subject }}
       shell: |
-        socat_loop 10 /tmp/flog-100MiB.log \
+        vth-guest socat-loop 10 /tmp/flog-100MiB.log \
           -u - tcp:{{ subject_ip }}:{{ subject_port }}
       register: timeout
       failed_when: timeout.rc != 124
@@ -46,7 +46,7 @@
   tasks:
     - name: Pipe test data to {{ test_subject }}
       shell: |
-        socat_loop 60 /tmp/flog-100MiB.log \
+        vth-guest socat-loop 60 /tmp/flog-100MiB.log \
           -u - tcp:{{ subject_ip }}:{{ subject_port }}
       register: timeout
       failed_when: timeout.rc != 124

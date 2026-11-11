@@ -11,5 +11,6 @@
 .terraform
 tmp/
 massif.out*
+target/
 *.zip
 *.svg
