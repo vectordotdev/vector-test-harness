@@ -27,6 +27,7 @@ transforms:
     inputs:
     - in_api
     drop_on_abort: true
+    drop_on_error: true
     source: |
       parsed = object!(parse_json!(string!(.message)))
       del(.message)
@@ -77,6 +78,7 @@ transforms:
     inputs:
     - in_admin
     drop_on_abort: true
+    drop_on_error: true
     source: |
       parsed = object!(parse_json!(string!(.message)))
       del(.message)
@@ -125,6 +127,7 @@ transforms:
     inputs:
     - in_media_proxy
     drop_on_abort: true
+    drop_on_error: true
     source: |
       parsed = object!(parse_json!(string!(.message)))
       del(.message)
@@ -163,6 +166,7 @@ transforms:
     inputs:
     - company_unfurler_hostname
     drop_on_abort: true
+    drop_on_error: true
     source: |
       parsed = object!(parse_json!(string!(.message)))
       del(.message)
@@ -479,3 +483,35 @@ tests:
         assert!(is_timestamp(.time))
         assert_eq!(.tag, "audit")
         assert_eq!(.content, "audit event")
+- name: company_api drops malformed JSON
+  inputs:
+  - insert_at: company_api_json
+    type: log
+    log_fields:
+      message: '{invalid JSON'
+  no_outputs_from:
+  - company_api_json
+- name: company_admin drops malformed JSON
+  inputs:
+  - insert_at: company_admin_json
+    type: log
+    log_fields:
+      message: '{invalid JSON'
+  no_outputs_from:
+  - company_admin_json
+- name: company_media_proxy drops malformed JSON
+  inputs:
+  - insert_at: company_media_proxy_json
+    type: log
+    log_fields:
+      message: '{invalid JSON'
+  no_outputs_from:
+  - company_media_proxy_json
+- name: company_unfurler drops malformed JSON
+  inputs:
+  - insert_at: company_unfurler_json
+    type: log
+    log_fields:
+      message: '{invalid JSON'
+  no_outputs_from:
+  - company_unfurler_json
