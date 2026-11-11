@@ -29,8 +29,9 @@ Audit retains its raw message and syslog process ID in a small common envelope.
 
 All HTTP sinks serialize the complete result as newline-delimited JSON with
 consistent batching, request limits, and timestamp formatting. Two shared Vector
-checks cover the five normalizers and malformed-JSON rejection. The Lua and
-regex microbenchmarks remain separate cases.
+checks assert exactly one output per normalizer and zero outputs across the four
+malformed-JSON paths, using `expected_event_count` alongside field assertions.
+The Lua and regex microbenchmarks remain separate cases.
 
 Run a selected variant with `just run -t real_world_1_performance -c <configuration> -s vector`.
 Validate the Ansible-rendered config with Vector 0.61 before provisioning.

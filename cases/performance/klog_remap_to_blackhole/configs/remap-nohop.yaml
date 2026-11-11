@@ -51,6 +51,7 @@ tests:
       message: '{"ts":1580306777.04728,"msg":"Pod status updated","pod":{"name":"nginx-1","namespace":"default"},"status":"ready"}'
   outputs:
   - extract_from: remap
+    expected_event_count: 2
     conditions:
     - type: vrl
       source: |

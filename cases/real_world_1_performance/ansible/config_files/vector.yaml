@@ -126,6 +126,7 @@ tests:
   outputs:
 {% for stream, settings in streams.items() %}
   - extract_from: process_{{ stream }}
+    expected_event_count: 1
     conditions:
     - type: vrl
       source: |
@@ -148,8 +149,10 @@ tests:
       message: '{invalid JSON'
       appname: '{{ streams[stream].app }}'
 {% endfor %}
-  no_outputs_from:
+  outputs:
+  - extract_from:
 {% for stream in streams if stream != 'audit' %}
-  - process_{{ stream }}
+    - process_{{ stream }}
 {% endfor %}
+    expected_event_count: 0
 {% endif %}
