@@ -5,4 +5,4 @@
     action: register_summary
 
 - set_fact:
-    last_message: "{{ summary.last_message }}"
+    last_message: "{{ summary.last_message | from_json }}"

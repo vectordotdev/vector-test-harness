@@ -1,173 +1,155 @@
+# All real-world variants share this template and output contract.
+{% set streams = {
+  'api': {'app': 'company-api', 'port': subject_api_port},
+  'admin': {'app': 'company-admin', 'port': subject_admin_port},
+  'media_proxy': {'app': 'company-media-proxy', 'port': subject_media_proxy_port},
+  'unfurler': {'app': 'company-unfurler', 'port': subject_unfurler_port},
+  'audit': {'app': 'audit', 'port': subject_audit_port}
+} %}
+{% set separate = vector_separate_sources | default(false) %}
+{% set process = vector_process_events | default(true) %}
+{% set single_sink = vector_single_sink | default(false) %}
 data_dir: /var/lib/vector
-
 sources:
+{% if separate %}
+{% for stream, settings in streams.items() %}
+  in_{{ stream }}:
+    type: syslog
+    mode: tcp
+    address: 0.0.0.0:{{ settings.port }}
+    host_key: hostname
+{% endfor %}
+{% else %}
   in:
     type: syslog
     mode: tcp
-    address: "0.0.0.0:{{ subject_port }}"
-
+    address: 0.0.0.0:{{ subject_port }}
+    host_key: hostname
+{% endif %}
+{% if not separate or process %}
 transforms:
-  company_api:
-    type: filter
-    inputs: ["in"]
-    condition: '.appname == "company-api"'
-
-  company_api_process:
+{% if not separate %}
+  by_app:
+    type: route
+    inputs: [in]
+    reroute_unmatched: false
+    route:
+{% for stream, settings in streams.items() %}
+      {{ stream }}: .appname == "{{ settings.app }}"
+{% endfor %}
+{% endif %}
+{% if process %}
+{% for stream, settings in streams.items() %}
+  process_{{ stream }}:
     type: remap
-    inputs: ["company_api"]
+    inputs: [{{ 'in_' ~ stream if separate else 'by_app.' ~ stream }}]
+    drop_on_error: true
     source: |
-      parsed, err = parse_json(.message)
-      if err == null && is_object(parsed) {
-        . = merge!(., parsed)
+{% if separate %}
+      if .appname != "{{ settings.app }}" { abort }
+{% endif %}
+{% if stream == 'audit' %}
+      . = {
+        "appname": .appname,
+        "hostname": .hostname,
+        "timestamp": .timestamp,
+        "message": .message,
+        "procid": .procid
       }
-      .hostname = del(.host)
-      .metadata_trace_id = string(.metadata.trace_id) ?? ""
-      .metadata_guild_id = string(.metadata.guild_id) ?? ""
-      .metadata_channel_id = string(.metadata.channel_id) ?? ""
-      .metadata_method = string(.metadata.method) ?? ""
-
-  company_admin:
-    type: filter
-    inputs: ["in"]
-    condition: '.appname == "company-admin"'
-
-  company_admin_process:
-    type: remap
-    inputs: ["company_admin"]
-    source: |
-      parsed, err = parse_json(.message)
-      if err == null && is_object(parsed) {
-        . = merge!(., parsed)
-      }
-      .hostname = del(.host)
-      .metadata_trace_id = string(.metadata.trace_id) ?? ""
-      .metadata_method = string(.metadata.method) ?? ""
-
-  company_media_proxy:
-    type: filter
-    inputs: ["in"]
-    condition: '.appname == "company-media-proxy"'
-
-  company_media_proxy_process:
-    type: remap
-    inputs: ["company_media_proxy"]
-    source: |
-      parsed, err = parse_json(.message)
-      if err == null && is_object(parsed) {
-        . = merge!(., parsed)
-      }
-      .hostname = del(.host)
-
-  company_unfurler:
-    type: filter
-    inputs: ["in"]
-    condition: '.appname == "company-unfurler"'
-
-  company_unfurler_process:
-    type: remap
-    inputs: ["company_unfurler"]
-    source: |
-      .hostname = del(.host)
-      parsed, err = parse_json(.message)
-      if err == null && is_object(parsed) {
-        . = merge!(., parsed)
-      }
-
-  company_unfurler_filter:
-    type: filter
-    inputs: ["company_unfurler_process"]
-    condition: '.msg == "unfurl"'
-
-  audit_filter:
-    type: filter
-    inputs: ["in"]
-    condition: '.appname == "audit"'
-
-  audit_process:
-    type: remap
-    inputs: ["audit_filter"]
-    source: |
-      .tag = del(.appname)
-      .hostname = del(.host)
-      .content = del(.message)
-      .time = del(.timestamp)
-
+{% else %}
+      hostname = .hostname
+{% if stream in ['api', 'admin'] %}
+      event_time = .timestamp
+{% endif %}
+      . = object!(parse_json!(string!(.message)))
+      .appname = "{{ settings.app }}"
+      .hostname = hostname
+{% if stream in ['media_proxy', 'unfurler'] %}
+      .timestamp = parse_timestamp!(string!(del(.ts)), format: "%+")
+{% else %}
+      .timestamp = event_time
+      .metadata_trace_id = del(.metadata.trace_id)
+{% if stream == 'api' %}
+      .metadata_guild_id = del(.metadata.guild_id)
+      .metadata_channel_id = del(.metadata.channel_id)
+{% endif %}
+      .metadata_method = del(.metadata.method, compact: true)
+{% endif %}
+{% if stream == 'unfurler' %}
+      if .msg != "unfurl" { abort }
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endif %}
 sinks:
-  company_api_http:
+{% for sink in (['all'] if single_sink else streams.keys()) %}
+{% set scale = streams | length if single_sink else 1 %}
+  http_{{ sink }}:
     type: http
-    inputs: ["company_api_process"]
-    uri: "http://{{ consumer_ip }}:{{ consumer_port }}"
+    inputs:
+{% for stream in streams if single_sink or stream == sink %}
+    - {{ 'process_' ~ stream if process else ('in_' ~ stream if separate else 'by_app.' ~ stream) }}
+{% endfor %}
+    uri: http://{{ consumer_ip }}:{{ consumer_port }}
     encoding:
       codec: json
+    framing:
+      method: newline_delimited
     request:
-      concurrency: 100
+      concurrency: {{ (vector_request_concurrency | default(100) | int) * scale }}
+{% if vector_rate_limit | default(true) %}
       rate_limit_duration_secs: 5
-      rate_limit_num: 60
+      rate_limit_num: {{ 60 * scale }}
+{% endif %}
+    buffer:
+      type: memory
+      max_events: {{ 5000 * scale }}
     batch:
       max_bytes: 5245000
       timeout_secs: 5
-    buffer:
-      type: memory
-      max_events: 5000
-      when_full: block
-
-  company_admin_http:
-    type: http
-    inputs: ["company_admin_process"]
-    uri: "http://{{ consumer_ip }}:{{ consumer_port }}"
-    encoding:
-      codec: json
-
-  company_media_proxy_http:
-    type: http
-    inputs: ["company_media_proxy_process"]
-    uri: "http://{{ consumer_ip }}:{{ consumer_port }}"
-    encoding:
-      codec: json
-    request:
-      concurrency: 100
-      rate_limit_duration_secs: 5
-      rate_limit_num: 60
-    batch:
-      max_bytes: 5245000
-      timeout_secs: 5
-    buffer:
-      type: memory
-      max_events: 5000
-      when_full: block
-
-  company_unfurler_http:
-    type: http
-    inputs: ["company_unfurler_filter"]
-    uri: "http://{{ consumer_ip }}:{{ consumer_port }}"
-    encoding:
-      codec: json
-    request:
-      concurrency: 100
-      rate_limit_duration_secs: 5
-      rate_limit_num: 60
-    batch:
-      max_bytes: 5245000
-      timeout_secs: 5
-    buffer:
-      type: memory
-      max_events: 5000
-      when_full: block
-
-  audit_http:
-    type: http
-    inputs: ["audit_process"]
-    uri: "http://{{ consumer_ip }}:{{ consumer_port }}"
-    encoding:
-      codec: json
-    request:
-      concurrency: 100
-      rate_limit_duration_secs: 5
-      rate_limit_num: 60
-    batch:
-      max_bytes: 5245000
-      timeout_secs: 5
-    buffer:
-      type: memory
-      max_events: 5000
-      when_full: block
+{% endfor %}
+{% if process %}
+tests:
+- name: normalize all five application streams
+  inputs:
+{% for stream, settings in streams.items() %}
+  - insert_at: process_{{ stream }}
+    type: vrl
+    source: |
+{% if stream in ['media_proxy', 'unfurler'] %}
+      . = parse_syslog!(s'<118>1 2020-03-13T20:45:38.119Z my.host.com {{ settings.app }} 2004 ID960 - {"ts":"2020-03-13T20:45:38.119Z","msg":"unfurl"}')
+{% else %}
+      . = parse_syslog!(s'<118>1 2020-03-13T20:45:38.119Z my.host.com {{ settings.app }} 2004 ID960 - {"metadata":{"trace_id":"trace123","guild_id":"guild123","channel_id":"channel123","method":"method"}}')
+{% endif %}
+{% endfor %}
+  outputs:
+{% for stream, settings in streams.items() %}
+  - extract_from: process_{{ stream }}
+    conditions:
+    - type: vrl
+      source: |
+        assert_eq!(.appname, "{{ settings.app }}")
+        assert_eq!(.hostname, "my.host.com")
+        assert!(is_timestamp(.timestamp))
+{% if stream in ['api', 'admin'] %}
+        assert_eq!(.metadata_trace_id, "trace123")
+{% endif %}
+{% if stream == 'audit' %}
+        assert!(is_string(.message))
+{% endif %}
+{% endfor %}
+- name: reject malformed application JSON
+  inputs:
+{% for stream in streams if stream != 'audit' %}
+  - insert_at: process_{{ stream }}
+    type: log
+    log_fields:
+      message: '{invalid JSON'
+      appname: '{{ streams[stream].app }}'
+{% endfor %}
+  no_outputs_from:
+{% for stream in streams if stream != 'audit' %}
+  - process_{{ stream }}
+{% endfor %}
+{% endif %}

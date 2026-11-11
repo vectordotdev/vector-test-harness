@@ -24,7 +24,11 @@ Subject is configured to read logs that an actual Docker container prints to std
 
 1. Container prints a really long (> 16 Kb) message to stdout.
 2. Docker splits the event into multiple parts and emits them separately.
-3. Source reads the logs and merges the partial messages together, and outputs the merged event.
+3. The Docker source collects only the named test container, merges the partial
+   messages, and sends the raw record directly to the TCP consumer.
+4. The test driver decodes the received JSON and checks that exactly one complete
+   record arrived, including all 1,352 padding fields and the final `bzz` field.
+   Application JSON parsing is outside the Vector pipeline being tested.
 
 ## Try It
 

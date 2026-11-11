@@ -35,8 +35,10 @@ The subject is configured to:
    {"log":"{\"message\":\"Hello world\"}"}
    ```
 
-2. Parse the data as JSON
-3. Output the data, re-encoded as JSON
+2. Decode the outer JSON envelope with the socket source's JSON codec.
+3. Decode the inner `log` string with one remap and remove that envelope field.
+4. Output the decoded application fields, re-encoded as JSON. Other outer fields
+   are retained.
 
 ## Try It
 

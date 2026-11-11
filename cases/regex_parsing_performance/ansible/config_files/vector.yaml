@@ -18,4 +18,4 @@ sinks:
     mode: tcp
     address: "{{ consumer_ip }}:{{ consumer_port }}"
     encoding:
-      codec: text
+      codec: json

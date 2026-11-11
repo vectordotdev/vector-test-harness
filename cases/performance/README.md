@@ -3,11 +3,12 @@
 These workloads share the Rust harness's build, timing, and profiling commands.
 Run comparable measurements on controlled Linux machines. The configs target
 Vector 0.61. The remap variants handle both plain klog and structured JSON input,
-and include tests for plain, structured, and wrapped container records.
+and share a focused check for plain and structured records.
 
-The multi-node and single-node remap variants perform the same processing. Text
-records pass through reduction once; JSON records pass directly to the sink.
-The modernized workload definitions require new performance baselines.
+The two-node and single-node remap variants parse each record once and perform
+identical timestamp handling. Text records pass through reduction once; JSON
+records pass directly to the sink. Container-envelope parsing lives in the
+separate correctness cases. These definitions require new performance baselines.
 
 ```sh
 just build --revision <commit>
