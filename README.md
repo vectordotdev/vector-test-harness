@@ -32,6 +32,35 @@ All recipes delegate to Rust. Without `just`, use
 `cargo run --locked --bin vth -- <command> ...`, or install the CLI with
 `cargo install --locked --path . --bin vth`.
 
+## Local correctness checks
+
+Run the existing wrapped-JSON and SIGHUP cases with a supplied Vector binary on
+macOS or Linux. These checks need Rust and Vector; they run entirely on loopback
+without AWS, Terraform, Ansible, or Docker.
+
+```sh
+just check-case wrapped_json_correctness --vector-bin /path/to/vector
+just check-case sighup_correctness --vector-bin /path/to/vector --timeout-secs 30
+```
+
+`vth check` renders the case's existing Vector config with isolated ports and a
+per-run data directory. Wrapped JSON must produce exactly one event with the
+unwrapped message and no `log` field. SIGHUP must deliver exactly one record to
+each of two receivers, switching destinations after Vector confirms the reload.
+Both checks validate payloads as well as counts, then drain output during
+graceful shutdown. Readiness, delivery, and reload use bounded condition waits.
+Both cases have been exercised with Vector 0.61.0 on macOS.
+
+Artifacts are retained under `.cache/runs/check-<case>-<id>/`. Use `--output` to
+select a new directory; an existing directory is never overwritten. Each run
+saves its inputs, expected and received records, rendered configs, raw TCP output,
+Vector logs, command, and binary/config hashes. `result.json` records the outcome,
+phase, differences, and process cleanup. `complete` means the run reached output
+verification after shutdown; an incomplete run cannot pass. Exit codes are `0`
+for success, `1` for incorrect output or an unexpected Vector exit, and `2` for a
+timeout, interruption, or runner error after setup. `--dry-run` previews the
+command without starting Vector or creating artifacts.
+
 ## Remote cases
 
 Copy `.env.example` to `.env` and configure the account, buckets, SSH identity,

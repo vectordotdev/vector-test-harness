@@ -65,6 +65,7 @@ impl Fixture {
             "cases/example_performance/configurations/default",
             "cases/performance/stdin_to_blackhole",
             "cases/performance/file_to_blackhole",
+            "cases/wrapped_json_correctness/ansible/config_files",
         ] {
             fs::create_dir_all(root.join(name)).unwrap();
         }
@@ -91,6 +92,12 @@ impl Fixture {
             )
             .unwrap();
         }
+        let config = "cases/wrapped_json_correctness/ansible/config_files/vector.yaml";
+        fs::copy(
+            Path::new(env!("CARGO_MANIFEST_DIR")).join(config),
+            root.join(config),
+        )
+        .unwrap();
         Self { dir }
     }
     fn root(&self) -> &Path {
@@ -270,7 +277,65 @@ fn dry_run_has_no_external_or_filesystem_side_effects() {
         "--ssh-cidr",
         "203.0.113.2/32",
     ]);
+    fixture.run(&[
+        "--dry-run",
+        "check",
+        "wrapped_json_correctness",
+        "--vector-bin",
+        tools().path().join("vector").to_str().unwrap(),
+        "--output",
+        "local-check",
+    ]);
     assert!(fixture.invocations().is_empty());
+    assert!(!fixture.root().join("local-check").exists());
+}
+
+#[test]
+fn local_check_failures_retain_artifacts_and_reap_vector() {
+    let fixture = Fixture::new();
+    for (name, mode, delay, code, outcome, forced) in [
+        ("exited", "failed-vector", "0", 1, "failed", false),
+        ("stalled", "", "10000", 2, "timed_out", true),
+    ] {
+        let started = Instant::now();
+        let output = fixture
+            .command()
+            .env("VTH_TEST_MODE", mode)
+            .env("VTH_TEST_DELAY_MS", delay)
+            .args(["check", "wrapped_json_correctness", "--vector-bin"])
+            .arg(tools().path().join("vector"))
+            .args(["--timeout-secs", "1", "--output", name])
+            .output()
+            .unwrap();
+        assert_eq!(output.status.code(), Some(code));
+        assert!(started.elapsed() < Duration::from_secs(5));
+        let artifacts = fixture.root().join(name);
+        let report: Value =
+            serde_json::from_slice(&fs::read(artifacts.join("result.json")).unwrap()).unwrap();
+        assert_eq!(report["outcome"], outcome);
+        assert_eq!(report["complete"], false);
+        assert_eq!(report["cleanup"]["forced"], forced);
+        assert_eq!(report["cleanup"]["vector_reaped"], true);
+        for file in [
+            "initial.yaml",
+            "input.jsonl",
+            "expected.json",
+            "received.jsonl",
+            "vector.stdout.log",
+            "vector.stderr.log",
+        ] {
+            assert!(artifacts.join(file).is_file(), "missing {file}");
+        }
+        let probe = Command::new("/bin/kill")
+            .args(["-0", "--", &report["vector_pid"].to_string()])
+            .output()
+            .unwrap();
+        assert!(!probe.status.success(), "Vector process survived cleanup");
+    }
+    assert!(fixture
+        .invocations()
+        .iter()
+        .all(|r| r["program"] == "vector"));
 }
 
 #[test]

@@ -1,12 +1,14 @@
 use std::{
     collections::BTreeMap,
     env, fs,
+    io::Read,
     path::{Path, PathBuf},
     process::{Command, Output, Stdio},
 };
 
 use anyhow::{bail, ensure, Context, Result};
 use serde::Serialize;
+use sha2::{Digest, Sha256};
 
 pub static INTERRUPTED: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 
@@ -252,6 +254,20 @@ impl Runtime {
         );
         Ok(())
     }
+}
+
+pub fn sha256(path: &Path) -> Result<String> {
+    let mut file = fs::File::open(path)?;
+    let mut hasher = Sha256::new();
+    let mut buffer = [0; 65_536];
+    loop {
+        let n = file.read(&mut buffer)?;
+        if n == 0 {
+            break;
+        }
+        hasher.update(&buffer[..n]);
+    }
+    Ok(format!("{:x}", hasher.finalize()))
 }
 
 pub fn identifier(value: &str, kind: &str) -> Result<()> {

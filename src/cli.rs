@@ -57,6 +57,8 @@ pub enum Commands {
     },
     /// Report installed external tools without contacting AWS.
     Doctor,
+    /// Run an existing correctness case locally with a supplied Vector binary.
+    Check(CheckArgs),
     /// Build a pinned revision in an isolated clone, leaving other checkouts alone.
     Build(BuildArgs),
     /// Time a standalone performance workload with supplied binaries.
@@ -218,6 +220,37 @@ pub struct WorkloadArgs {
     /// Override the input fixture (plain text or gzip).
     #[arg(long)]
     pub input: Option<PathBuf>,
+    #[arg(long)]
+    pub output: Option<PathBuf>,
+}
+
+#[derive(Debug, Clone, Copy, ValueEnum)]
+pub enum CheckCase {
+    #[value(name = "wrapped_json_correctness")]
+    WrappedJson,
+    #[value(name = "sighup_correctness")]
+    Sighup,
+}
+
+impl CheckCase {
+    pub fn name(self) -> &'static str {
+        match self {
+            Self::WrappedJson => "wrapped_json_correctness",
+            Self::Sighup => "sighup_correctness",
+        }
+    }
+}
+
+#[derive(Debug, Args)]
+pub struct CheckArgs {
+    #[arg(value_enum)]
+    pub case: CheckCase,
+    #[arg(long)]
+    pub vector_bin: PathBuf,
+    /// Case budget, including startup, delivery, reload, and graceful shutdown.
+    #[arg(long, default_value_t = 30, value_parser = clap::value_parser!(u64).range(1..=3600))]
+    pub timeout_secs: u64,
+    /// New artifact directory. Existing directories are never overwritten.
     #[arg(long)]
     pub output: Option<PathBuf>,
 }
