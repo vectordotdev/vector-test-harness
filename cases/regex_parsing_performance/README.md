@@ -14,7 +14,9 @@ and place the extracted values in named keys.
    ```
 
 4. The test subject is sent valid Apache common lines for 60 seconds.
-5. [Performance data][performance_data] is collected and persisted to S3 for analysis.
+5. Vector serializes the extracted named fields as JSON. The parser replaces the
+   original event, so a text encoder would otherwise emit only an empty line.
+6. [Performance data][performance_data] is collected and persisted to S3 for analysis.
 
 ## Historical results
 

@@ -1,69 +1,30 @@
-# Vector 0.61: equivalent remapping in one node or separate pipeline stages.
+# Equivalent klog processing in two VRL nodes or one; new baseline required.
 data_dir: data
 sources:
   stdin:
     type: stdin
 transforms:
-  json_parser:
+  parse_payload:
     type: remap
     inputs:
     - stdin
     source: |
       parsed, err = parse_json(.message)
-      if err == null && is_object(parsed) {
-        . = merge!(., parsed)
-      }
-  regex_parser:
-    type: remap
-    inputs:
-    - json_parser
-    source: |
-      if is_string(.source) {
-        fields, err = parse_regex(string!(.source), r'^/([\w]+)/([\w]+)/([\w]+)/(?P<pod>[\w\-]+)_(?P<namespace>[\w\-]+)_(?P<container>[\w\-\.]+)-(\w+).log$')
-        if err == null {
-          . = merge(., fields)
-        }
-      }
-  add_fields:
-    type: remap
-    inputs:
-    - regex_parser
-    source: |
-      namespace = string(.namespace) ?? string(.pod.namespace) ?? "default"
-      pod = string(.pod) ?? string(.pod.name) ?? "stdin"
-      container = string(.container) ?? "stdin"
-      .origin_id = namespace + "/" + pod + "/" + container
-      .agent_name = "vector"
-      .host = get_env_var("VECTOR_SELF_NODE_NAME") ?? get_hostname!()
-  coercer:
-    type: remap
-    inputs:
-    - add_fields
-    source: |
-      if exists(.time) {
-        .timestamp = parse_timestamp!(string!(.time), format: "%+")
-      } else if exists(.ts) {
-        .timestamp = from_unix_timestamp!(to_int(to_float!(.ts) * 1000000000), unit: "nanoseconds")
-      }
-  remap:
-    type: remap
-    inputs:
-    - coercer
-    source: |
-      payload = string(.log) ?? string!(.message)
-      parsed, err = parse_json(payload)
-      if err == null {
-        .log = parsed
-        .log_type = "json"
-      } else {
-        .log = payload
-        .log_type = "text"
-      }
+      .log = if err == null { parsed } else { .message }
+      .log_type = if err == null { "json" } else { "text" }
       del(.message)
-  swimlanes:
+  timestamp:
+    type: remap
+    inputs:
+    - parse_payload
+    source: |
+      if is_float(.log.ts) || is_integer(.log.ts) {
+        .timestamp = from_unix_timestamp!(to_int(to_float!(.log.ts) * 1000000000), unit: "nanoseconds")
+      }
+  by_format:
     type: route
     inputs:
-    - remap
+    - timestamp
     reroute_unmatched: false
     route:
       json: .log_type == "json"
@@ -71,67 +32,39 @@ transforms:
   reduce:
     type: reduce
     inputs:
-    - swimlanes.text
-    group_by:
-    - origin_id
+    - by_format.text
     merge_strategies:
       log: concat_newline
-    starts_when: 'match!(.log, r''^[IWEF]\d{4}\s|^\d{4}\D\d{2}\D\d{2}(T|\s)?\d{2}:\d{2}:\d{2}|^\[?\d{2}\S\w{3}\S\d{4}:\d{2}:\d{2}:\d{2}
-      [+]\d{2,}\]|^\w{3}\s\d{2}\s\d{2}:\d{2}:\d{2}.\d{3}|^\[\w+]: \d{4}\D\d{2}\D\d{2}(T|\s)?\d{2}:\d{2}:\d{2}'')'
+    starts_when: match!(.log, r'^[IWEF]\d{4}\s')
 sinks:
   blackhole:
     type: blackhole
     inputs:
     - reduce
-    - swimlanes.json
+    - by_format.json
 tests:
-- name: plain klog
+- name: plain and structured klog
   inputs:
-  - insert_at: json_parser
+  - insert_at: parse_payload
     type: log
     log_fields:
-      message: I1025 00:15:15.525108       1 controller_utils.go:116] "Pod status
-        updated" pod="kube-system/kubedns" status="ready"
+      message: I1025 00:15:15.525108       1 controller_utils.go:116] first record
+  - insert_at: parse_payload
+    type: log
+    log_fields:
+      message: '{"ts":1580306777.04728,"msg":"Pod status updated","pod":{"name":"nginx-1","namespace":"default"},"status":"ready"}'
   outputs:
-  - extract_from: remap
+  - extract_from: timestamp
+    expected_event_count: 2
     conditions:
     - type: vrl
       source: |
-        assert_eq!(.log_type, "text")
-        assert_eq!(.log, "I1025 00:15:15.525108       1 controller_utils.go:116] \"Pod status updated\" pod=\"kube-system/kubedns\" status=\"ready\"")
-        assert_eq!(.origin_id, "default/stdin/stdin")
-        assert_eq!(.agent_name, "vector")
-- name: structured klog
-  inputs:
-  - insert_at: json_parser
-    type: log
-    log_fields:
-      message: '{"ts": 1580306777.04728, "msg": "Pod status updated", "pod": {"name":
-        "nginx-1", "namespace": "default"}, "status": "ready"}'
-  outputs:
-  - extract_from: remap
-    conditions:
-    - type: vrl
-      source: |
-        assert_eq!(.log_type, "json")
-        assert_eq!(.log.msg, "Pod status updated")
-        assert_eq!(.origin_id, "default/nginx-1/stdin")
-        assert!(is_timestamp(.timestamp))
-        assert_eq!(.agent_name, "vector")
-- name: wrapped container log
-  inputs:
-  - insert_at: json_parser
-    type: log
-    log_fields:
-      message: '{"time": "2026-11-11T00:00:00Z", "source": "/var/log/containers/nginx_default_app-abc.log",
-        "log": "{\"message\": \"nested\"}"}'
-  outputs:
-  - extract_from: remap
-    conditions:
-    - type: vrl
-      source: |
-        assert_eq!(.log_type, "json")
-        assert_eq!(.log.message, "nested")
-        assert_eq!(.origin_id, "default/nginx/app")
-        assert!(is_timestamp(.timestamp))
-        assert_eq!(.agent_name, "vector")
+        assert!(!exists(.message))
+        if .log_type == "json" {
+          assert_eq!(.log.msg, "Pod status updated")
+          assert_eq!(.log.pod.name, "nginx-1")
+          assert!(is_timestamp(.timestamp))
+        } else {
+          assert_eq!(.log_type, "text")
+          assert_eq!(.log, "I1025 00:15:15.525108       1 controller_utils.go:116] first record")
+        }

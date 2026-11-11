@@ -3,13 +3,14 @@ sources:
     type: socket
     mode: tcp
     address: 127.0.0.1:{{ subject_port }}
+    decoding:
+      codec: json
 transforms:
   parse_wrapped_json:
     inputs:
     - in
     type: remap
     source: |
-      . = merge!(., parse_json!(string!(.message)))
       . = merge!(., parse_json!(string!(.log)))
       del(.log)
 sinks:
@@ -27,9 +28,10 @@ tests:
   - insert_at: parse_wrapped_json
     type: log
     log_fields:
-      message: '{"log": "{\"message\": \"Hello world\"}"}'
+      log: '{"message":"Hello world"}'
   outputs:
   - extract_from: parse_wrapped_json
+    expected_event_count: 1
     conditions:
     - type: vrl
       source: |

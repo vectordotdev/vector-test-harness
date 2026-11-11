@@ -62,6 +62,12 @@ implemented in the Rust modules, with shared data in `config/` and SQL in
   have been migrated to current APIs, real-world variants deploy YAML, and file
   sources use explicit checkpoint/read-position options. Remap and real-world
   workload updates require new baselines; historical results remain historical.
+- Real-world variants now share one template and common normalized output. The
+  old `without_lua` name remains an alias, `one_sink` retains all five streams,
+  and concurrency variants use the baseline hardware. Klog parses once per
+  record; wrapped JSON uses source decoding; Docker correctness checks the full
+  raw merged record. The regex case now emits its parsed fields as JSON. These
+  workload and output changes require fresh baselines.
 - Rebuild AMIs and Docker fixtures so they include `vth-guest`. The guest source is
   dependency-free and compiled natively for each environment.
 

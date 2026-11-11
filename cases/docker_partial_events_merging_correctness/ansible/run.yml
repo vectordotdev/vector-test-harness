@@ -37,5 +37,8 @@
 
     - assert:
         that:
-          - last_message == 'Log text\n'
-        fail_msg: Last message did not match the expectation
+          - summary.message_count == 1
+          - last_message.message == 'Log text'
+          - last_message | length == 1353
+          - last_message.bzz == 'bzz_value'
+        fail_msg: Expected one complete Docker log record, including its final padding field
