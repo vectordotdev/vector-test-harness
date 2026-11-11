@@ -285,7 +285,14 @@ impl Run {
 
     fn finish_target(&mut self, graceful: bool) -> Result<()> {
         if let Some(target) = &mut self.target {
-            if target.status()?.is_none() && graceful {
+            if graceful {
+                if let Some(status) = target.status()? {
+                    return Err(Stop(
+                        Outcome::Failed,
+                        format!("Vector exited before shutdown was requested with {status}"),
+                    )
+                    .into());
+                }
                 target.signal("TERM")?;
             }
         }
@@ -682,6 +689,34 @@ pub fn run(runtime: &Runtime, args: CheckArgs) -> Result<i32> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[cfg(unix)]
+    #[test]
+    fn successful_exit_before_shutdown_fails() {
+        let output = tempfile::tempdir().unwrap();
+        let mut child = Command::new("/usr/bin/true").spawn().unwrap();
+        assert!(child.wait().unwrap().success());
+        let mut run = Run {
+            output: output.path().into(),
+            deadline: Instant::now() + Duration::from_secs(1),
+            phase: "shutdown",
+            report: json!({}),
+            collectors: vec![],
+            target: Some(Target {
+                child,
+                status: None,
+                forced: false,
+            }),
+            sent: 1,
+        };
+
+        let error = run.finish_target(true).unwrap_err();
+        assert!(matches!(
+            error.downcast_ref::<Stop>().unwrap().0,
+            Outcome::Failed
+        ));
+        assert_eq!(run.target.as_ref().unwrap().status.unwrap().code(), Some(0));
+    }
 
     #[test]
     fn equal_counts_do_not_hide_wrong_records_or_routes() {
