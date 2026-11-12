@@ -51,27 +51,6 @@
         9.966929493
       ],
       "stddev_seconds": 0.058372920331151615
-    },
-    {
-      "binary": "/usr/bin/vector",
-      "binary_sha256": "4d4cf6e792e723516e4cefde4471612109951aa7eecae45f00cf7380ebf4d898",
-      "config": "cases/performance/klog_remap_to_blackhole/configs/stdin_to_blackhole.toml",
-      "config_sha256": "703070194f5776f7bcc1e7e7747afca4d6531e1c100fdfeea4a16573778015f9",
-      "label": "candidate",
-      "mean_seconds": 1.3276946185,
-      "seconds": [
-        1.349293282,
-        1.336101696,
-        1.332415912,
-        1.328259359,
-        1.3248976049999999,
-        1.3282362220000001,
-        1.313242511,
-        1.324796999,
-        1.321798656,
-        1.3179039430000001
-      ],
-      "stddev_seconds": 0.010087322575056318
     }
   ],
   "schema_version": 1,

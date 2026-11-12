@@ -14,10 +14,10 @@ The fixture does not contain Docker/container envelopes. That parsing belongs in
 the dedicated wrapped-JSON and Docker cases rather than unused stages here.
 
 Run `vth bench klog_remap_to_blackhole --vector-bin /path/to/vector`. Use
-`--config` to select one variant; otherwise the harness also runs the stdin
-baseline under `configs/`.
+`--config` to select one variant. The untransformed stdin reference was removed
+because it performs different work.
 
-## AWS baseline — 2026-11-12
+## Vector-only elapsed-time measurements — 2026-11-12
 
 Vector 0.61.0 on an AWS `c5.large` (2 vCPUs, 4 GiB RAM), Ubuntu 22.04.5.
 Each config used the checked-in fixture, one warmup, and ten measured runs.
@@ -26,8 +26,11 @@ Each config used the checked-in fixture, one warmup, and ten measured runs.
 | --- | --- | --- |
 | `remap-multihop.yaml` | 10.6829 s | 0.0886 s |
 | `remap-nohop.yaml` | 10.0367 s | 0.0584 s |
-| `stdin_to_blackhole.toml` | 1.3277 s | 0.0101 s |
 
 The `wall-clock-with-streamed-input-v1` measurement includes process execution
 and input streaming. [Individual timings and hashes](../../../results/2026-11-12/standalone/klog_remap_to_blackhole.json)
 identify the binary, fixture, configs, and harness revision.
+
+Elapsed time includes reduction, drain and shutdown. It is not an isolated VRL
+execution cost. Full-fixture output equivalence is checked separately before
+these two configurations are compared.

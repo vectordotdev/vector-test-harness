@@ -28,31 +28,25 @@
     "vth_guest": "74eb79aeb29dbc06a4c79b160eed78774b1b487f427cfd8a82f15bc15ae57d2c"
   },
   "sampling": {
-    "remote_performance_repetitions": 1,
     "standalone_finite_repetitions": 10,
-    "standalone_finite_warmups": 1,
-    "continuous_file_warmup_seconds": 15,
-    "continuous_file_counter_window_seconds": 60,
-    "remote_warmup_seconds_by_case": {
-      "file_to_tcp_performance": 15,
-      "default": 10,
-      "real_world_1_performance": 0
-    },
-    "remote_analysis_method": "athena-dstat-rate-mean-v2",
-    "remote_workload_seconds": 60,
-    "remote_capture_includes_orchestration_overhead": true
+    "standalone_finite_warmups": 1
   },
   "notes": [
-    "Each configuration keeps its checked-in machine types and timing.",
-    "Remote results measure host-wide counters and network wire bytes, including protocol overhead.",
-    "A single remote pass is a baseline observation, not a statistical performance ranking.",
-    "Standalone finite timings include process startup, gzip decoding, and input streaming.",
-    "Continuous file rates observe the configured generator load; they do not measure maximum throughput.",
-    "File-output comparisons include different wire formats and compression; outgoing network traffic cannot rank logical payload throughput.",
-    "Disk-buffer configurations use different synchronization policies, including per-event Logstash checkpoints and a 500ms Vector synchronization interval.",
-    "Disk/network average rates are means of already-normalized dstat rate samples; dividing their sum by the endpoint timestamp span would overstate rates.",
-    "Fluentd HTTP performance uses buffered bulk requests; its earlier per-event connection configuration exhausted local source ports under high concurrency and is excluded.",
-    "Splunk fixtures route background inputs to a disabled output group and fixture input to the active receiver.",
-    "The producer workload runs for 60 seconds; dstat capture also includes orchestration overhead. Actual sample counts and epoch spans are retained in provenance and comparison JSON."
-  ]
+    "Remote performance numbers and unsupported correctness conclusions were withdrawn after the comparison audit.",
+    "The image versions describe installed packages, not a comparative feature or quality certification.",
+    "Retained wrapped-JSON subjects share one input, an exact output count and the same decoded application-message check.",
+    "Finite timing datasets use one warmup and ten measured repetitions on the same c5.large host with the same Vector binary and fixture.",
+    "Full-fixture delivery/equivalence checks were performed separately on macOS arm64 with Vector 0.61.0 and file output replacing blackhole.",
+    "Timings include process startup, input streaming, pipeline reduction, drain and shutdown; they are not isolated transform CPU costs.",
+    "The untransformed klog stdin reference and continuous-file rate observation are withheld as comparative results."
+  ],
+  "publication_scope": {
+    "remote_performance": "withdrawn",
+    "remote_correctness_pairs": 6,
+    "standalone_timing_workloads": [
+      "stdin_to_blackhole",
+      "klog_remap_to_blackhole"
+    ],
+    "continuous_file_capacity": "not published"
+  }
 }

@@ -41,4 +41,5 @@
           - last_message.message == 'Log text'
           - last_message | length == 1353
           - last_message.bzz == 'bzz_value'
+          - last_message == (docker_fixture_log.stdout | from_json)
         fail_msg: Expected one complete Docker log record, including its final padding field

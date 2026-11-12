@@ -1,0 +1,15 @@
+{
+  "verified_at": "2026-11-12T18:18:37.489465+00:00",
+  "vector_version": "vector 0.61.0 (aarch64-apple-darwin 17e017e 2026-10-29 16:03:40.929269968)",
+  "os": "Darwin",
+  "architecture": "arm64",
+  "config_sha256": "5b8e375befcac6cd59b9b7f14f4e830d79b68427245508a10a7d2b4584af4fba",
+  "input_sha256": "86b548ddafb620083fcb34ba35bad6ebad8c7a55bbfdea43f5ec0e797b0c1574",
+  "expected_events": 1000000,
+  "received_events": 1000000,
+  "input_bytes": 122004510,
+  "payload_sha256": "cd740ca0e936bcf3cca0b6ec29a8b92ecbce99726c1633d174d5e1d5b95aa881",
+  "method": "Full checked-in fixture replayed with JSON file output replacing blackhole; ordered message payloads plus their newline reconstruct the complete uncompressed input byte-for-byte. Source metadata is outside this payload contract.",
+  "status": "verified",
+  "vector_binary_sha256": "bd0b6bea1c9aff9acbcc505b973943d750570771dd9e1d263b298e312cc4b41e"
+}

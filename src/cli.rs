@@ -35,11 +35,11 @@ pub enum Commands {
     GlobalBootstrap,
     /// Initialize account-level AWS prerequisites and write .env.
     BootstrapAws(BootstrapArgs),
-    /// Compare historical measurements through Athena (or a saved response).
+    /// Inspect archived host metrics; does not validate comparability.
     Compare(CompareArgs),
     /// Summarize dstat CSV results from S3 or local files.
     Results(ResultsArgs),
-    /// Export the existing website's performance_tests JSON format.
+    /// Export archived metrics in the legacy website format (requires --no-upload).
     Export(ExportArgs),
     /// List available remote and standalone cases.
     List,
@@ -147,6 +147,7 @@ pub struct CompareArgs {
     pub versions: Vec<String>,
     #[arg(short = 'r', long)]
     pub repair: bool,
+    /// Show arithmetic differences from the first column; this does not validate comparability.
     #[arg(short = 'p', long)]
     pub percentages: bool,
     #[arg(long)]
@@ -182,6 +183,7 @@ pub struct ExportArgs {
     pub input: Option<PathBuf>,
     #[arg(long, default_value = "results.json")]
     pub output: PathBuf,
+    /// Required: website publication is disabled for unverified comparisons.
     #[arg(long)]
     pub no_upload: bool,
 }

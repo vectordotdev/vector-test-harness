@@ -206,15 +206,7 @@ pub fn compare(runtime: &Runtime, args: CompareArgs) -> Result<()> {
             .iter()
             .map(|r| r.get(key).and_then(Value::as_f64))
             .collect();
-        let best = values
-            .iter()
-            .flatten()
-            .copied()
-            .reduce(if meta["sort"] == "desc" {
-                f64::max
-            } else {
-                f64::min
-            });
+        let reference = values.first().copied().flatten();
         let mut line = vec![meta["name"].as_str().unwrap_or(key).to_owned()];
         for value in values {
             let formatted = match value {
@@ -225,16 +217,13 @@ pub fn compare(runtime: &Runtime, args: CompareArgs) -> Result<()> {
                     } else {
                         format!("{value:.2}")
                     };
-                    if let Some(best) = best {
-                        if value == best {
-                            format!("{base} W")
-                        } else if (args.percentages || !args.no_percentages) && best != 0.0 {
-                            format!("{base} ({:+.1}%)", (value - best) / best * 100.0)
-                        } else {
-                            base
+                    match reference {
+                        Some(reference)
+                            if args.percentages && !args.no_percentages && reference != 0.0 =>
+                        {
+                            format!("{base} ({:+.1}%)", (value - reference) / reference * 100.0)
                         }
-                    } else {
-                        base
+                        _ => base,
                     }
                 }
             };
@@ -525,6 +514,10 @@ fn web_export(runtime: &Runtime, mut rows: Vec<Row>) -> Result<Value> {
 }
 
 pub fn export(runtime: &Runtime, args: ExportArgs) -> Result<()> {
+    ensure!(
+        args.no_upload,
+        "website publication is disabled: remote performance comparisons have been retired; use --no-upload to inspect archived data"
+    );
     let Some(response) = saved_or_query(
         runtime,
         args.input.as_deref(),
@@ -537,23 +530,7 @@ pub fn export(runtime: &Runtime, args: ExportArgs) -> Result<()> {
     ensure!(!rows.is_empty(), "no measurements to export");
     let document = web_export(runtime, rows)?;
     let output = runtime.path(args.output)?;
-    let bucket = if args.no_upload {
-        None
-    } else {
-        Some(runtime.required("VECTOR_TEST_RESULTS_S3_BUCKET_NAME")?)
-    };
     runtime.write(&output, serde_json::to_string_pretty(&document)?.as_bytes())?;
-    if let Some(bucket) = bucket {
-        runtime.run(aws::command(
-            runtime,
-            [
-                "s3",
-                "cp",
-                &output.to_string_lossy(),
-                &format!("s3://{bucket}/summaries/latest.json"),
-            ],
-        ))?;
-    }
     Ok(())
 }
 

@@ -115,7 +115,6 @@ module "aws_instance_consumer" {
   }
 
   availability_zone     = local.availability_zone
-  instance_count        = var.consumer_instance_count
   instance_profile_name = module.aws_instance_profile.name
   instance_type         = var.consumer_instance_type
   public_key            = file(var.pub_key)

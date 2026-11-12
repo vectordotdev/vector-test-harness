@@ -53,6 +53,10 @@ fn case(runtime: &Runtime, args: &CaseArgs) -> Result<Case> {
     identifier(&configuration, "configuration")?;
     identifier(&user, "user ID")?;
     let dir = runtime.root.join("cases").join(&name);
+    ensure!(
+        dir.join("terraform/main.tf").is_file(),
+        "unknown or retired remote case {name}; use vth list for supported cases"
+    );
     for file in [
         "terraform/main.tf".into(),
         "ansible/bootstrap.yml".into(),
@@ -391,7 +395,7 @@ pub fn meta(runtime: &Runtime, mode: MetaMode) -> Result<()> {
         }
         MetaMode::TestCases => {
             for dir in directories(&runtime.root.join("cases"))? {
-                if dir.join("terraform").is_dir() {
+                if dir.join("terraform/main.tf").is_file() {
                     println!("{}", dir.file_name().unwrap().to_string_lossy());
                 } else if dir.file_name().is_some_and(|name| name == "performance") {
                     for local in directories(&dir)? {

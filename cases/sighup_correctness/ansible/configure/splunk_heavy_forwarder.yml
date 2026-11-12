@@ -1,5 +1,0 @@
----
-- include_role:
-    name: splunk_heavy_forwarder
-  vars:
-    action: configure

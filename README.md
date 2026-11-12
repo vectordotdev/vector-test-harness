@@ -4,20 +4,19 @@
 
 # Vector Test Harness
 
-A Rust CLI for Vector correctness checks, performance benchmarks, and profiling.
+A Rust CLI for scoped correctness checks, Vector workload timing, and profiling.
 `vth` runs local checks and workloads, orchestrates remote cases through Terraform
 and Ansible, and analyzes recorded results.
 
 [Setup](#setup) · [Commands](#usage) · [Cases](#cases) ·
 [Local checks](#local-correctness-checks) · [Remote runs](#how-it-works) ·
-[Results](#performance-data) · [Profiling](#standalone-performance-experiments)
+[Results](#recorded-data-and-publication) · [Profiling](#standalone-performance-experiments)
 
 > [!NOTE]
-> The Vector configs target **0.61.0**. Local wrapped-JSON and SIGHUP checks have
-> passed with that version on macOS arm64. The [2026-11-12 AWS baseline](results/2026-11-12/README.md)
-> records Linux runs with the pinned comparison agents, including observed
-> correctness failures. Historical case tables describe older versions and
-> workloads. CPU and allocation profiling remain separate experiments.
+> Vector configs target **0.61.0**. The [comparison audit](docs/comparisons.md)
+> retires remote benchmarks and correctness scorecards whose equivalence could
+> not be established. The [retained results](results/2026-11-12/README.md) cover
+> narrowly defined checks and verified Vector-only workloads.
 
 ## Setup
 
@@ -69,8 +68,8 @@ still exist. Guest helpers execute directly and do not support dry runs.
 | `vth build-amis` | Build the benchmark AMI with Packer. |
 | `vth global-bootstrap` | Provision the legacy shared Athena/results infrastructure. |
 | `vth results` | Summarize dstat CSVs from S3 or local files. |
-| `vth compare` | Compare recorded remote measurements through Athena or a saved response. |
-| `vth export` | Write website-compatible results JSON and optionally upload it. |
+| `vth compare` | Inspect archived host metrics through Athena or a saved response. |
+| `vth export --no-upload` | Inspect archived metrics in the legacy website JSON format. Publication is disabled. |
 | `vth build` | Build an explicit revision in an isolated clone. |
 | `vth bench <case>` | Time a finite stdin workload, optionally against a baseline binary. |
 | `vth profile <case>` | Run `perf`, `perf stat`, Massif, or DHAT on a workload. |
@@ -85,34 +84,18 @@ still exist. Guest helpers execute directly and do not support dry runs.
 
 ### Remote cases
 
-These definitions run with `vth run -t <case> -c <configuration> -s vector`.
-The configuration defaults to `default`; **`file_to_tcp_performance` requires
-`-c single_file` or `-c multi_file`**. The two cases marked “also local” can also
-run through `vth check` without cloud infrastructure.
+These definitions run with `vth run -t <case> -s <subject>`. Both use the
+`default` configuration. Wrapped JSON also has a local Vector check.
 
-| Case | Kind | What it exercises | Configurations |
-| --- | --- | --- | --- |
-| [disk_buffer_performance](cases/disk_buffer_performance/) | Performance | TCP forwarding with a disk buffer. | `default` |
-| [disk_buffer_persistence_correctness](cases/disk_buffer_persistence_correctness/) | Correctness | Deliver buffered records after a downstream outage and subject restart. | `default` |
-| [docker_partial_events_merging_correctness](cases/docker_partial_events_merging_correctness/) | Correctness | Merge a large Docker log record and verify its complete payload. | `default` |
-| [file_rotate_create_correctness](cases/file_rotate_create_correctness/) | Correctness | Follow a renamed file and its replacement, including late writes to the old file. | `default` |
-| [file_rotate_truncate_correctness](cases/file_rotate_truncate_correctness/) | Correctness | Follow copy-truncate rotation and late writes to the copied file. | `default` |
-| [file_to_tcp_performance](cases/file_to_tcp_performance/) | Performance | Tail files and forward their contents over TCP. | `single_file`, `multi_file` |
-| [file_truncate_correctness](cases/file_truncate_correctness/) | Correctness | Read new records after a file is truncated. | `default` |
-| [lua_base_performance](cases/lua_base_performance/) | Performance | Add a field with a Lua hook between TCP input and output. | `default` |
-| [real_world_1_performance](cases/real_world_1_performance/) | Performance | Route and normalize five syslog streams into HTTP sinks. | `default`, `high_concurrency`, `high_concurrency_with_pipelines`, `one_sink`, `without_lua`, `without_transforms`, `without_transforms_and_rate_limiting` |
-| [regex_parsing_performance](cases/regex_parsing_performance/) | Performance | Extract fields from log messages with a regex and emit JSON. | `default`, `sandbox` |
-| [sighup_correctness](cases/sighup_correctness/) | Correctness; also local | Reload config with SIGHUP and switch TCP destinations. | `default` |
-| [tcp_to_blackhole_performance](cases/tcp_to_blackhole_performance/) | Performance | Receive TCP records and discard them. | `default` |
-| [tcp_to_http_performance](cases/tcp_to_http_performance/) | Performance | Forward TCP input over HTTP. | `default`, `high_concurrency` |
-| [tcp_to_tcp_performance](cases/tcp_to_tcp_performance/) | Performance | Forward TCP input to a TCP consumer. | `default`, `high_concurrency`, `16_cores` |
-| [wrapped_json_correctness](cases/wrapped_json_correctness/) | Correctness; also local | Decode a JSON envelope and its nested `log` payload. | `default` |
+| Case | Scope | Contract |
+| --- | --- | --- |
+| [wrapped_json_correctness](cases/wrapped_json_correctness/) | Filebeat, Fluent Bit, Fluentd, Logstash, Vector | One nested JSON input produces exactly one decoded application record with the expected message. |
+| [docker_partial_events_merging_correctness](cases/docker_partial_events_merging_correctness/) | Vector only | One complete Docker input produces exactly one complete output, including the final payload field. |
 
-Subject support varies by case. Omitting `-s` runs every subject supported by that
-case's bootstrap playbook. The [subject catalog](config/subjects.json) records
-preinstalled comparison versions; it does not represent current releases or
-certify their installers. Real-world [variant details](cases/real_world_1_performance/README.md)
-explain the retained `without_lua` alias and workload differences.
+The [comparison audit](docs/comparisons.md) explains the removed cases. Their
+README stubs preserve old links, but their runnable definitions and scorecards
+are gone. The [subject catalog](config/subjects.json) records installed versions;
+it does not certify general feature support or represent current releases.
 
 ### Standalone workloads
 
@@ -123,8 +106,8 @@ for example `vth bench stdin_to_blackhole --vector-bin /path/to/vector`.
 | Case | Commands | What it exercises |
 | --- | --- | --- |
 | [stdin_to_blackhole](cases/performance/stdin_to_blackhole/) | `bench`, `profile` | Stream the finite shared gzip fixture through stdin into a blackhole sink. |
-| [klog_remap_to_blackhole](cases/performance/klog_remap_to_blackhole/) | `bench`, `profile` | Compare one-node and two-node remapping of text/JSON klog records, plus a stdin baseline. |
-| [file_to_blackhole](cases/performance/file_to_blackhole/) | `generate` + `profile` | Continuously tail generated files into a blackhole sink, exposing internal metrics. |
+| [klog_remap_to_blackhole](cases/performance/klog_remap_to_blackhole/) | `bench`, `profile` | Compare equivalent one-node and two-node remapping of the same text/JSON klog fixture. |
+| [file_to_blackhole](cases/performance/file_to_blackhole/) | `generate` + `profile` | Profile a fixed generated file workload with internal metrics; no capacity result is published. |
 
 ## Local correctness checks
 
@@ -157,8 +140,8 @@ support only the two cases listed above.
 ## How it works
 
 Remote cases provision AWS machines with Terraform, configure them with Ansible,
-then run selected subjects sequentially. Producers, consumers, and profiling
-steps are defined by each case's playbooks. These runs remain separate from the
+then run selected subjects sequentially. Inputs, receivers and assertions
+are defined by each case's playbooks. These runs remain separate from the
 local `check`, `bench`, and `profile` commands.
 
 Set up credentials, buckets, SSH identity, and user ID following the
@@ -172,11 +155,10 @@ Explicit CLI options override supported environment settings, which override
 from `.env`. Use `--no-dotenv` to disable file loading.
 
 ```sh
-vth run -t tcp_to_tcp_performance -s vector -v 0.61.0 --dry-run
-vth run -t tcp_to_tcp_performance -s vector -v 0.61.0
-vth run -t file_to_tcp_performance -c single_file -s vector -v 0.61.0
-vth run -t tcp_to_tcp_performance -s vector -v 0.61.0 --run-only
-vth teardown -t tcp_to_tcp_performance --yes
+vth run -t wrapped_json_correctness -s vector -v 0.61.0 --dry-run
+vth run -t wrapped_json_correctness -s vector -v 0.61.0
+vth run -t wrapped_json_correctness -s vector -v 0.61.0 --run-only
+vth teardown -t wrapped_json_correctness --yes
 ```
 
 `--bootstrap-only` stops after setup, `--run-only` uses configured machines, and
@@ -195,42 +177,39 @@ Remote machines need an AMI containing the Rust `vth-guest` helper. Rebuild with
 `vth build-amis` if the selected image predates the Rust migration. Docker log
 fixtures likewise need an image containing the current helper.
 
-## Performance data
+## Recorded data and publication
 
-The [2026-11-12 AWS baseline](results/2026-11-12/README.md) records all configured
-remote cases and the three standalone workloads with Vector 0.61.0, including
-versions, hardware, sample counts, and observed correctness failures.
+The [retained AWS results](results/2026-11-12/README.md) distinguish supported
+functional checks from Vector-only timing observations. Remote performance
+comparisons and unsupported correctness scorecards have been withdrawn under the
+[comparison requirements](docs/comparisons.md).
 
-`vth results` summarizes dstat measurements. `vth compare` queries recorded
-measurements; it does not run either Vector binary. `vth export` writes the
-website's `performance_tests` JSON and uploads it to
-`s3://<results-bucket>/summaries/latest.json` unless `--no-upload` is supplied.
+`vth results` and `vth compare` can inspect archived host measurements. Their
+output does not certify equivalent work or delivery. `vth export` requires
+`--no-upload`; automatic website publication is disabled.
+`compare` prints raw values without winner markers. Explicit `--percentages`
+shows arithmetic differences from the first column, not a product ranking.
 
 ```sh
-vth results -t tcp_to_tcp_performance
-vth compare -t tcp_to_tcp_performance -s vector -v 0.60.0 -v 0.61.0
-vth results -t tcp_to_tcp_performance --input /path/to/dstat.csv --json
+vth results -t archived_case --input /path/to/dstat.csv --json
 vth compare --input /path/to/athena-response.json
 vth export --input /path/to/athena-response.json --no-upload
 ```
 
-The `--input` examples above work offline and use existing measurements. Dstat
-reports retain positive-sample selection and warmup/tail trimming; see
+Dstat reports retain historical positive-sample selection and trimming. Athena
+uses its configured catalog schema and query method; see
 [measurement compatibility](docs/migration.md#compatibility-and-deliberate-changes).
-Historical S3 keys have no user ID partition, so `results --user-id` cannot filter
-them and is rejected.
-
-Athena defaults to database `vector_tests` and query output
-`s3://vector-test-athena-results`. Override these with
-`VECTOR_TEST_ATHENA_DATABASE` and `VECTOR_TEST_ATHENA_OUTPUT` for your account.
-Failed queries and timeouts are errors; paginated query results are combined.
+Historical S3 keys have no user partition, so `results --user-id` is rejected.
+Set `VECTOR_TEST_ATHENA_DATABASE` and `VECTOR_TEST_ATHENA_OUTPUT` for your catalog
+and authorized query-output location. Failed queries and timeouts are errors.
 
 ## Standalone performance experiments
 
 Supply a binary or build an explicit revision. `vth build` uses an isolated clone
 under `.cache/builds/`, requires its own Cargo `target`, and records the resolved
-commit and build settings. The [AWS baseline](results/2026-11-12/README.md) records
-Vector 0.61.0; establish fresh measurements for other configs and binaries.
+commit and build settings. The [retained measurements](results/2026-11-12/README.md)
+record Vector 0.61.0. Verify equivalent output on the full input before publishing
+comparisons of configurations or binaries.
 
 ```sh
 vth build --revision <commit>
@@ -247,8 +226,8 @@ include individual timings, hashes, and the method
 `wall-clock-with-streamed-input-v1`. These timings include process execution and
 input streaming; keep them separate from historical hyperfine/dstat results.
 
-For klog, all three configs under `configs/` run by default; `--config` selects
-one. `--input` overrides a finite workload's plain-text or gzip fixture. The
+For klog, both remap configs under `configs/` run by default; `--config` selects
+one. The untransformed stdin reference was removed because it performs different work. `--input` overrides a finite workload's plain-text or gzip fixture. The
 continuously running file case uses `generate` and `profile` in separate terminals
 instead of `bench`:
 

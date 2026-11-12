@@ -1,8 +1,0 @@
-path.logs: /var/log/logstash
-queue.type: persisted
-queue.max_bytes: 100mb
-
-# Retain this case's per-event Logstash checkpoint policy. Other subjects use
-# different synchronization policies; Vector synchronizes every 500ms, so these
-# measurements do not represent equivalent crash-durability guarantees.
-queue.checkpoint.writes: 1

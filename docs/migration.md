@@ -38,8 +38,11 @@ implemented in the Rust modules, with shared data in `config/` and SQL in
 
 ## Compatibility and deliberate changes
 
-- Existing remote case names, configurations, subject versions, Terraform state
-  keys, Ansible host filters, result partitions, and website export fields remain.
+- The [comparison audit](comparisons.md) removes unverified remote cases and
+  scorecards. Raw archived data and Terraform state are retained; use an earlier
+  checkout if an old case still needs teardown. Local Vector checks remain.
+- Website publication is disabled. `export --no-upload` retains the legacy JSON
+  shape for offline inspection, without certifying its throughput metric.
 - Common short flags and `VECTOR_TEST_*` settings remain. `ANSIBLE_EXTRA_ARGS`
   accepts shell-style quoting but is parsed into argv without shell evaluation.
 - `.env` accepts `KEY=value` and `export KEY=value`. Use literal values and quoted
@@ -52,27 +55,21 @@ implemented in the Rust modules, with shared data in `config/` and SQL in
   explanation because historical S3 keys cannot establish the owning user.
 - `results` retains historical positive-only sample selection and trimming.
   Athena uses the dstat 0.8.0 schema and averages its already-normalized disk and
-  network rates; the dated AWS baseline uses that method. Latest-version
+  network rates; archived measurements used that method. Latest-version
   selection remains lexical.
 - Standalone builds require an explicit revision or supplied binary. Historical
   hardcoded SHAs and workstation paths are not defaults. Builds use isolated
   clones under `.cache/builds/` and preserve other Vector checkouts.
 - Native standalone timing results have method `wall-clock-with-streamed-input-v1`
   and a separate JSON artifact. Profiling is invoked separately.
-- Case configurations now target Vector 0.61.0. Removed transforms and conditions
-  have been migrated to current APIs, real-world variants deploy YAML, and file
-  sources use explicit checkpoint/read-position options. Remap and real-world
-  workload updates require new baselines; historical results remain historical.
-- Real-world variants now share one template and common normalized output. The
-  old `without_lua` name remains an alias, `one_sink` retains all five streams,
-  and concurrency variants use the baseline hardware. Klog parses once per
-  record; wrapped JSON uses source decoding; Docker correctness checks the full
-  raw merged record. The regex case now emits its parsed fields as JSON. These
-  workload and output changes require fresh baselines.
+- Retained Vector configurations target 0.61.0. The klog pair performs the same
+  parsing and timestamp handling in one or two nodes; full-fixture output
+  equivalence is recorded with the retained timings. The untransformed reference
+  and remote comparison cases have been removed.
 - Rebuild AMIs and Docker fixtures so they include `vth-guest`. The guest source is
   dependency-free and compiled natively for each environment.
 
-The [2026-11-12 AWS baseline](../results/2026-11-12/README.md) records real cloud
-and workload outcomes for the current definitions. Other environments and Linux
+The [retained AWS report](../results/2026-11-12/README.md) records functional
+outcomes and verified Vector-only timings. Other environments and Linux
 profilers need separate validation; the local Rust integration suite uses test
 doubles and does not make performance or cloud compatibility claims.

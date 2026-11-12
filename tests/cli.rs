@@ -383,6 +383,23 @@ fn invalid_cases_and_subjects_fail_before_commands() {
         assert!(!output.status.success());
     }
     assert!(fixture.invocations().is_empty());
+
+    fs::remove_file(
+        fixture
+            .root()
+            .join("cases/example_performance/terraform/main.tf"),
+    )
+    .unwrap();
+    let listed = fixture.run(&["list"]);
+    assert!(!String::from_utf8_lossy(&listed.stdout).contains("example_performance"));
+    let output = fixture
+        .command()
+        .args(["run", "-t", "example_performance"])
+        .output()
+        .unwrap();
+    assert!(!output.status.success());
+    assert!(String::from_utf8_lossy(&output.stderr).contains("unknown or retired remote case"));
+    assert!(fixture.invocations().is_empty());
 }
 
 #[test]
@@ -468,7 +485,7 @@ fn athena_pages_are_combined_and_failed_queries_fail() {
 }
 
 #[test]
-fn website_export_preserves_the_existing_shape_and_throughput_metric() {
+fn archived_export_preserves_shape_and_rejects_publication() {
     let fixture = Fixture::new();
     let (one, _) = fixture.athena();
     fixture.run(&[
@@ -493,6 +510,15 @@ fn website_export_preserves_the_existing_shape_and_throughput_metric() {
         .unwrap();
     assert_eq!(throughput["value"], 2_097_152.0);
     assert_eq!(performance["subjects"][0]["slug"], "vector");
+    assert!(fixture.invocations().is_empty());
+
+    let output = fixture
+        .command()
+        .args(["export", "--input", one.to_str().unwrap()])
+        .output()
+        .unwrap();
+    assert!(!output.status.success());
+    assert!(String::from_utf8_lossy(&output.stderr).contains("website publication is disabled"));
     assert!(fixture.invocations().is_empty());
 }
 
