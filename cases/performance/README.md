@@ -8,7 +8,8 @@ and share a focused check for plain and structured records.
 The two-node and single-node remap variants parse each record once and perform
 identical timestamp handling. Text records pass through reduction once; JSON
 records pass directly to the sink. Container-envelope parsing lives in the
-separate correctness cases. These definitions require new performance baselines.
+separate correctness cases. The [2026-11-12 AWS baseline](../../results/2026-11-12/README.md)
+records measurements for the current definitions with Vector 0.61.0.
 
 ```sh
 vth build --revision <commit>

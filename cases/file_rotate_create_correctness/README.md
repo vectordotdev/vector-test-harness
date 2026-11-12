@@ -15,11 +15,18 @@ loss as well as duplicate data.
 6. Assert that the downstream service received both new unique lines _and_ did not receive
    duplicate data.
 
+## AWS baseline — 2026-11-12
+
+See the [current AWS report](../../results/2026-11-12/README.md) for this case’s
+configurations, pinned versions, hardware, measured outcomes, and sampling limits.
+Performance figures use one run per subject/configuration. Correctness results
+retain the existing assertions, including any observed failures.
+
 ## Historical results
 
-These results describe earlier Vector versions and workload definitions. They
-have not been re-measured with the Vector 0.61 configurations; establish a new
-baseline before comparing performance or claiming current correctness.
+These tables archive earlier Vector versions and workload definitions. Use the
+dated AWS baseline above for current measurements; software, configurations, and
+measurement methods differ from the historical experiments.
 
 |     Subject | Result  |
 |------------:|:-------:|

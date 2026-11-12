@@ -50,9 +50,10 @@ implemented in the Rust modules, with shared data in `config/` and SQL in
   printed as successful results.
 - `results --user-id` used to be accepted without filtering. It now fails with an
   explanation because historical S3 keys cannot establish the owning user.
-- Historical dstat aggregation and Athena SQL retain their existing formulas,
-  including the old positive-only sample selection and lexical latest-version
-  selection. Changing measurement methodology is separate work.
+- `results` retains historical positive-only sample selection and trimming.
+  Athena uses the dstat 0.8.0 schema and averages its already-normalized disk and
+  network rates; the dated AWS baseline uses that method. Latest-version
+  selection remains lexical.
 - Standalone builds require an explicit revision or supplied binary. Historical
   hardcoded SHAs and workstation paths are not defaults. Builds use isolated
   clones under `.cache/builds/` and preserve other Vector checkouts.
@@ -71,6 +72,7 @@ implemented in the Rust modules, with shared data in `config/` and SQL in
 - Rebuild AMIs and Docker fixtures so they include `vth-guest`. The guest source is
   dependency-free and compiled natively for each environment.
 
-Cloud provisioning, AMI builds, Docker images, real Vector workloads, and Linux
-profilers need environment-specific validation; the local Rust integration suite
-uses test doubles and does not make performance or cloud compatibility claims.
+The [2026-11-12 AWS baseline](../results/2026-11-12/README.md) records real cloud
+and workload outcomes for the current definitions. Other environments and Linux
+profilers need separate validation; the local Rust integration suite uses test
+doubles and does not make performance or cloud compatibility claims.

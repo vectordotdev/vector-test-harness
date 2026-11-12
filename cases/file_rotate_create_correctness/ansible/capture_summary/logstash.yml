@@ -1,5 +1,0 @@
----
-- include_role:
-    name: tcp_test_server
-  vars:
-    action: register_summary

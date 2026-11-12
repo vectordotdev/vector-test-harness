@@ -33,4 +33,5 @@
 
 - assert:
     that:
+      - output.stdout_lines | length == 1
       - first_message.message == "Hello world"

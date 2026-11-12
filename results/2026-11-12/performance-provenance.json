@@ -1,0 +1,1970 @@
+[
+  {
+    "case": "disk_buffer_performance",
+    "configuration": "default",
+    "subject": "splunk_heavy_forwarder",
+    "timestamp": "1794501422",
+    "measurement_started_at": "2026-11-12T16:37:02.930478+00:00",
+    "measurement_finished_at": "2026-11-12T16:39:26.416861+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "0cfec83474c62f03e0094fab16b479a5cd98fb6de574d1f9fe68366d782409bc",
+    "hardware": "1 \u00d7 c5d.xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/disk_buffer_performance/ansible/config_files/splunk.inputs.conf": "d33f411811fa132743e07293a518077835fa745e5e72d4fe184fc004f935c0d4",
+      "cases/disk_buffer_performance/ansible/config_files/splunk.outputs.conf": "838dcd1a536638209566fed7409a513efbd0e1919bb23b1fd0df74f7052fa6df"
+    },
+    "configuration_sha256": {
+      "cases/disk_buffer_performance/configurations/default/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/disk_buffer_performance/configurations/default/terraform.tfvars": "35f15a013f0ec8da2e9f5f7623549cb2d3511019281414473c68a1b35967e57d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "801247797cbc5bfe8990188fa5056f06b658a3e1a3ae3a89be834486c969a687",
+        "samples_including_boot_sample": 64
+      }
+    ]
+  },
+  {
+    "case": "disk_buffer_performance",
+    "configuration": "default",
+    "subject": "splunk_universal_forwarder",
+    "timestamp": "1794504415",
+    "measurement_started_at": "2026-11-12T17:26:55.755241+00:00",
+    "measurement_finished_at": "2026-11-12T17:28:41.944635+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "ebeb8c2e4b252017617fa1213d6f4b16db1b0c96b5584dc5f137470a08694427",
+    "hardware": "1 \u00d7 c5d.xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/disk_buffer_performance/ansible/config_files/splunk.outputs.conf": "838dcd1a536638209566fed7409a513efbd0e1919bb23b1fd0df74f7052fa6df",
+      "cases/disk_buffer_performance/ansible/config_files/splunk.inputs.conf": "d33f411811fa132743e07293a518077835fa745e5e72d4fe184fc004f935c0d4"
+    },
+    "configuration_sha256": {
+      "cases/disk_buffer_performance/configurations/default/terraform.tfvars": "35f15a013f0ec8da2e9f5f7623549cb2d3511019281414473c68a1b35967e57d",
+      "cases/disk_buffer_performance/configurations/default/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {
+      "ansible/roles/splunk_universal_forwarder/tasks/configure.yml": "2842db8b621df3fd6925a2b045d8094474883711ddbfc831b66dbbc3797f3d3b"
+    },
+    "raw_csvs": [
+      {
+        "sha256": "cf1398d0434dcb57b996d6fe1734eb69aebff89571d0590964c3108242170642",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "disk_buffer_performance",
+    "configuration": "default",
+    "subject": "vector",
+    "timestamp": "1794493211",
+    "measurement_started_at": "2026-11-12T14:20:11.842402+00:00",
+    "measurement_finished_at": "2026-11-12T14:22:03.617521+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "143fe03f844f7c990474e2772170b696b413336ffb6abfc979c586df197d07f8",
+    "hardware": "1 \u00d7 c5d.xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/disk_buffer_performance/ansible/config_files/vector.yaml": "b21a2ef4d72ec51a7d667e81ab12535e8dcd69b027601bbeed5ab14c8cf3bd9b"
+    },
+    "configuration_sha256": {
+      "cases/disk_buffer_performance/configurations/default/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/disk_buffer_performance/configurations/default/terraform.tfvars": "35f15a013f0ec8da2e9f5f7623549cb2d3511019281414473c68a1b35967e57d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "259192b141e4ac94b93439ca2812d9f145082c8baf3803981bc0715b6c1f7b71",
+        "samples_including_boot_sample": 63
+      }
+    ]
+  },
+  {
+    "case": "disk_buffer_performance",
+    "configuration": "default",
+    "subject": "fluentbit",
+    "timestamp": "1794493323",
+    "measurement_started_at": "2026-11-12T14:22:03.972810+00:00",
+    "measurement_finished_at": "2026-11-12T14:23:51.837933+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "143fe03f844f7c990474e2772170b696b413336ffb6abfc979c586df197d07f8",
+    "hardware": "1 \u00d7 c5d.xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {},
+    "configuration_sha256": {
+      "cases/disk_buffer_performance/configurations/default/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/disk_buffer_performance/configurations/default/terraform.tfvars": "35f15a013f0ec8da2e9f5f7623549cb2d3511019281414473c68a1b35967e57d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "ed19d1d9c4303cfae0e9348b867231f143a1b9e066eea3ef159434a2b368b8a3",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "disk_buffer_performance",
+    "configuration": "default",
+    "subject": "fluentd",
+    "timestamp": "1794493432",
+    "measurement_started_at": "2026-11-12T14:23:52.035486+00:00",
+    "measurement_finished_at": "2026-11-12T14:25:39.876485+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "143fe03f844f7c990474e2772170b696b413336ffb6abfc979c586df197d07f8",
+    "hardware": "1 \u00d7 c5d.xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {},
+    "configuration_sha256": {
+      "cases/disk_buffer_performance/configurations/default/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/disk_buffer_performance/configurations/default/terraform.tfvars": "35f15a013f0ec8da2e9f5f7623549cb2d3511019281414473c68a1b35967e57d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "5b83b0fdce531dd700b92af39a7b6e9b8fa3edddcc5fa6ca3d24c357e8c04194",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "disk_buffer_performance",
+    "configuration": "default",
+    "subject": "logstash",
+    "timestamp": "1794493540",
+    "measurement_started_at": "2026-11-12T14:25:40.043051+00:00",
+    "measurement_finished_at": "2026-11-12T14:28:50.336644+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "143fe03f844f7c990474e2772170b696b413336ffb6abfc979c586df197d07f8",
+    "hardware": "1 \u00d7 c5d.xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/disk_buffer_performance/ansible/config_files/logstash.settings.yml": "fdc64b152c092c5c1fb27434b993a9407c7a643e33eac8da4f7a2edb72a468e3"
+    },
+    "configuration_sha256": {
+      "cases/disk_buffer_performance/configurations/default/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/disk_buffer_performance/configurations/default/terraform.tfvars": "35f15a013f0ec8da2e9f5f7623549cb2d3511019281414473c68a1b35967e57d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "2f46a8b20f93648086eccdcdb0daeb679deb5415ae42e2585b9832b3d6751e49",
+        "samples_including_boot_sample": 63
+      }
+    ]
+  },
+  {
+    "case": "file_to_tcp_performance",
+    "configuration": "multi_file",
+    "subject": "splunk_heavy_forwarder",
+    "timestamp": "1794501637",
+    "measurement_started_at": "2026-11-12T16:40:37.656103+00:00",
+    "measurement_finished_at": "2026-11-12T16:43:11.463559+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "0cfec83474c62f03e0094fab16b479a5cd98fb6de574d1f9fe68366d782409bc",
+    "hardware": "1 \u00d7 c5.xlarge consumer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/file_to_tcp_performance/ansible/config_files/splunk.inputs.conf": "563e6d890623d90ac318f952d0707e3b7a3e2e387b4c659317dc37caecebbcd1",
+      "cases/file_to_tcp_performance/ansible/config_files/splunk.outputs.conf": "838dcd1a536638209566fed7409a513efbd0e1919bb23b1fd0df74f7052fa6df"
+    },
+    "configuration_sha256": {
+      "cases/file_to_tcp_performance/configurations/multi_file/ansible.yml": "d8f482258fb50c5fbfbc71fd0ae09f9af0540147723684663a89374766083f7d",
+      "cases/file_to_tcp_performance/configurations/multi_file/terraform.tfvars": "0a506b0d3048598468dbe29686d6a0278ee5842a63a28b42d709e25f41aeb69d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "143d43ccdbbe6ffe60cb0569b2145b3d3c4e164d0c0acc889a6e0f8ed532dd03",
+        "samples_including_boot_sample": 61
+      }
+    ]
+  },
+  {
+    "case": "file_to_tcp_performance",
+    "configuration": "multi_file",
+    "subject": "splunk_universal_forwarder",
+    "timestamp": "1794505148",
+    "measurement_started_at": "2026-11-12T17:39:08.539825+00:00",
+    "measurement_finished_at": "2026-11-12T17:41:00.763939+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "6a0ea1839cad7f3058e6da0030d90f579fe7a83bdbfe0fc451763e5ae663861f",
+    "hardware": "1 \u00d7 c5.xlarge consumer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/file_to_tcp_performance/ansible/config_files/splunk.outputs.conf": "838dcd1a536638209566fed7409a513efbd0e1919bb23b1fd0df74f7052fa6df",
+      "cases/file_to_tcp_performance/ansible/config_files/splunk.inputs.conf": "563e6d890623d90ac318f952d0707e3b7a3e2e387b4c659317dc37caecebbcd1"
+    },
+    "configuration_sha256": {
+      "cases/file_to_tcp_performance/configurations/multi_file/terraform.tfvars": "0a506b0d3048598468dbe29686d6a0278ee5842a63a28b42d709e25f41aeb69d",
+      "cases/file_to_tcp_performance/configurations/multi_file/ansible.yml": "d8f482258fb50c5fbfbc71fd0ae09f9af0540147723684663a89374766083f7d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {
+      "ansible/roles/splunk_universal_forwarder/tasks/configure.yml": "2842db8b621df3fd6925a2b045d8094474883711ddbfc831b66dbbc3797f3d3b"
+    },
+    "raw_csvs": [
+      {
+        "sha256": "1ae52cd718e3aa6712971be4f401e52ed2947baf0de7c992894b9175f1e348cc",
+        "samples_including_boot_sample": 61
+      }
+    ]
+  },
+  {
+    "case": "file_to_tcp_performance",
+    "configuration": "multi_file",
+    "subject": "vector",
+    "timestamp": "1794495469",
+    "measurement_started_at": "2026-11-12T14:57:49.493831+00:00",
+    "measurement_finished_at": "2026-11-12T14:59:43.582676+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "d578a2c10507a946ee755eff6c6b37327b5134bd0468af73a48c4679f80e3762",
+    "hardware": "1 \u00d7 c5.xlarge consumer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/file_to_tcp_performance/ansible/config_files/vector.yaml": "35ea2c45c54637a6ae8d2a46689ba7e1c2cc07ec120d4bb438e0cd958af22fde"
+    },
+    "configuration_sha256": {
+      "cases/file_to_tcp_performance/configurations/multi_file/ansible.yml": "d8f482258fb50c5fbfbc71fd0ae09f9af0540147723684663a89374766083f7d",
+      "cases/file_to_tcp_performance/configurations/multi_file/terraform.tfvars": "902f19962fc5274696d21ec0ed5417b6e91575b76efc515e4bc8b6e2a084b170"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "dea72fb036f88a6307a82032b0a5a46dbddc727601706f08054bdb333594c95e",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "file_to_tcp_performance",
+    "configuration": "multi_file",
+    "subject": "filebeat",
+    "timestamp": "1794495584",
+    "measurement_started_at": "2026-11-12T14:59:44.418337+00:00",
+    "measurement_finished_at": "2026-11-12T15:02:05.492041+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "d578a2c10507a946ee755eff6c6b37327b5134bd0468af73a48c4679f80e3762",
+    "hardware": "1 \u00d7 c5.xlarge consumer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/file_to_tcp_performance/ansible/config_files/filebeat.yml": "734304e2338712b26f3154efb36645ab1c14e8f7157fb93695b93b4b226bc50a"
+    },
+    "configuration_sha256": {
+      "cases/file_to_tcp_performance/configurations/multi_file/ansible.yml": "d8f482258fb50c5fbfbc71fd0ae09f9af0540147723684663a89374766083f7d",
+      "cases/file_to_tcp_performance/configurations/multi_file/terraform.tfvars": "902f19962fc5274696d21ec0ed5417b6e91575b76efc515e4bc8b6e2a084b170"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "cd71f82fff33d863fe420c09111ebaa2af516b02692560366abec13138d7d491",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "file_to_tcp_performance",
+    "configuration": "multi_file",
+    "subject": "fluentbit",
+    "timestamp": "1794495725",
+    "measurement_started_at": "2026-11-12T15:02:05.925623+00:00",
+    "measurement_finished_at": "2026-11-12T15:04:05.017973+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "d578a2c10507a946ee755eff6c6b37327b5134bd0468af73a48c4679f80e3762",
+    "hardware": "1 \u00d7 c5.xlarge consumer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/file_to_tcp_performance/ansible/config_files/td-agent-bit.conf": "645d0722d9aa739a672acb6ee25dfa83df3bec4e777d3771fb98fa845c45a683"
+    },
+    "configuration_sha256": {
+      "cases/file_to_tcp_performance/configurations/multi_file/ansible.yml": "d8f482258fb50c5fbfbc71fd0ae09f9af0540147723684663a89374766083f7d",
+      "cases/file_to_tcp_performance/configurations/multi_file/terraform.tfvars": "902f19962fc5274696d21ec0ed5417b6e91575b76efc515e4bc8b6e2a084b170"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "96eb8b944573648f7e244e8f6753871afc72dbb5e964273e3cecffc9370e2c45",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "file_to_tcp_performance",
+    "configuration": "multi_file",
+    "subject": "fluentd",
+    "timestamp": "1794495845",
+    "measurement_started_at": "2026-11-12T15:04:05.279581+00:00",
+    "measurement_finished_at": "2026-11-12T15:07:19.270417+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "d578a2c10507a946ee755eff6c6b37327b5134bd0468af73a48c4679f80e3762",
+    "hardware": "1 \u00d7 c5.xlarge consumer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/file_to_tcp_performance/ansible/config_files/td-agent.conf": "9b4392f80a97d161cd65f4430d06cb70fa878eff6f09174326305d3baccc1251"
+    },
+    "configuration_sha256": {
+      "cases/file_to_tcp_performance/configurations/multi_file/ansible.yml": "d8f482258fb50c5fbfbc71fd0ae09f9af0540147723684663a89374766083f7d",
+      "cases/file_to_tcp_performance/configurations/multi_file/terraform.tfvars": "902f19962fc5274696d21ec0ed5417b6e91575b76efc515e4bc8b6e2a084b170"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "3c45019ff08cb2449d3c815c0e43da7bf2884fcb1a02ef5648ef75a60e34139d",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "file_to_tcp_performance",
+    "configuration": "multi_file",
+    "subject": "logstash",
+    "timestamp": "1794496039",
+    "measurement_started_at": "2026-11-12T15:07:19.580054+00:00",
+    "measurement_finished_at": "2026-11-12T15:09:13.802665+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "d578a2c10507a946ee755eff6c6b37327b5134bd0468af73a48c4679f80e3762",
+    "hardware": "1 \u00d7 c5.xlarge consumer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/file_to_tcp_performance/ansible/config_files/logstash.settings.yml": "08fa0d7f5ed72653e6be80aea354c846159071bf036a646cd67d22418da36e66",
+      "cases/file_to_tcp_performance/ansible/config_files/logstash.subject.settings.yml": "08fa0d7f5ed72653e6be80aea354c846159071bf036a646cd67d22418da36e66",
+      "cases/file_to_tcp_performance/ansible/config_files/logstash.consumer.pipeline.conf": "b014ff71b28d8c2c4ddf61252e9495928f12d04b921aa410482e7c2784970c39",
+      "cases/file_to_tcp_performance/ansible/config_files/logstash.subject.pipeline.conf": "f448e5e2737306359d04be69e900121452b7fcc2e5773148b468252d7928124f"
+    },
+    "configuration_sha256": {
+      "cases/file_to_tcp_performance/configurations/multi_file/ansible.yml": "d8f482258fb50c5fbfbc71fd0ae09f9af0540147723684663a89374766083f7d",
+      "cases/file_to_tcp_performance/configurations/multi_file/terraform.tfvars": "902f19962fc5274696d21ec0ed5417b6e91575b76efc515e4bc8b6e2a084b170"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "ddac8a0a520bd5860894d16587c60dcaab4450892ee5f6384b56297a7ab7f75e",
+        "samples_including_boot_sample": 61
+      }
+    ]
+  },
+  {
+    "case": "real_world_1_performance",
+    "configuration": "default",
+    "subject": "vector",
+    "timestamp": "1794496936",
+    "measurement_started_at": "2026-11-12T15:22:16.382184+00:00",
+    "measurement_finished_at": "2026-11-12T15:23:40.556378+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "642d5bae3a1a07dd57d38fc565d47b7d1e018726cb1e008b747bf23cac05f8ff",
+    "hardware": "1 \u00d7 c5d.2xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5.xlarge subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/real_world_1_performance/ansible/config_files/vector.yaml": "ae06d07c497be98e5a00ef60a343119d19d7c6e4fa81202ebbdf1bdaab378a4e"
+    },
+    "configuration_sha256": {
+      "cases/real_world_1_performance/configurations/default/ansible.yml": "8c954f94d8ff780e2102bcea2c6014e954521c978d06564a6715f47aa8305a14",
+      "cases/real_world_1_performance/configurations/default/terraform.tfvars": "4f33f2b03ddf0da4f3be61b54445cb7f58c0221c027a6e3a9c06e7b91beaa9e3"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "9ec27c6b000e281c9824850aa6a8fa22aac194393f864e6698e954726c942fa0",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "lua_base_performance",
+    "configuration": "default",
+    "subject": "vector",
+    "timestamp": "1794496940",
+    "measurement_started_at": "2026-11-12T15:22:20.494459+00:00",
+    "measurement_finished_at": "2026-11-12T15:23:56.268802+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "642d5bae3a1a07dd57d38fc565d47b7d1e018726cb1e008b747bf23cac05f8ff",
+    "hardware": "1 \u00d7 c5d.xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/lua_base_performance/ansible/config_files/vector.yaml": "daa5788d1e1bb035512470b372dd39471c29eb9954c70793e12f5b776f80cec8"
+    },
+    "configuration_sha256": {
+      "cases/lua_base_performance/configurations/default/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/lua_base_performance/configurations/default/terraform.tfvars": "35f15a013f0ec8da2e9f5f7623549cb2d3511019281414473c68a1b35967e57d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "6d45f24170d7a09082a37574ba7bdde484ec7a0bf8b7139c1c8f9dc3ad1a2e1d",
+        "samples_including_boot_sample": 63
+      }
+    ]
+  },
+  {
+    "case": "real_world_1_performance",
+    "configuration": "high_concurrency",
+    "subject": "vector",
+    "timestamp": "1794497182",
+    "measurement_started_at": "2026-11-12T15:26:22.252739+00:00",
+    "measurement_finished_at": "2026-11-12T15:27:42.366234+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "642d5bae3a1a07dd57d38fc565d47b7d1e018726cb1e008b747bf23cac05f8ff",
+    "hardware": "1 \u00d7 c5d.2xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5.xlarge subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/real_world_1_performance/ansible/config_files/vector.yaml": "ae06d07c497be98e5a00ef60a343119d19d7c6e4fa81202ebbdf1bdaab378a4e"
+    },
+    "configuration_sha256": {
+      "cases/real_world_1_performance/configurations/high_concurrency/ansible.yml": "7a523b0a01de9bd8451d9c86031681069ae1f176951039c24cd451d3c695448a",
+      "cases/real_world_1_performance/configurations/high_concurrency/terraform.tfvars": "13b4ce0461a638f693f58629256d7cb8a64abf0e5e7f096e74aae93ee0fda8c6"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "fa5c1516a0e271b5c0ea5aaf3a5638def80b2cdd9b6f4a33aca48727ef90ad96",
+        "samples_including_boot_sample": 63
+      }
+    ]
+  },
+  {
+    "case": "real_world_1_performance",
+    "configuration": "high_concurrency_with_pipelines",
+    "subject": "vector",
+    "timestamp": "1794497410",
+    "measurement_started_at": "2026-11-12T15:30:10.153461+00:00",
+    "measurement_finished_at": "2026-11-12T15:31:27.712165+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "58470cac277b1a5c4f03e7f6a2dda0315757a24ae16e91c5c47e996e997d507d",
+    "hardware": "1 \u00d7 c5d.2xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5.xlarge subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/real_world_1_performance/ansible/config_files/vector.yaml": "ae06d07c497be98e5a00ef60a343119d19d7c6e4fa81202ebbdf1bdaab378a4e"
+    },
+    "configuration_sha256": {
+      "cases/real_world_1_performance/configurations/high_concurrency_with_pipelines/ansible.yml": "8b9495b040e1adae269cfa78c7f91d3aa48180d54c3bcd901b9e05107150f35a",
+      "cases/real_world_1_performance/configurations/high_concurrency_with_pipelines/terraform.tfvars": "ed5d0bcbf287cdef6cf37608f69f4bac5409e5d52a7f0feecc1eace3db0f45aa"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "19845c84e8030206bcd6ed956ef646603595bd4c3d740675f2ff82ef92ef10d2",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "real_world_1_performance",
+    "configuration": "one_sink",
+    "subject": "vector",
+    "timestamp": "1794497635",
+    "measurement_started_at": "2026-11-12T15:33:55.089603+00:00",
+    "measurement_finished_at": "2026-11-12T15:35:12.264313+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "58470cac277b1a5c4f03e7f6a2dda0315757a24ae16e91c5c47e996e997d507d",
+    "hardware": "1 \u00d7 c5d.2xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5.xlarge subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/real_world_1_performance/ansible/config_files/vector.yaml": "ae06d07c497be98e5a00ef60a343119d19d7c6e4fa81202ebbdf1bdaab378a4e"
+    },
+    "configuration_sha256": {
+      "cases/real_world_1_performance/configurations/one_sink/ansible.yml": "cbb678eda8727b23d4e574a4a27f3e3247c1109419573586eeb0954bcd2dfdca",
+      "cases/real_world_1_performance/configurations/one_sink/terraform.tfvars": "4f33f2b03ddf0da4f3be61b54445cb7f58c0221c027a6e3a9c06e7b91beaa9e3"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "2981a3d17bcc7e39120f7218d359fb1b3691a822e02611abad30d80798cc9549",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "real_world_1_performance",
+    "configuration": "without_lua",
+    "subject": "vector",
+    "timestamp": "1794497866",
+    "measurement_started_at": "2026-11-12T15:37:46.047292+00:00",
+    "measurement_finished_at": "2026-11-12T15:39:05.235025+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "58470cac277b1a5c4f03e7f6a2dda0315757a24ae16e91c5c47e996e997d507d",
+    "hardware": "1 \u00d7 c5d.2xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5.xlarge subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/real_world_1_performance/ansible/config_files/vector.yaml": "ae06d07c497be98e5a00ef60a343119d19d7c6e4fa81202ebbdf1bdaab378a4e"
+    },
+    "configuration_sha256": {
+      "cases/real_world_1_performance/configurations/without_lua/ansible.yml": "8c954f94d8ff780e2102bcea2c6014e954521c978d06564a6715f47aa8305a14",
+      "cases/real_world_1_performance/configurations/without_lua/terraform.tfvars": "4f33f2b03ddf0da4f3be61b54445cb7f58c0221c027a6e3a9c06e7b91beaa9e3"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "626bb632c16f3c305841245d178c45bf2db6157e845cf8bf011bfb26a6656e4f",
+        "samples_including_boot_sample": 63
+      }
+    ]
+  },
+  {
+    "case": "file_to_tcp_performance",
+    "configuration": "single_file",
+    "subject": "splunk_heavy_forwarder",
+    "timestamp": "1794502290",
+    "measurement_started_at": "2026-11-12T16:51:30.479559+00:00",
+    "measurement_finished_at": "2026-11-12T16:54:17.947124+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "9adf9f87c68efff3496df691d587034d855403db16f5d6ebb4e29077a33cb306",
+    "hardware": "1 \u00d7 c5.xlarge consumer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/file_to_tcp_performance/ansible/config_files/splunk.inputs.conf": "563e6d890623d90ac318f952d0707e3b7a3e2e387b4c659317dc37caecebbcd1",
+      "cases/file_to_tcp_performance/ansible/config_files/splunk.outputs.conf": "838dcd1a536638209566fed7409a513efbd0e1919bb23b1fd0df74f7052fa6df"
+    },
+    "configuration_sha256": {
+      "cases/file_to_tcp_performance/configurations/single_file/ansible.yml": "27591b6c44cd898e4b09929af54dc7608edeff8101af5d840b029fa8855a07c0",
+      "cases/file_to_tcp_performance/configurations/single_file/terraform.tfvars": "0a506b0d3048598468dbe29686d6a0278ee5842a63a28b42d709e25f41aeb69d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "a22f08bab20cc59408562a99b5942dd9c750d48a1fb8482da78d61929f385552",
+        "samples_including_boot_sample": 61
+      }
+    ]
+  },
+  {
+    "case": "file_to_tcp_performance",
+    "configuration": "single_file",
+    "subject": "splunk_universal_forwarder",
+    "timestamp": "1794502458",
+    "measurement_started_at": "2026-11-12T16:54:18.755528+00:00",
+    "measurement_finished_at": "2026-11-12T16:56:29.455535+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "9adf9f87c68efff3496df691d587034d855403db16f5d6ebb4e29077a33cb306",
+    "hardware": "1 \u00d7 c5.xlarge consumer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/file_to_tcp_performance/ansible/config_files/splunk.inputs.conf": "563e6d890623d90ac318f952d0707e3b7a3e2e387b4c659317dc37caecebbcd1",
+      "cases/file_to_tcp_performance/ansible/config_files/splunk.outputs.conf": "838dcd1a536638209566fed7409a513efbd0e1919bb23b1fd0df74f7052fa6df"
+    },
+    "configuration_sha256": {
+      "cases/file_to_tcp_performance/configurations/single_file/ansible.yml": "27591b6c44cd898e4b09929af54dc7608edeff8101af5d840b029fa8855a07c0",
+      "cases/file_to_tcp_performance/configurations/single_file/terraform.tfvars": "0a506b0d3048598468dbe29686d6a0278ee5842a63a28b42d709e25f41aeb69d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {
+      "ansible/roles/splunk_universal_forwarder/tasks/configure.yml": "2842db8b621df3fd6925a2b045d8094474883711ddbfc831b66dbbc3797f3d3b"
+    },
+    "raw_csvs": [
+      {
+        "sha256": "5e0712fee4c6aa67ec4764e8941f73b7efcaf0608ea96b133964030e4ff1bb4f",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "file_to_tcp_performance",
+    "configuration": "single_file",
+    "subject": "vector",
+    "timestamp": "1794497125",
+    "measurement_started_at": "2026-11-12T15:25:25.296263+00:00",
+    "measurement_finished_at": "2026-11-12T15:27:08.022182+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "642d5bae3a1a07dd57d38fc565d47b7d1e018726cb1e008b747bf23cac05f8ff",
+    "hardware": "1 \u00d7 c5.xlarge consumer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/file_to_tcp_performance/ansible/config_files/vector.yaml": "35ea2c45c54637a6ae8d2a46689ba7e1c2cc07ec120d4bb438e0cd958af22fde"
+    },
+    "configuration_sha256": {
+      "cases/file_to_tcp_performance/configurations/single_file/ansible.yml": "27591b6c44cd898e4b09929af54dc7608edeff8101af5d840b029fa8855a07c0",
+      "cases/file_to_tcp_performance/configurations/single_file/terraform.tfvars": "0a506b0d3048598468dbe29686d6a0278ee5842a63a28b42d709e25f41aeb69d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "a144dd7db6c8050c8ba40e244c8f282950562749103dffd407675bf0786b94da",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "file_to_tcp_performance",
+    "configuration": "single_file",
+    "subject": "filebeat",
+    "timestamp": "1794497228",
+    "measurement_started_at": "2026-11-12T15:27:08.297929+00:00",
+    "measurement_finished_at": "2026-11-12T15:29:23.224324+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "642d5bae3a1a07dd57d38fc565d47b7d1e018726cb1e008b747bf23cac05f8ff",
+    "hardware": "1 \u00d7 c5.xlarge consumer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/file_to_tcp_performance/ansible/config_files/filebeat.yml": "734304e2338712b26f3154efb36645ab1c14e8f7157fb93695b93b4b226bc50a"
+    },
+    "configuration_sha256": {
+      "cases/file_to_tcp_performance/configurations/single_file/ansible.yml": "27591b6c44cd898e4b09929af54dc7608edeff8101af5d840b029fa8855a07c0",
+      "cases/file_to_tcp_performance/configurations/single_file/terraform.tfvars": "0a506b0d3048598468dbe29686d6a0278ee5842a63a28b42d709e25f41aeb69d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "49a20da6f28b65a48f9b6912bc75a0ca4a0d3a375f4f7bc45c4d2313d9798602",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "file_to_tcp_performance",
+    "configuration": "single_file",
+    "subject": "fluentbit",
+    "timestamp": "1794497363",
+    "measurement_started_at": "2026-11-12T15:29:23.420119+00:00",
+    "measurement_finished_at": "2026-11-12T15:31:03.458533+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "642d5bae3a1a07dd57d38fc565d47b7d1e018726cb1e008b747bf23cac05f8ff",
+    "hardware": "1 \u00d7 c5.xlarge consumer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/file_to_tcp_performance/ansible/config_files/td-agent-bit.conf": "645d0722d9aa739a672acb6ee25dfa83df3bec4e777d3771fb98fa845c45a683"
+    },
+    "configuration_sha256": {
+      "cases/file_to_tcp_performance/configurations/single_file/ansible.yml": "27591b6c44cd898e4b09929af54dc7608edeff8101af5d840b029fa8855a07c0",
+      "cases/file_to_tcp_performance/configurations/single_file/terraform.tfvars": "0a506b0d3048598468dbe29686d6a0278ee5842a63a28b42d709e25f41aeb69d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "939690754d68678f523779e785e55745d5499680626a8f66f1922245754dab9b",
+        "samples_including_boot_sample": 61
+      }
+    ]
+  },
+  {
+    "case": "file_to_tcp_performance",
+    "configuration": "single_file",
+    "subject": "fluentd",
+    "timestamp": "1794497463",
+    "measurement_started_at": "2026-11-12T15:31:03.643126+00:00",
+    "measurement_finished_at": "2026-11-12T15:33:30.248614+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "642d5bae3a1a07dd57d38fc565d47b7d1e018726cb1e008b747bf23cac05f8ff",
+    "hardware": "1 \u00d7 c5.xlarge consumer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/file_to_tcp_performance/ansible/config_files/td-agent.conf": "9b4392f80a97d161cd65f4430d06cb70fa878eff6f09174326305d3baccc1251"
+    },
+    "configuration_sha256": {
+      "cases/file_to_tcp_performance/configurations/single_file/ansible.yml": "27591b6c44cd898e4b09929af54dc7608edeff8101af5d840b029fa8855a07c0",
+      "cases/file_to_tcp_performance/configurations/single_file/terraform.tfvars": "0a506b0d3048598468dbe29686d6a0278ee5842a63a28b42d709e25f41aeb69d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "c340caa5cb803900bde0c8d2309552c18adba99941af8cfdfde9d9e203d48691",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "file_to_tcp_performance",
+    "configuration": "single_file",
+    "subject": "logstash",
+    "timestamp": "1794497610",
+    "measurement_started_at": "2026-11-12T15:33:30.427421+00:00",
+    "measurement_finished_at": "2026-11-12T15:35:11.424344+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "642d5bae3a1a07dd57d38fc565d47b7d1e018726cb1e008b747bf23cac05f8ff",
+    "hardware": "1 \u00d7 c5.xlarge consumer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/file_to_tcp_performance/ansible/config_files/logstash.settings.yml": "08fa0d7f5ed72653e6be80aea354c846159071bf036a646cd67d22418da36e66",
+      "cases/file_to_tcp_performance/ansible/config_files/logstash.subject.settings.yml": "08fa0d7f5ed72653e6be80aea354c846159071bf036a646cd67d22418da36e66",
+      "cases/file_to_tcp_performance/ansible/config_files/logstash.consumer.pipeline.conf": "b014ff71b28d8c2c4ddf61252e9495928f12d04b921aa410482e7c2784970c39",
+      "cases/file_to_tcp_performance/ansible/config_files/logstash.subject.pipeline.conf": "f448e5e2737306359d04be69e900121452b7fcc2e5773148b468252d7928124f"
+    },
+    "configuration_sha256": {
+      "cases/file_to_tcp_performance/configurations/single_file/ansible.yml": "27591b6c44cd898e4b09929af54dc7608edeff8101af5d840b029fa8855a07c0",
+      "cases/file_to_tcp_performance/configurations/single_file/terraform.tfvars": "0a506b0d3048598468dbe29686d6a0278ee5842a63a28b42d709e25f41aeb69d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "ac4c4e3ffc51ed556debd501ab775aabf047bb3ec784e9c66c6265cd3eaa0021",
+        "samples_including_boot_sample": 61
+      }
+    ]
+  },
+  {
+    "case": "regex_parsing_performance",
+    "configuration": "default",
+    "subject": "splunk_heavy_forwarder",
+    "timestamp": "1794501845",
+    "measurement_started_at": "2026-11-12T16:44:05.537590+00:00",
+    "measurement_finished_at": "2026-11-12T16:46:28.802761+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "5f5f9987fcfac6eb04b0337aacbd1e7bfe0cd2c65ec94d52a52bd14b7ee8846f",
+    "hardware": "1 \u00d7 c5d.xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/regex_parsing_performance/ansible/config_files/splunk.inputs.conf": "b4f0b060bf0b579c14a864e7fa284bae71ba394fb57e136cb527d28b7d4b938f",
+      "cases/regex_parsing_performance/ansible/config_files/splunk.outputs.conf": "838dcd1a536638209566fed7409a513efbd0e1919bb23b1fd0df74f7052fa6df",
+      "cases/regex_parsing_performance/ansible/config_files/splunk.props.conf": "ce330f16f797fad49bd3dfe7c1a1383a5e4d17d0981400f7de28f91c3e6eca69",
+      "cases/regex_parsing_performance/ansible/config_files/splunk.transforms.conf": "9a1516d6ca26503aa57a73fd3e468499a315dae02fb95ba73ebad1f3c038c13c"
+    },
+    "configuration_sha256": {
+      "cases/regex_parsing_performance/configurations/default/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/regex_parsing_performance/configurations/default/terraform.tfvars": "35f15a013f0ec8da2e9f5f7623549cb2d3511019281414473c68a1b35967e57d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "5b03852c3cf14efa084be3a99b12b862deba7f0c872a7cf60691809ef286cadc",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "regex_parsing_performance",
+    "configuration": "default",
+    "subject": "vector",
+    "timestamp": "1794497213",
+    "measurement_started_at": "2026-11-12T15:26:53.239274+00:00",
+    "measurement_finished_at": "2026-11-12T15:28:31.724472+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "642d5bae3a1a07dd57d38fc565d47b7d1e018726cb1e008b747bf23cac05f8ff",
+    "hardware": "1 \u00d7 c5d.xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/regex_parsing_performance/ansible/config_files/vector.yaml": "efc8c1e629e6f0a2e5a89ba3f0f09696efb11da2c45a37db71415cccf267b76b"
+    },
+    "configuration_sha256": {
+      "cases/regex_parsing_performance/configurations/default/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/regex_parsing_performance/configurations/default/terraform.tfvars": "35f15a013f0ec8da2e9f5f7623549cb2d3511019281414473c68a1b35967e57d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "bdf12a710a6aa1ccdd16e48bc690b83cdfe51840daa68c4acd568525003b357e",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "regex_parsing_performance",
+    "configuration": "default",
+    "subject": "fluentbit",
+    "timestamp": "1794497312",
+    "measurement_started_at": "2026-11-12T15:28:32.433172+00:00",
+    "measurement_finished_at": "2026-11-12T15:30:08.857338+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "642d5bae3a1a07dd57d38fc565d47b7d1e018726cb1e008b747bf23cac05f8ff",
+    "hardware": "1 \u00d7 c5d.xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/regex_parsing_performance/ansible/config_files/td-agent-bit.conf": "fed07807759f6af87805a209f6dae72daeee347d622695a31db8e2d824533d38",
+      "cases/regex_parsing_performance/ansible/config_files/td-agent-bit.parsers.conf": "51b251169faf43a9cdb9d3e75c8732af003a2caa72aabb8129ec66e8c050fe1e"
+    },
+    "configuration_sha256": {
+      "cases/regex_parsing_performance/configurations/default/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/regex_parsing_performance/configurations/default/terraform.tfvars": "35f15a013f0ec8da2e9f5f7623549cb2d3511019281414473c68a1b35967e57d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "86b1a4a4f73c849de8a832cf892c67a9b41fc498dade43366387b2a48dac7eab",
+        "samples_including_boot_sample": 61
+      }
+    ]
+  },
+  {
+    "case": "regex_parsing_performance",
+    "configuration": "default",
+    "subject": "fluentd",
+    "timestamp": "1794497409",
+    "measurement_started_at": "2026-11-12T15:30:09.052241+00:00",
+    "measurement_finished_at": "2026-11-12T15:31:48.826053+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "642d5bae3a1a07dd57d38fc565d47b7d1e018726cb1e008b747bf23cac05f8ff",
+    "hardware": "1 \u00d7 c5d.xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/regex_parsing_performance/ansible/config_files/td-agent.conf": "ed923290fc24d61a5ea66d61222bcd9ff7f4d0acc767afade87a2783a008d79f"
+    },
+    "configuration_sha256": {
+      "cases/regex_parsing_performance/configurations/default/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/regex_parsing_performance/configurations/default/terraform.tfvars": "35f15a013f0ec8da2e9f5f7623549cb2d3511019281414473c68a1b35967e57d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "076d5134ae453c1970097cacd70f607da5bf7f9072ec3fdd4a6f1ec520c30cd0",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "regex_parsing_performance",
+    "configuration": "default",
+    "subject": "logstash",
+    "timestamp": "1794497508",
+    "measurement_started_at": "2026-11-12T15:31:48.987534+00:00",
+    "measurement_finished_at": "2026-11-12T15:34:05.690452+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "642d5bae3a1a07dd57d38fc565d47b7d1e018726cb1e008b747bf23cac05f8ff",
+    "hardware": "1 \u00d7 c5d.xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/regex_parsing_performance/ansible/config_files/logstash.settings.yml": "01c9295a75328cdf94d7acedef57f2bbc2ff95e9a82e3c700763312272e7a3a2",
+      "cases/regex_parsing_performance/ansible/config_files/logstash.pipeline.conf": "99d9ff58a19e3c8af988336a8bc4c3d327a818bc53e1ab3e01e5ff6a52030e7d"
+    },
+    "configuration_sha256": {
+      "cases/regex_parsing_performance/configurations/default/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/regex_parsing_performance/configurations/default/terraform.tfvars": "35f15a013f0ec8da2e9f5f7623549cb2d3511019281414473c68a1b35967e57d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "fd0611c01393f77e8ee169f9f8365d1f2bc58e476a3206e93b35727f2a03964e",
+        "samples_including_boot_sample": 61
+      }
+    ]
+  },
+  {
+    "case": "real_world_1_performance",
+    "configuration": "without_transforms",
+    "subject": "vector",
+    "timestamp": "1794498278",
+    "measurement_started_at": "2026-11-12T15:44:38.914176+00:00",
+    "measurement_finished_at": "2026-11-12T15:46:03.208974+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "168a13a44259e33f830b30f2db612bd52a1462d371b468f3073ee686a400b704",
+    "hardware": "1 \u00d7 c5d.2xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5.xlarge subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/real_world_1_performance/ansible/config_files/vector.yaml": "ae06d07c497be98e5a00ef60a343119d19d7c6e4fa81202ebbdf1bdaab378a4e"
+    },
+    "configuration_sha256": {
+      "cases/real_world_1_performance/configurations/without_transforms/ansible.yml": "022c5c4e183f38f5200ca9a7819cd22e70b456054817d1ab885f10d7f50310ba",
+      "cases/real_world_1_performance/configurations/without_transforms/terraform.tfvars": "4f33f2b03ddf0da4f3be61b54445cb7f58c0221c027a6e3a9c06e7b91beaa9e3"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "275d98b780d6d167323ccc057dc45998b72f19b7c28838836304089658ab728e",
+        "samples_including_boot_sample": 63
+      }
+    ]
+  },
+  {
+    "case": "real_world_1_performance",
+    "configuration": "without_transforms_and_rate_limiting",
+    "subject": "vector",
+    "timestamp": "1794498520",
+    "measurement_started_at": "2026-11-12T15:48:40.985398+00:00",
+    "measurement_finished_at": "2026-11-12T15:50:03.601615+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "168a13a44259e33f830b30f2db612bd52a1462d371b468f3073ee686a400b704",
+    "hardware": "1 \u00d7 c5d.2xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5.xlarge subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/real_world_1_performance/ansible/config_files/vector.yaml": "ae06d07c497be98e5a00ef60a343119d19d7c6e4fa81202ebbdf1bdaab378a4e"
+    },
+    "configuration_sha256": {
+      "cases/real_world_1_performance/configurations/without_transforms_and_rate_limiting/ansible.yml": "b675d501e76c1d1903ab2252617adc258a5540f19c5bda3bd390fb8f3ed1731d",
+      "cases/real_world_1_performance/configurations/without_transforms_and_rate_limiting/terraform.tfvars": "4f33f2b03ddf0da4f3be61b54445cb7f58c0221c027a6e3a9c06e7b91beaa9e3"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "49bed77b6baa86f2b7edd2fb4fe7f650f044bea553f18a450ec198c2b269678d",
+        "samples_including_boot_sample": 63
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_blackhole_performance",
+    "configuration": "default",
+    "subject": "vector",
+    "timestamp": "1794498251",
+    "measurement_started_at": "2026-11-12T15:44:11.257515+00:00",
+    "measurement_finished_at": "2026-11-12T15:45:51.021625+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "168a13a44259e33f830b30f2db612bd52a1462d371b468f3073ee686a400b704",
+    "hardware": "10 \u00d7 c5.large producer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_blackhole_performance/ansible/config_files/vector.yaml": "5d8898799346aafbee81be967ba15c89ddfed85b1c14cb48b8fb695b45036b40"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_blackhole_performance/configurations/default/ansible.yml": "8fa58135372f14a20c9914c152d4d7b795d41b6cc9cac06fbbb38c2b85b78dea",
+      "cases/tcp_to_blackhole_performance/configurations/default/terraform.tfvars": "65edf6fada2a2f2c11d45587c62c1b635a0dd73bce5f2756ea5e9515b1cff4c8"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "deeb62d78c6660644d66a1c70588a260dcd7764c508c2cd6c65a577e91942e0a",
+        "samples_including_boot_sample": 63
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_blackhole_performance",
+    "configuration": "default",
+    "subject": "fluentbit",
+    "timestamp": "1794498352",
+    "measurement_started_at": "2026-11-12T15:45:52.231745+00:00",
+    "measurement_finished_at": "2026-11-12T15:47:25.829316+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "168a13a44259e33f830b30f2db612bd52a1462d371b468f3073ee686a400b704",
+    "hardware": "10 \u00d7 c5.large producer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_blackhole_performance/ansible/config_files/td-agent-bit.conf": "e5865642bd67da7068415198172510574a0c12bcb32a81652974595f3d213f9e"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_blackhole_performance/configurations/default/ansible.yml": "8fa58135372f14a20c9914c152d4d7b795d41b6cc9cac06fbbb38c2b85b78dea",
+      "cases/tcp_to_blackhole_performance/configurations/default/terraform.tfvars": "65edf6fada2a2f2c11d45587c62c1b635a0dd73bce5f2756ea5e9515b1cff4c8"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "6bb133745c7a3b75a9a59cd6ff2a012f485edcde34920e7da65003e0139bd68a",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_blackhole_performance",
+    "configuration": "default",
+    "subject": "fluentd",
+    "timestamp": "1794498446",
+    "measurement_started_at": "2026-11-12T15:47:26.028704+00:00",
+    "measurement_finished_at": "2026-11-12T15:48:59.251969+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "168a13a44259e33f830b30f2db612bd52a1462d371b468f3073ee686a400b704",
+    "hardware": "10 \u00d7 c5.large producer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_blackhole_performance/ansible/config_files/td-agent.conf": "162e70b8957b2f2abd19963fd65d07414bac0425d41a6f303fc3f641713d4ab0"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_blackhole_performance/configurations/default/ansible.yml": "8fa58135372f14a20c9914c152d4d7b795d41b6cc9cac06fbbb38c2b85b78dea",
+      "cases/tcp_to_blackhole_performance/configurations/default/terraform.tfvars": "65edf6fada2a2f2c11d45587c62c1b635a0dd73bce5f2756ea5e9515b1cff4c8"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "d0058056a60072018572a11cb8a1843da901523745f134a5ee1e077c9110fddb",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_blackhole_performance",
+    "configuration": "default",
+    "subject": "logstash",
+    "timestamp": "1794498539",
+    "measurement_started_at": "2026-11-12T15:48:59.429354+00:00",
+    "measurement_finished_at": "2026-11-12T15:51:01.216456+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "168a13a44259e33f830b30f2db612bd52a1462d371b468f3073ee686a400b704",
+    "hardware": "10 \u00d7 c5.large producer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_blackhole_performance/ansible/config_files/logstash.settings.yml": "01c9295a75328cdf94d7acedef57f2bbc2ff95e9a82e3c700763312272e7a3a2",
+      "cases/tcp_to_blackhole_performance/ansible/config_files/logstash.pipeline.conf": "8d331b54843dbd1e83c96372712ab338c103e33ef68d250473b78bf291fffe1d"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_blackhole_performance/configurations/default/ansible.yml": "8fa58135372f14a20c9914c152d4d7b795d41b6cc9cac06fbbb38c2b85b78dea",
+      "cases/tcp_to_blackhole_performance/configurations/default/terraform.tfvars": "65edf6fada2a2f2c11d45587c62c1b635a0dd73bce5f2756ea5e9515b1cff4c8"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "6b3d0e7a110369bca0946ac208ecf3c4185011a6e806756b55512ca8c8f13cb3",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "regex_parsing_performance",
+    "configuration": "sandbox",
+    "subject": "splunk_heavy_forwarder",
+    "timestamp": "1794502163",
+    "measurement_started_at": "2026-11-12T16:49:23.927649+00:00",
+    "measurement_finished_at": "2026-11-12T16:51:51.689486+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "9adf9f87c68efff3496df691d587034d855403db16f5d6ebb4e29077a33cb306",
+    "hardware": "1 \u00d7 m5.large consumer, 3 \u00d7 m5.large producer, 1 \u00d7 m5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8259CL CPU @ 2.50GHz",
+    "fixture_sha256": {
+      "cases/regex_parsing_performance/ansible/config_files/splunk.inputs.conf": "b4f0b060bf0b579c14a864e7fa284bae71ba394fb57e136cb527d28b7d4b938f",
+      "cases/regex_parsing_performance/ansible/config_files/splunk.outputs.conf": "838dcd1a536638209566fed7409a513efbd0e1919bb23b1fd0df74f7052fa6df",
+      "cases/regex_parsing_performance/ansible/config_files/splunk.props.conf": "ce330f16f797fad49bd3dfe7c1a1383a5e4d17d0981400f7de28f91c3e6eca69",
+      "cases/regex_parsing_performance/ansible/config_files/splunk.transforms.conf": "9a1516d6ca26503aa57a73fd3e468499a315dae02fb95ba73ebad1f3c038c13c"
+    },
+    "configuration_sha256": {
+      "cases/regex_parsing_performance/configurations/sandbox/ansible.yml": "e26bbe3f0ac91f4d5f209fe151a0c1bd323b74cef43ebc762a242bca61073730",
+      "cases/regex_parsing_performance/configurations/sandbox/terraform.tfvars": "0d8b7eb0ae25d83862221269cd4d64f2ffdf82fc4b6c7176eca8c47017697edc"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "7ac17f22660cab81a218a1f9e6e608d564cbe59007210112ecbe6628458d12c5",
+        "samples_including_boot_sample": 63
+      }
+    ]
+  },
+  {
+    "case": "regex_parsing_performance",
+    "configuration": "sandbox",
+    "subject": "vector",
+    "timestamp": "1794498258",
+    "measurement_started_at": "2026-11-12T15:44:18.379543+00:00",
+    "measurement_finished_at": "2026-11-12T15:46:04.375068+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "168a13a44259e33f830b30f2db612bd52a1462d371b468f3073ee686a400b704",
+    "hardware": "1 \u00d7 m5.large consumer, 3 \u00d7 m5.large producer, 1 \u00d7 m5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8259CL CPU @ 2.50GHz",
+    "fixture_sha256": {
+      "cases/regex_parsing_performance/ansible/config_files/vector.yaml": "efc8c1e629e6f0a2e5a89ba3f0f09696efb11da2c45a37db71415cccf267b76b"
+    },
+    "configuration_sha256": {
+      "cases/regex_parsing_performance/configurations/sandbox/ansible.yml": "e26bbe3f0ac91f4d5f209fe151a0c1bd323b74cef43ebc762a242bca61073730",
+      "cases/regex_parsing_performance/configurations/sandbox/terraform.tfvars": "0d8b7eb0ae25d83862221269cd4d64f2ffdf82fc4b6c7176eca8c47017697edc"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "8930529b15cb23ff8826e42753cfeeb09a21b6aa8d97a350157407799e30ff35",
+        "samples_including_boot_sample": 63
+      }
+    ]
+  },
+  {
+    "case": "regex_parsing_performance",
+    "configuration": "sandbox",
+    "subject": "fluentbit",
+    "timestamp": "1794498365",
+    "measurement_started_at": "2026-11-12T15:46:05.186496+00:00",
+    "measurement_finished_at": "2026-11-12T15:47:43.838552+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "168a13a44259e33f830b30f2db612bd52a1462d371b468f3073ee686a400b704",
+    "hardware": "1 \u00d7 m5.large consumer, 3 \u00d7 m5.large producer, 1 \u00d7 m5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8259CL CPU @ 2.50GHz",
+    "fixture_sha256": {
+      "cases/regex_parsing_performance/ansible/config_files/td-agent-bit.conf": "fed07807759f6af87805a209f6dae72daeee347d622695a31db8e2d824533d38",
+      "cases/regex_parsing_performance/ansible/config_files/td-agent-bit.parsers.conf": "51b251169faf43a9cdb9d3e75c8732af003a2caa72aabb8129ec66e8c050fe1e"
+    },
+    "configuration_sha256": {
+      "cases/regex_parsing_performance/configurations/sandbox/ansible.yml": "e26bbe3f0ac91f4d5f209fe151a0c1bd323b74cef43ebc762a242bca61073730",
+      "cases/regex_parsing_performance/configurations/sandbox/terraform.tfvars": "0d8b7eb0ae25d83862221269cd4d64f2ffdf82fc4b6c7176eca8c47017697edc"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "ed033ee9f79287f0883e59fd6fc977d313340ebc2af8f3fb27f7da2164d2cf42",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "regex_parsing_performance",
+    "configuration": "sandbox",
+    "subject": "fluentd",
+    "timestamp": "1794498463",
+    "measurement_started_at": "2026-11-12T15:47:43.995211+00:00",
+    "measurement_finished_at": "2026-11-12T15:49:36.381206+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "168a13a44259e33f830b30f2db612bd52a1462d371b468f3073ee686a400b704",
+    "hardware": "1 \u00d7 m5.large consumer, 3 \u00d7 m5.large producer, 1 \u00d7 m5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8259CL CPU @ 2.50GHz",
+    "fixture_sha256": {
+      "cases/regex_parsing_performance/ansible/config_files/td-agent.conf": "ed923290fc24d61a5ea66d61222bcd9ff7f4d0acc767afade87a2783a008d79f"
+    },
+    "configuration_sha256": {
+      "cases/regex_parsing_performance/configurations/sandbox/ansible.yml": "e26bbe3f0ac91f4d5f209fe151a0c1bd323b74cef43ebc762a242bca61073730",
+      "cases/regex_parsing_performance/configurations/sandbox/terraform.tfvars": "0d8b7eb0ae25d83862221269cd4d64f2ffdf82fc4b6c7176eca8c47017697edc"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "bf428824abfa11f7d826941b5dffbdd8a23605465f780bd70486f1293d6fa068",
+        "samples_including_boot_sample": 72
+      }
+    ]
+  },
+  {
+    "case": "regex_parsing_performance",
+    "configuration": "sandbox",
+    "subject": "logstash",
+    "timestamp": "1794498576",
+    "measurement_started_at": "2026-11-12T15:49:36.578846+00:00",
+    "measurement_finished_at": "2026-11-12T15:51:48.271711+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "168a13a44259e33f830b30f2db612bd52a1462d371b468f3073ee686a400b704",
+    "hardware": "1 \u00d7 m5.large consumer, 3 \u00d7 m5.large producer, 1 \u00d7 m5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8259CL CPU @ 2.50GHz",
+    "fixture_sha256": {
+      "cases/regex_parsing_performance/ansible/config_files/logstash.settings.yml": "01c9295a75328cdf94d7acedef57f2bbc2ff95e9a82e3c700763312272e7a3a2",
+      "cases/regex_parsing_performance/ansible/config_files/logstash.pipeline.conf": "99d9ff58a19e3c8af988336a8bc4c3d327a818bc53e1ab3e01e5ff6a52030e7d"
+    },
+    "configuration_sha256": {
+      "cases/regex_parsing_performance/configurations/sandbox/ansible.yml": "e26bbe3f0ac91f4d5f209fe151a0c1bd323b74cef43ebc762a242bca61073730",
+      "cases/regex_parsing_performance/configurations/sandbox/terraform.tfvars": "0d8b7eb0ae25d83862221269cd4d64f2ffdf82fc4b6c7176eca8c47017697edc"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "8520418953f193c68754bf2e45d68088096970ae30e78261fde50fde3d5cb339",
+        "samples_including_boot_sample": 64
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_http_performance",
+    "configuration": "default",
+    "subject": "fluentd",
+    "timestamp": "1794502480",
+    "measurement_started_at": "2026-11-12T16:54:40.276748+00:00",
+    "measurement_finished_at": "2026-11-12T16:56:37.522407+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "189492362336ec6ab1ac321087728409c40ba3b4b260660a7ecf93282750568f",
+    "hardware": "1 \u00d7 c5d.xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_http_performance/ansible/config_files/td-agent.conf": "c6fabb5391acab9dc4407ec4419774a3aaa6c63be1824aad49a370c369f1e981"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_http_performance/configurations/default/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/tcp_to_http_performance/configurations/default/terraform.tfvars": "35f15a013f0ec8da2e9f5f7623549cb2d3511019281414473c68a1b35967e57d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "db1c2824c220a39b39ab4e8944f999fc97a019fbe9842e43f8f3f56377ea3048",
+        "samples_including_boot_sample": 63
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_http_performance",
+    "configuration": "default",
+    "subject": "vector",
+    "timestamp": "1794498851",
+    "measurement_started_at": "2026-11-12T15:54:11.767599+00:00",
+    "measurement_finished_at": "2026-11-12T15:55:48.919129+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "168a13a44259e33f830b30f2db612bd52a1462d371b468f3073ee686a400b704",
+    "hardware": "1 \u00d7 c5d.xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_http_performance/ansible/config_files/vector.yaml": "71ee8d539c71d08a22f8eb317b0b6343dc13508975e7369776c09c31a56a4cc3"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_http_performance/configurations/default/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/tcp_to_http_performance/configurations/default/terraform.tfvars": "35f15a013f0ec8da2e9f5f7623549cb2d3511019281414473c68a1b35967e57d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "52832a2d1b1217b996e274867eb3a29aa4a13f1274639cdbad4361d24c06652e",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_http_performance",
+    "configuration": "default",
+    "subject": "fluentbit",
+    "timestamp": "1794498949",
+    "measurement_started_at": "2026-11-12T15:55:49.824980+00:00",
+    "measurement_finished_at": "2026-11-12T15:57:23.376690+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "168a13a44259e33f830b30f2db612bd52a1462d371b468f3073ee686a400b704",
+    "hardware": "1 \u00d7 c5d.xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_http_performance/ansible/config_files/td-agent-bit.conf": "9ca4215a5548f12974447a2897293a704050b8cc816a87fb9e82b805fbfc5c24"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_http_performance/configurations/default/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/tcp_to_http_performance/configurations/default/terraform.tfvars": "35f15a013f0ec8da2e9f5f7623549cb2d3511019281414473c68a1b35967e57d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "ba3c2581df2d8fa7243d959a4df8389369c652cbf2ae480ac2fb8b71fbb27863",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_http_performance",
+    "configuration": "default",
+    "subject": "logstash",
+    "timestamp": "1794499142",
+    "measurement_started_at": "2026-11-12T15:59:02.934826+00:00",
+    "measurement_finished_at": "2026-11-12T16:01:11.372244+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "168a13a44259e33f830b30f2db612bd52a1462d371b468f3073ee686a400b704",
+    "hardware": "1 \u00d7 c5d.xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_http_performance/ansible/config_files/logstash.settings.yml": "01c9295a75328cdf94d7acedef57f2bbc2ff95e9a82e3c700763312272e7a3a2",
+      "cases/tcp_to_http_performance/ansible/config_files/logstash.pipeline.conf": "cda7b476f23436485d6978f86c1099c30d89f73f93cba9edc0322ef0bd09189e"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_http_performance/configurations/default/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/tcp_to_http_performance/configurations/default/terraform.tfvars": "35f15a013f0ec8da2e9f5f7623549cb2d3511019281414473c68a1b35967e57d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "be9463c45dfacb3846b7c151db8aa5f0ef1b1a9c3c7164127f39d465e6ea5c71",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_http_performance",
+    "configuration": "high_concurrency",
+    "subject": "vector",
+    "timestamp": "1794499717",
+    "measurement_started_at": "2026-11-12T16:08:37.650605+00:00",
+    "measurement_finished_at": "2026-11-12T16:10:21.299434+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "98193cce205d704b81b57a74b57a03e7a74ce7c42c9bfe29a64cac5766df5ce4",
+    "hardware": "1 \u00d7 c5d.9xlarge consumer, 20 \u00d7 c5.large producer, 1 \u00d7 c5.9xlarge subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_http_performance/ansible/config_files/vector.yaml": "71ee8d539c71d08a22f8eb317b0b6343dc13508975e7369776c09c31a56a4cc3"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_http_performance/configurations/high_concurrency/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/tcp_to_http_performance/configurations/high_concurrency/terraform.tfvars": "387489159fb08495b4f984dc2756aa28345fdf68293553c119154992709a43ae"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "56d644343885380599b361213d5c7a1b6e808914041f626569c4055cb986075d",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_http_performance",
+    "configuration": "high_concurrency",
+    "subject": "fluentbit",
+    "timestamp": "1794499822",
+    "measurement_started_at": "2026-11-12T16:10:22.288264+00:00",
+    "measurement_finished_at": "2026-11-12T16:11:57.416850+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "98193cce205d704b81b57a74b57a03e7a74ce7c42c9bfe29a64cac5766df5ce4",
+    "hardware": "1 \u00d7 c5d.9xlarge consumer, 20 \u00d7 c5.large producer, 1 \u00d7 c5.9xlarge subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_http_performance/ansible/config_files/td-agent-bit.conf": "9ca4215a5548f12974447a2897293a704050b8cc816a87fb9e82b805fbfc5c24"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_http_performance/configurations/high_concurrency/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/tcp_to_http_performance/configurations/high_concurrency/terraform.tfvars": "387489159fb08495b4f984dc2756aa28345fdf68293553c119154992709a43ae"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "9609b9803820c9d645c0943dba92ef8fd8108b1dbb6fe5631b248cdbf4aaf279",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_http_performance",
+    "configuration": "high_concurrency",
+    "subject": "logstash",
+    "timestamp": "1794500553",
+    "measurement_started_at": "2026-11-12T16:22:33.561067+00:00",
+    "measurement_finished_at": "2026-11-12T16:24:41.679473+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "534bb506b6e420fc76c91354f9d5f3af71c7fe7dbd102f84376733a09ce633f8",
+    "hardware": "1 \u00d7 c5d.9xlarge consumer, 20 \u00d7 c5.large producer, 1 \u00d7 c5.9xlarge subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_http_performance/ansible/config_files/logstash.settings.yml": "01c9295a75328cdf94d7acedef57f2bbc2ff95e9a82e3c700763312272e7a3a2",
+      "cases/tcp_to_http_performance/ansible/config_files/logstash.pipeline.conf": "cda7b476f23436485d6978f86c1099c30d89f73f93cba9edc0322ef0bd09189e"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_http_performance/configurations/high_concurrency/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/tcp_to_http_performance/configurations/high_concurrency/terraform.tfvars": "387489159fb08495b4f984dc2756aa28345fdf68293553c119154992709a43ae"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "da1a163ab80d943c475cca42a2e63db2d47a3fecc63270cc3f5a52e094505b9f",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_http_performance",
+    "configuration": "high_concurrency",
+    "subject": "fluentd",
+    "timestamp": "1794501018",
+    "measurement_started_at": "2026-11-12T16:30:18.159348+00:00",
+    "measurement_finished_at": "2026-11-12T16:31:55.908561+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "bed3381a2c4d72aa9c8d93ef183720bf9717ff577cc587ba032b656c95f7420b",
+    "hardware": "1 \u00d7 c5d.9xlarge consumer, 20 \u00d7 c5.large producer, 1 \u00d7 c5.9xlarge subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_http_performance/ansible/config_files/td-agent.conf": "c6fabb5391acab9dc4407ec4419774a3aaa6c63be1824aad49a370c369f1e981"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_http_performance/configurations/high_concurrency/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/tcp_to_http_performance/configurations/high_concurrency/terraform.tfvars": "387489159fb08495b4f984dc2756aa28345fdf68293553c119154992709a43ae"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "441b7676007cf4cd6263c8c2dd2cb609abf2fefe191e7d84c4a1b6dab7cd79a4",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_tcp_performance",
+    "configuration": "16_cores",
+    "subject": "vector",
+    "timestamp": "1794498901",
+    "measurement_started_at": "2026-11-12T15:55:01.354115+00:00",
+    "measurement_finished_at": "2026-11-12T15:56:40.775283+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "168a13a44259e33f830b30f2db612bd52a1462d371b468f3073ee686a400b704",
+    "hardware": "1 \u00d7 c5d.4xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5d.4xlarge subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_tcp_performance/ansible/config_files/vector.yaml": "0d4cf0a4c20573879e65b794fcc93172ae266a08d8a05ce91dfeb863469d7b7d"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_tcp_performance/configurations/16_cores/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/tcp_to_tcp_performance/configurations/16_cores/terraform.tfvars": "ee8dbb3669f8bd57f93ac2348dd600fadc1f72c6c80af05a635fd11ed6f4bc69"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "720971e49759f3b269a618a47f0454c0e61d0bbd86deec57438ef6acb5e22c58",
+        "samples_including_boot_sample": 63
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_tcp_performance",
+    "configuration": "16_cores",
+    "subject": "filebeat",
+    "timestamp": "1794499001",
+    "measurement_started_at": "2026-11-12T15:56:41.870844+00:00",
+    "measurement_finished_at": "2026-11-12T15:58:49.711747+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "168a13a44259e33f830b30f2db612bd52a1462d371b468f3073ee686a400b704",
+    "hardware": "1 \u00d7 c5d.4xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5d.4xlarge subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_tcp_performance/ansible/config_files/filebeat.yml": "ec3dff3dce9ca95364a4a19907259a3ba65c3d993e5c5e286da3e89f50a647cb"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_tcp_performance/configurations/16_cores/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/tcp_to_tcp_performance/configurations/16_cores/terraform.tfvars": "ee8dbb3669f8bd57f93ac2348dd600fadc1f72c6c80af05a635fd11ed6f4bc69"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "e1eedfe01ca47596080f91766b10130f1ecfc1e05393b0678bf49b99b0a673db",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_tcp_performance",
+    "configuration": "16_cores",
+    "subject": "fluentbit",
+    "timestamp": "1794499129",
+    "measurement_started_at": "2026-11-12T15:58:49.876394+00:00",
+    "measurement_finished_at": "2026-11-12T16:01:00.690667+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "168a13a44259e33f830b30f2db612bd52a1462d371b468f3073ee686a400b704",
+    "hardware": "1 \u00d7 c5d.4xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5d.4xlarge subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_tcp_performance/ansible/config_files/td-agent-bit.conf": "700fba5406ba1e8b3608923982f777b5394fb806e126a79cfcbc723a150669e3"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_tcp_performance/configurations/16_cores/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/tcp_to_tcp_performance/configurations/16_cores/terraform.tfvars": "ee8dbb3669f8bd57f93ac2348dd600fadc1f72c6c80af05a635fd11ed6f4bc69"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "caaf77c73692bfb906175f8110bae68f29915b6e187b2cff6928b0a4832c4462",
+        "samples_including_boot_sample": 63
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_tcp_performance",
+    "configuration": "16_cores",
+    "subject": "fluentd",
+    "timestamp": "1794499260",
+    "measurement_started_at": "2026-11-12T16:01:00.895629+00:00",
+    "measurement_finished_at": "2026-11-12T16:02:41.868655+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "168a13a44259e33f830b30f2db612bd52a1462d371b468f3073ee686a400b704",
+    "hardware": "1 \u00d7 c5d.4xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5d.4xlarge subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_tcp_performance/ansible/config_files/td-agent.conf": "1b5b79835095c26d346b8718efe646182514d2081cf44b49793e6697ff0ce425"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_tcp_performance/configurations/16_cores/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/tcp_to_tcp_performance/configurations/16_cores/terraform.tfvars": "ee8dbb3669f8bd57f93ac2348dd600fadc1f72c6c80af05a635fd11ed6f4bc69"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "22a71d8e8c089c605aa105ea7bab3f27cbda5e1ee2b68b022c7f481fde535a8b",
+        "samples_including_boot_sample": 63
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_tcp_performance",
+    "configuration": "16_cores",
+    "subject": "logstash",
+    "timestamp": "1794501409",
+    "measurement_started_at": "2026-11-12T16:36:49.887004+00:00",
+    "measurement_finished_at": "2026-11-12T16:38:57.386395+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "0cfec83474c62f03e0094fab16b479a5cd98fb6de574d1f9fe68366d782409bc",
+    "hardware": "1 \u00d7 c5d.4xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5d.4xlarge subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_tcp_performance/ansible/config_files/logstash.settings.yml": "01c9295a75328cdf94d7acedef57f2bbc2ff95e9a82e3c700763312272e7a3a2",
+      "cases/tcp_to_tcp_performance/ansible/config_files/logstash.consumer.pipeline.conf": "b014ff71b28d8c2c4ddf61252e9495928f12d04b921aa410482e7c2784970c39",
+      "cases/tcp_to_tcp_performance/ansible/config_files/logstash.subject.pipeline.conf": "951bf89e311b0029e7dcb6d271aed8ebae64dc262028c41bc0172768aae21e7d"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_tcp_performance/configurations/16_cores/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/tcp_to_tcp_performance/configurations/16_cores/terraform.tfvars": "ee8dbb3669f8bd57f93ac2348dd600fadc1f72c6c80af05a635fd11ed6f4bc69"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "9ea81c9e3b803bfadf43594b1c2deccbfeb9d71680b15dcb44e2590bde607a49",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_tcp_performance",
+    "configuration": "16_cores",
+    "subject": "splunk_heavy_forwarder",
+    "timestamp": "1794501537",
+    "measurement_started_at": "2026-11-12T16:38:57.682377+00:00",
+    "measurement_finished_at": "2026-11-12T16:41:17.993157+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "0cfec83474c62f03e0094fab16b479a5cd98fb6de574d1f9fe68366d782409bc",
+    "hardware": "1 \u00d7 c5d.4xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5d.4xlarge subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_tcp_performance/ansible/config_files/splunk.inputs.conf": "c85f677e529e036f2e35b2ab554b8eae9d1c9cf4e236550ce0ca9b6bae743329",
+      "cases/tcp_to_tcp_performance/ansible/config_files/splunk.outputs.conf": "838dcd1a536638209566fed7409a513efbd0e1919bb23b1fd0df74f7052fa6df",
+      "cases/tcp_to_tcp_performance/ansible/config_files/splunk.props.conf": "95da803ba6a58a6c933fc36cf7e562d36c7bd53a39083405da431ffad9f428e3"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_tcp_performance/configurations/16_cores/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/tcp_to_tcp_performance/configurations/16_cores/terraform.tfvars": "ee8dbb3669f8bd57f93ac2348dd600fadc1f72c6c80af05a635fd11ed6f4bc69"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "5e1af143c8950c57a0843ff341fbee94664b16fdcf243278bc671b4751bb722a",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_tcp_performance",
+    "configuration": "16_cores",
+    "subject": "splunk_universal_forwarder",
+    "timestamp": "1794504747",
+    "measurement_started_at": "2026-11-12T17:32:27.330595+00:00",
+    "measurement_finished_at": "2026-11-12T17:34:15.547313+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "5c46860ca45f5efa38b00dae9fc38ed64f0095465ee04cf84cec8e10eae1cc31",
+    "hardware": "1 \u00d7 c5d.4xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5d.4xlarge subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_tcp_performance/ansible/config_files/splunk.outputs.conf": "838dcd1a536638209566fed7409a513efbd0e1919bb23b1fd0df74f7052fa6df",
+      "cases/tcp_to_tcp_performance/ansible/config_files/splunk.inputs.conf": "c85f677e529e036f2e35b2ab554b8eae9d1c9cf4e236550ce0ca9b6bae743329",
+      "cases/tcp_to_tcp_performance/ansible/config_files/splunk.props.conf": "95da803ba6a58a6c933fc36cf7e562d36c7bd53a39083405da431ffad9f428e3"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_tcp_performance/configurations/16_cores/terraform.tfvars": "ee8dbb3669f8bd57f93ac2348dd600fadc1f72c6c80af05a635fd11ed6f4bc69",
+      "cases/tcp_to_tcp_performance/configurations/16_cores/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {
+      "ansible/roles/splunk_universal_forwarder/tasks/configure.yml": "2842db8b621df3fd6925a2b045d8094474883711ddbfc831b66dbbc3797f3d3b"
+    },
+    "raw_csvs": [
+      {
+        "sha256": "51b4f21220d03025ac1d6d3f3f8bc035b9b2b63bd4b43ae4a62f38245a8396f1",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_tcp_performance",
+    "configuration": "default",
+    "subject": "vector",
+    "timestamp": "1794501982",
+    "measurement_started_at": "2026-11-12T16:46:22.204947+00:00",
+    "measurement_finished_at": "2026-11-12T16:48:11.407911+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "9adf9f87c68efff3496df691d587034d855403db16f5d6ebb4e29077a33cb306",
+    "hardware": "1 \u00d7 c5d.xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_tcp_performance/ansible/config_files/vector.yaml": "0d4cf0a4c20573879e65b794fcc93172ae266a08d8a05ce91dfeb863469d7b7d"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_tcp_performance/configurations/default/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/tcp_to_tcp_performance/configurations/default/terraform.tfvars": "35f15a013f0ec8da2e9f5f7623549cb2d3511019281414473c68a1b35967e57d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "6609172418fb6470bf783f69691bdc4eeae8cf65c0d52d2a08a049f1d25d45a2",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_tcp_performance",
+    "configuration": "default",
+    "subject": "filebeat",
+    "timestamp": "1794502092",
+    "measurement_started_at": "2026-11-12T16:48:12.217885+00:00",
+    "measurement_finished_at": "2026-11-12T16:50:32.392854+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "9adf9f87c68efff3496df691d587034d855403db16f5d6ebb4e29077a33cb306",
+    "hardware": "1 \u00d7 c5d.xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_tcp_performance/ansible/config_files/filebeat.yml": "ec3dff3dce9ca95364a4a19907259a3ba65c3d993e5c5e286da3e89f50a647cb"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_tcp_performance/configurations/default/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/tcp_to_tcp_performance/configurations/default/terraform.tfvars": "35f15a013f0ec8da2e9f5f7623549cb2d3511019281414473c68a1b35967e57d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "d798055404574be9d6ab4f362a64f161fe47ffe781b3d9c9f4204cc00fa27f8a",
+        "samples_including_boot_sample": 63
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_tcp_performance",
+    "configuration": "default",
+    "subject": "fluentbit",
+    "timestamp": "1794502232",
+    "measurement_started_at": "2026-11-12T16:50:32.767284+00:00",
+    "measurement_finished_at": "2026-11-12T16:52:20.431924+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "9adf9f87c68efff3496df691d587034d855403db16f5d6ebb4e29077a33cb306",
+    "hardware": "1 \u00d7 c5d.xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_tcp_performance/ansible/config_files/td-agent-bit.conf": "700fba5406ba1e8b3608923982f777b5394fb806e126a79cfcbc723a150669e3"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_tcp_performance/configurations/default/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/tcp_to_tcp_performance/configurations/default/terraform.tfvars": "35f15a013f0ec8da2e9f5f7623549cb2d3511019281414473c68a1b35967e57d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "97d38c9e77f5f4dd38d9d47907c67c828de5168c3da4a4608c4c2884e4e6fafd",
+        "samples_including_boot_sample": 63
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_tcp_performance",
+    "configuration": "default",
+    "subject": "fluentd",
+    "timestamp": "1794502340",
+    "measurement_started_at": "2026-11-12T16:52:20.769856+00:00",
+    "measurement_finished_at": "2026-11-12T16:54:20.880383+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "9adf9f87c68efff3496df691d587034d855403db16f5d6ebb4e29077a33cb306",
+    "hardware": "1 \u00d7 c5d.xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_tcp_performance/ansible/config_files/td-agent.conf": "1b5b79835095c26d346b8718efe646182514d2081cf44b49793e6697ff0ce425"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_tcp_performance/configurations/default/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/tcp_to_tcp_performance/configurations/default/terraform.tfvars": "35f15a013f0ec8da2e9f5f7623549cb2d3511019281414473c68a1b35967e57d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "068533f9713b00947395904a64cb12c546b3beeec03113bdf5f9230eda214b25",
+        "samples_including_boot_sample": 64
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_tcp_performance",
+    "configuration": "default",
+    "subject": "logstash",
+    "timestamp": "1794502461",
+    "measurement_started_at": "2026-11-12T16:54:21.086035+00:00",
+    "measurement_finished_at": "2026-11-12T16:56:43.210372+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "9adf9f87c68efff3496df691d587034d855403db16f5d6ebb4e29077a33cb306",
+    "hardware": "1 \u00d7 c5d.xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_tcp_performance/ansible/config_files/logstash.settings.yml": "01c9295a75328cdf94d7acedef57f2bbc2ff95e9a82e3c700763312272e7a3a2",
+      "cases/tcp_to_tcp_performance/ansible/config_files/logstash.consumer.pipeline.conf": "b014ff71b28d8c2c4ddf61252e9495928f12d04b921aa410482e7c2784970c39",
+      "cases/tcp_to_tcp_performance/ansible/config_files/logstash.subject.pipeline.conf": "951bf89e311b0029e7dcb6d271aed8ebae64dc262028c41bc0172768aae21e7d"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_tcp_performance/configurations/default/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/tcp_to_tcp_performance/configurations/default/terraform.tfvars": "35f15a013f0ec8da2e9f5f7623549cb2d3511019281414473c68a1b35967e57d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "18eaed07c9e9d79a20677975f777e996081341503b2b7ac3ae557801ebaa09be",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_tcp_performance",
+    "configuration": "default",
+    "subject": "splunk_heavy_forwarder",
+    "timestamp": "1794502603",
+    "measurement_started_at": "2026-11-12T16:56:43.443682+00:00",
+    "measurement_finished_at": "2026-11-12T16:59:22.394699+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "9adf9f87c68efff3496df691d587034d855403db16f5d6ebb4e29077a33cb306",
+    "hardware": "1 \u00d7 c5d.xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_tcp_performance/ansible/config_files/splunk.inputs.conf": "c85f677e529e036f2e35b2ab554b8eae9d1c9cf4e236550ce0ca9b6bae743329",
+      "cases/tcp_to_tcp_performance/ansible/config_files/splunk.outputs.conf": "838dcd1a536638209566fed7409a513efbd0e1919bb23b1fd0df74f7052fa6df",
+      "cases/tcp_to_tcp_performance/ansible/config_files/splunk.props.conf": "95da803ba6a58a6c933fc36cf7e562d36c7bd53a39083405da431ffad9f428e3"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_tcp_performance/configurations/default/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/tcp_to_tcp_performance/configurations/default/terraform.tfvars": "35f15a013f0ec8da2e9f5f7623549cb2d3511019281414473c68a1b35967e57d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "60dfc55e40eca2a4482950ce760901b493a6ff70ae8824310837ac15c4d23176",
+        "samples_including_boot_sample": 61
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_tcp_performance",
+    "configuration": "default",
+    "subject": "splunk_universal_forwarder",
+    "timestamp": "1794502763",
+    "measurement_started_at": "2026-11-12T16:59:23.089894+00:00",
+    "measurement_finished_at": "2026-11-12T17:01:06.502427+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "9adf9f87c68efff3496df691d587034d855403db16f5d6ebb4e29077a33cb306",
+    "hardware": "1 \u00d7 c5d.xlarge consumer, 5 \u00d7 c5.large producer, 1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_tcp_performance/ansible/config_files/splunk.inputs.conf": "c85f677e529e036f2e35b2ab554b8eae9d1c9cf4e236550ce0ca9b6bae743329",
+      "cases/tcp_to_tcp_performance/ansible/config_files/splunk.outputs.conf": "838dcd1a536638209566fed7409a513efbd0e1919bb23b1fd0df74f7052fa6df",
+      "cases/tcp_to_tcp_performance/ansible/config_files/splunk.props.conf": "95da803ba6a58a6c933fc36cf7e562d36c7bd53a39083405da431ffad9f428e3"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_tcp_performance/configurations/default/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/tcp_to_tcp_performance/configurations/default/terraform.tfvars": "35f15a013f0ec8da2e9f5f7623549cb2d3511019281414473c68a1b35967e57d"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {
+      "ansible/roles/splunk_universal_forwarder/tasks/configure.yml": "2842db8b621df3fd6925a2b045d8094474883711ddbfc831b66dbbc3797f3d3b"
+    },
+    "raw_csvs": [
+      {
+        "sha256": "d4b6aecdb6e9b1cffd19c005c1998c212509d69809a432c5d948f58f7ae3071a",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_tcp_performance",
+    "configuration": "high_concurrency",
+    "subject": "vector",
+    "timestamp": "1794503221",
+    "measurement_started_at": "2026-11-12T17:07:01.922055+00:00",
+    "measurement_finished_at": "2026-11-12T17:08:41.091906+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "189492362336ec6ab1ac321087728409c40ba3b4b260660a7ecf93282750568f",
+    "hardware": "1 \u00d7 c5d.9xlarge consumer, 20 \u00d7 c5.large producer, 1 \u00d7 c5d.9xlarge subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_tcp_performance/ansible/config_files/vector.yaml": "0d4cf0a4c20573879e65b794fcc93172ae266a08d8a05ce91dfeb863469d7b7d"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_tcp_performance/configurations/high_concurrency/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/tcp_to_tcp_performance/configurations/high_concurrency/terraform.tfvars": "54cde0f1d5255390e12e7d2ac121985bde042dc0bfe02278b680cfc775bec9d6"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "3c05eff625995d1eeb5552ad3b5dcb55e6d73a2a0c876adc8f55bd58f639794e",
+        "samples_including_boot_sample": 63
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_tcp_performance",
+    "configuration": "high_concurrency",
+    "subject": "filebeat",
+    "timestamp": "1794503322",
+    "measurement_started_at": "2026-11-12T17:08:42.004850+00:00",
+    "measurement_finished_at": "2026-11-12T17:10:48.712326+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "189492362336ec6ab1ac321087728409c40ba3b4b260660a7ecf93282750568f",
+    "hardware": "1 \u00d7 c5d.9xlarge consumer, 20 \u00d7 c5.large producer, 1 \u00d7 c5d.9xlarge subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_tcp_performance/ansible/config_files/filebeat.yml": "ec3dff3dce9ca95364a4a19907259a3ba65c3d993e5c5e286da3e89f50a647cb"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_tcp_performance/configurations/high_concurrency/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/tcp_to_tcp_performance/configurations/high_concurrency/terraform.tfvars": "54cde0f1d5255390e12e7d2ac121985bde042dc0bfe02278b680cfc775bec9d6"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "fe2f7cc91a425f0e5d96ad2dfee286b0e60f834a90daca4c33821f06b63facc3",
+        "samples_including_boot_sample": 66
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_tcp_performance",
+    "configuration": "high_concurrency",
+    "subject": "fluentbit",
+    "timestamp": "1794503448",
+    "measurement_started_at": "2026-11-12T17:10:48.900815+00:00",
+    "measurement_finished_at": "2026-11-12T17:12:47.844116+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "189492362336ec6ab1ac321087728409c40ba3b4b260660a7ecf93282750568f",
+    "hardware": "1 \u00d7 c5d.9xlarge consumer, 20 \u00d7 c5.large producer, 1 \u00d7 c5d.9xlarge subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_tcp_performance/ansible/config_files/td-agent-bit.conf": "700fba5406ba1e8b3608923982f777b5394fb806e126a79cfcbc723a150669e3"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_tcp_performance/configurations/high_concurrency/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/tcp_to_tcp_performance/configurations/high_concurrency/terraform.tfvars": "54cde0f1d5255390e12e7d2ac121985bde042dc0bfe02278b680cfc775bec9d6"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "e0720fd897a11862a6d6fdd62832afe05d79ca8c3998cc377f913e8750de0ea2",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_tcp_performance",
+    "configuration": "high_concurrency",
+    "subject": "fluentd",
+    "timestamp": "1794503568",
+    "measurement_started_at": "2026-11-12T17:12:48.157969+00:00",
+    "measurement_finished_at": "2026-11-12T17:15:11.777582+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "189492362336ec6ab1ac321087728409c40ba3b4b260660a7ecf93282750568f",
+    "hardware": "1 \u00d7 c5d.9xlarge consumer, 20 \u00d7 c5.large producer, 1 \u00d7 c5d.9xlarge subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_tcp_performance/ansible/config_files/td-agent.conf": "1b5b79835095c26d346b8718efe646182514d2081cf44b49793e6697ff0ce425"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_tcp_performance/configurations/high_concurrency/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/tcp_to_tcp_performance/configurations/high_concurrency/terraform.tfvars": "54cde0f1d5255390e12e7d2ac121985bde042dc0bfe02278b680cfc775bec9d6"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "20e0daa7bf18ee2ee9cbbc1d78446243a5055ed306a838a8727f0f1569f7c8f1",
+        "samples_including_boot_sample": 65
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_tcp_performance",
+    "configuration": "high_concurrency",
+    "subject": "logstash",
+    "timestamp": "1794503712",
+    "measurement_started_at": "2026-11-12T17:15:12.080238+00:00",
+    "measurement_finished_at": "2026-11-12T17:17:04.477397+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "189492362336ec6ab1ac321087728409c40ba3b4b260660a7ecf93282750568f",
+    "hardware": "1 \u00d7 c5d.9xlarge consumer, 20 \u00d7 c5.large producer, 1 \u00d7 c5d.9xlarge subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_tcp_performance/ansible/config_files/logstash.settings.yml": "01c9295a75328cdf94d7acedef57f2bbc2ff95e9a82e3c700763312272e7a3a2",
+      "cases/tcp_to_tcp_performance/ansible/config_files/logstash.consumer.pipeline.conf": "b014ff71b28d8c2c4ddf61252e9495928f12d04b921aa410482e7c2784970c39",
+      "cases/tcp_to_tcp_performance/ansible/config_files/logstash.subject.pipeline.conf": "951bf89e311b0029e7dcb6d271aed8ebae64dc262028c41bc0172768aae21e7d"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_tcp_performance/configurations/high_concurrency/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/tcp_to_tcp_performance/configurations/high_concurrency/terraform.tfvars": "54cde0f1d5255390e12e7d2ac121985bde042dc0bfe02278b680cfc775bec9d6"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "d9c79ca3f31f152841e495dd3d50fad3b5914ca32f78786398c4a3c5b42b01c9",
+        "samples_including_boot_sample": 63
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_tcp_performance",
+    "configuration": "high_concurrency",
+    "subject": "splunk_heavy_forwarder",
+    "timestamp": "1794503824",
+    "measurement_started_at": "2026-11-12T17:17:04.650369+00:00",
+    "measurement_finished_at": "2026-11-12T17:19:08.266945+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "189492362336ec6ab1ac321087728409c40ba3b4b260660a7ecf93282750568f",
+    "hardware": "1 \u00d7 c5d.9xlarge consumer, 20 \u00d7 c5.large producer, 1 \u00d7 c5d.9xlarge subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_tcp_performance/ansible/config_files/splunk.inputs.conf": "c85f677e529e036f2e35b2ab554b8eae9d1c9cf4e236550ce0ca9b6bae743329",
+      "cases/tcp_to_tcp_performance/ansible/config_files/splunk.outputs.conf": "838dcd1a536638209566fed7409a513efbd0e1919bb23b1fd0df74f7052fa6df",
+      "cases/tcp_to_tcp_performance/ansible/config_files/splunk.props.conf": "95da803ba6a58a6c933fc36cf7e562d36c7bd53a39083405da431ffad9f428e3"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_tcp_performance/configurations/high_concurrency/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/tcp_to_tcp_performance/configurations/high_concurrency/terraform.tfvars": "54cde0f1d5255390e12e7d2ac121985bde042dc0bfe02278b680cfc775bec9d6"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {},
+    "raw_csvs": [
+      {
+        "sha256": "6937d352168051998b309e86c01cd232c3ac49f9e7c440b3e1ef221f141f70df",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  },
+  {
+    "case": "tcp_to_tcp_performance",
+    "configuration": "high_concurrency",
+    "subject": "splunk_universal_forwarder",
+    "timestamp": "1794503948",
+    "measurement_started_at": "2026-11-12T17:19:08.434386+00:00",
+    "measurement_finished_at": "2026-11-12T17:20:50.031262+00:00",
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "189492362336ec6ab1ac321087728409c40ba3b4b260660a7ecf93282750568f",
+    "hardware": "1 \u00d7 c5d.9xlarge consumer, 20 \u00d7 c5.large producer, 1 \u00d7 c5d.9xlarge subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/tcp_to_tcp_performance/ansible/config_files/splunk.inputs.conf": "c85f677e529e036f2e35b2ab554b8eae9d1c9cf4e236550ce0ca9b6bae743329",
+      "cases/tcp_to_tcp_performance/ansible/config_files/splunk.outputs.conf": "838dcd1a536638209566fed7409a513efbd0e1919bb23b1fd0df74f7052fa6df",
+      "cases/tcp_to_tcp_performance/ansible/config_files/splunk.props.conf": "95da803ba6a58a6c933fc36cf7e562d36c7bd53a39083405da431ffad9f428e3"
+    },
+    "configuration_sha256": {
+      "cases/tcp_to_tcp_performance/configurations/high_concurrency/ansible.yml": "adbf72503d8ca6c42da34401e07c273a3ca899c34da13d872d7235b60e525e19",
+      "cases/tcp_to_tcp_performance/configurations/high_concurrency/terraform.tfvars": "54cde0f1d5255390e12e7d2ac121985bde042dc0bfe02278b680cfc775bec9d6"
+    },
+    "analysis_method": "athena-dstat-rate-mean-v2",
+    "fixture_role_sha256": {
+      "ansible/roles/splunk_universal_forwarder/tasks/configure.yml": "2842db8b621df3fd6925a2b045d8094474883711ddbfc831b66dbbc3797f3d3b"
+    },
+    "raw_csvs": [
+      {
+        "sha256": "a60ed68ebcc0342e59445cb2ddb641221493e6e1f4fb1b2cd3f1feba14dd180a",
+        "samples_including_boot_sample": 62
+      }
+    ]
+  }
+]

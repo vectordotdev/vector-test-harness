@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "method": "continuous-file-prometheus-counter-delta-v1",
+  "case": "file_to_blackhole",
+  "warmup_seconds": 15,
+  "harness_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+  "vector_version": "vector 0.61.0 (x86_64-unknown-linux-gnu 17e017e 2026-10-29 16:03:40.929269968)",
+  "generator_revision": "9e13b40919109e1737ba5388ef9eeb07d0230608",
+  "generator_sha256": "ef2e8b175630d0ee6b270771c9ed3483e10b6f8670496fed8c8e5cf42e564004",
+  "config_sha256": {
+    "vector.yaml": "085839839b12778b2044d54cf495b022f764905e4defa3015638cfa25067fc54",
+    "filegen.toml": "3c52439280776c81a19f3db40c3969986eee536ccd8dab650ec7c74f7d5b939b"
+  },
+  "before": {
+    "utc": "2026-11-12T14:36:55.175435+00:00",
+    "file_bytes": 577480499,
+    "file_count": 480
+  },
+  "after": {
+    "utc": "2026-11-12T14:37:55.361989+00:00",
+    "file_bytes": 2696915805,
+    "file_count": 480
+  },
+  "elapsed_seconds": 60.18655532800017,
+  "written_bytes_per_second": 35214431.10425012,
+  "status": "passed",
+  "counter_rates": [
+    {
+      "metric": "vector_component_received_bytes_total",
+      "component": "file",
+      "window_seconds": 60.0,
+      "delta": 2111365549.0,
+      "per_second": 35189425.81666667
+    },
+    {
+      "metric": "vector_component_received_events_total",
+      "component": "file",
+      "window_seconds": 60.0,
+      "delta": 4179490.0,
+      "per_second": 69658.16666666667
+    },
+    {
+      "metric": "vector_component_received_events_total",
+      "component": "blackhole",
+      "window_seconds": 60.0,
+      "delta": 4178779.0,
+      "per_second": 69646.31666666667
+    }
+  ],
+  "setup": {
+    "instance_type": "c5.large",
+    "vcpus": 2,
+    "memory_gib": 4,
+    "region": "us-east-1",
+    "os": "Ubuntu 22.04.5 LTS",
+    "cpu": "Intel Xeon Platinum 8275CL",
+    "kernel": "6.8.0-1069-aws",
+    "generated_files": 480,
+    "initial_state": "empty logs and Vector checkpoints"
+  }
+}

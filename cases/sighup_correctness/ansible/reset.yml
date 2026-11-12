@@ -3,5 +3,3 @@
   roles:
     - role: subjects
       action: reset
-    - role: test_servers
-      action: reset

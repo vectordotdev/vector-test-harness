@@ -41,3 +41,7 @@
     - role: tcp_test_server
       action: configure
       address: "0.0.0.0:{{ consumer_port }}"
+
+    - role: http_test_server
+      action: configure
+      address: "0.0.0.0:{{ consumer_port }}"

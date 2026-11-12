@@ -1,16 +1,21 @@
 ---
 - import_playbook: reset.yml
 
+- hosts: '{{ test_namespace }}'
+  tasks:
+    - set_fact:
+        consumer_role: "{{ 'http_test_server' if test_subject == 'fluentd' else 'tcp_test_server' }}"
+
 - hosts: '{{ test_namespace }}:&tag_TestRole_consumer'
   become: true
   tasks:
     - include_role:
-        name: tcp_test_server
+        name: "{{ consumer_role }}"
       vars:
         action: reset
 
     - include_role:
-        name: tcp_test_server
+        name: "{{ consumer_role }}"
       vars:
         action: start_and_wait
         port: "{{ consumer_port }}"
@@ -66,12 +71,12 @@
   become: true
   tasks:
     - include_role:
-        name: tcp_test_server
+        name: "{{ consumer_role }}"
       vars:
         action: stop
 
     - include_role:
-        name: tcp_test_server
+        name: "{{ consumer_role }}"
       vars:
         action: register_summary
 

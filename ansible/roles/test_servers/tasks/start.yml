@@ -13,3 +13,9 @@
     name: http_test_server
   vars:
     action: start
+
+- include_role:
+    name: beats_test_server
+  vars:
+    beats_server_action: start
+  when: test_subject == 'filebeat' and beats_consumer_port is defined

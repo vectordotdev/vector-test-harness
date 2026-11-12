@@ -2,6 +2,11 @@ variable "consumer_instance_type" {
   type = string
 }
 
+variable "consumer_instance_count" {
+  type    = number
+  default = 1
+}
+
 variable "consumer_port" {
   type = string
 }

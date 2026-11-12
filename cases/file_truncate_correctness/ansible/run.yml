@@ -25,6 +25,16 @@
       vars:
         action: start
 
+    - name: Wait for Logstash to deliver initial file events before truncating
+      uri:
+        url: http://127.0.0.1:9600/_node/stats/pipelines
+        return_content: true
+      register: logstash_stats
+      until: (logstash_stats.json | default({})).get('pipelines', {}).get('main', {}).get('events', {}).get('out', 0) > 0
+      retries: 60
+      delay: 1
+      when: test_subject == 'logstash'
+
     - name: Wait 15 seconds
       pause:
         seconds: 15
@@ -51,8 +61,14 @@
       vars:
         action: stop
 
-    - name: Capture last_message
-      include_tasks: "capture_last_message/{{ test_subject }}.yml"
+    - name: Capture summary
+      include_role:
+        name: "{{ 'http_test_server' if test_subject == 'fluentd' else 'tcp_test_server' }}"
+      vars:
+        action: register_summary
+
+    - set_fact:
+        last_message: "{{ summary.last_message }}"
 
     - debug:
         var: last_message

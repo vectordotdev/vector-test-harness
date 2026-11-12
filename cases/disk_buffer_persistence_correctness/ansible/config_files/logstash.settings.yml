@@ -3,6 +3,10 @@ pipeline.batch.delay: 2
 queue.type: persisted
 queue.max_bytes: 100mb
 
+# The receiver stays offline during restart. Allow shutdown to leave unacked
+# events in the persistent queue instead of waiting indefinitely for delivery.
+pipeline.unsafe_shutdown: true
+
 # We set this to 1 since this is the only way to guarantee
 # full persistence of events flowing through Logstash, even
 # though this "severly" impact performance.

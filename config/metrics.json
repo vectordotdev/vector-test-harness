@@ -66,14 +66,14 @@
     "category": "IO",
     "name": "IO Read (total)",
     "aggregate": "sum",
-    "unit": "bytes",
+    "unit": "ops",
     "sort": "desc"
   },
   "io_writ_sum": {
     "category": "IO",
     "name": "IO Write (total)",
     "aggregate": "sum",
-    "unit": "bytes",
+    "unit": "ops",
     "sort": "desc"
   },
   "load_avg_1m": {
@@ -110,6 +110,13 @@
     "aggregate": "sum",
     "unit": "bytes",
     "sort": "desc"
+  },
+  "net_send_avg": {
+    "category": "IO",
+    "name": "Net Send (avg)",
+    "aggregate": "avg",
+    "unit": "bytes",
+    "sort": "asc"
   },
   "net_send_sum": {
     "category": "IO",

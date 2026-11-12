@@ -5,20 +5,27 @@ reloading configuration changes.
 
 ## Design
 
-1. 2 TCP consumers are set up, each on separate hosts.
-2. Each subject is initially configured to send data to the first TCP consumer.
+1. Two consumers are set up on separate hosts (HTTP for Fluentd, TCP for other subjects).
+2. Each subject is initially configured to send data to the first consumer.
 3. A test line is sent to the subject.
-4. The subject's configuration file is updated to send data to the second TCP consumer.
-5. The `SIGHUP` signal is sent to the subject's project.
+4. The subject's configuration file is updated to send data to the second consumer.
+5. The `SIGHUP` signal is sent to the subject's process.
 6. A second test line is sent to the subject.
-7. Assert that the first TCP server received the first line and the second TCP server
+7. Assert that the first server received the first line and the second server
    received the second line.
+
+## AWS baseline — 2026-11-12
+
+See the [current AWS report](../../results/2026-11-12/README.md) for this case’s
+configurations, pinned versions, hardware, measured outcomes, and sampling limits.
+Performance figures use one run per subject/configuration. Correctness results
+retain the existing assertions, including any observed failures.
 
 ## Historical results
 
-These results describe earlier Vector versions and workload definitions. They
-have not been re-measured with the Vector 0.61 configurations; establish a new
-baseline before comparing performance or claiming current correctness.
+These tables archive earlier Vector versions and workload definitions. Use the
+dated AWS baseline above for current measurements; software, configurations, and
+measurement methods differ from the historical experiments.
 
 |     Subject | Result  |
 |------------:|:-------:|

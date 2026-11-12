@@ -18,11 +18,18 @@ and place the extracted values in named keys.
    original event, so a text encoder would otherwise emit only an empty line.
 6. [Performance data][performance_data] is collected and persisted to S3 for analysis.
 
+## AWS baseline — 2026-11-12
+
+See the [current AWS report](../../results/2026-11-12/README.md) for this case’s
+configurations, pinned versions, hardware, measured outcomes, and sampling limits.
+Performance figures use one run per subject/configuration. Correctness results
+retain the existing assertions, including any observed failures.
+
 ## Historical results
 
-These results describe earlier Vector versions and workload definitions. They
-have not been re-measured with the Vector 0.61 configurations; establish a new
-baseline before comparing performance or claiming current correctness.
+These tables archive earlier Vector versions and workload definitions. Use the
+dated AWS baseline above for current measurements; software, configurations, and
+measurement methods differ from the historical experiments.
 
 * **Note: Splunk Universal Forwarder does not support parsing**
 * **Note: Filebeat does not support parsing**

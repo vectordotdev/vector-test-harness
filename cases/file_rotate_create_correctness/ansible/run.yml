@@ -57,7 +57,10 @@
         action: stop
 
     - name: Capture summary
-      include_tasks: "capture_summary/{{ test_subject }}.yml"
+      include_role:
+        name: "{{ 'http_test_server' if test_subject == 'fluentd' else 'tcp_test_server' }}"
+      vars:
+        action: register_summary
 
     - debug:
         var: summary

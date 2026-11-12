@@ -39,3 +39,10 @@ Validate the Ansible-rendered config with Vector 0.61 before provisioning.
 These definitions replace the historical pipelines and allowlists, and the
 concurrency variants now use the baseline machine sizes. Establish fresh
 performance baselines; earlier results do not describe the same workloads.
+
+## AWS baseline — 2026-11-12
+
+See the [current AWS report](../../results/2026-11-12/README.md) for this case’s
+configurations, pinned versions, hardware, measured outcomes, and sampling limits.
+Performance figures use one run per subject/configuration. Correctness results
+retain the existing assertions, including any observed failures.

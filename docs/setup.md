@@ -91,7 +91,8 @@ The SSH command selects the same identity as Ansible. Inspect VM services with
 `journalctl`. `ANSIBLE_EXTRA_ARGS=-vvv` enables Ansible debug output.
 
 `compare` and `export` use Athena. Set `VECTOR_TEST_ATHENA_OUTPUT` to an authorized
-query-results S3 URI when the legacy default is unavailable. Raw dstat results
+query-results S3 URI when the legacy default is unavailable, and
+`VECTOR_TEST_ATHENA_DATABASE` to select your catalog database. Raw dstat results
 remain in the configured results bucket under the historical partitions.
 
 ## Teardown
@@ -118,6 +119,7 @@ tools. Packer and Linux profiling tools are separate optional dependencies.
 `GENERATE_SSH_KEY` and `INJECT_SSH_KEY` remain supported by the Rust entrypoint;
 mounted identities can be configured directly instead.
 
-The archived workloads and installers still need validation against your chosen
-Vector version and environment. A successful harness unit/integration test does
-not certify AWS provisioning, a Docker image, or a benchmark result.
+The [2026-11-12 AWS baseline](../results/2026-11-12/README.md) records the versions,
+environment, and observed results of the current campaign. Validate other
+versions and environments separately. Harness unit/integration tests cover the
+runner; they do not certify a new AMI, container image, or benchmark result.

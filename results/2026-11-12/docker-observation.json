@@ -1,0 +1,15 @@
+{
+  "vector_version": "0.61.0",
+  "case": "docker_partial_events_merging_correctness",
+  "status": "failed",
+  "container_input_records": 1,
+  "receiver_output_records": 2,
+  "output_copies_identical": true,
+  "output_record_bytes": 24359,
+  "output_record_fields": 1353,
+  "final_field": "bzz_value",
+  "record_sha256": "186d668073c49f7f061e63d048b7e024d1dc4d18619789a5fd52b01bf7cf99bd",
+  "observed_on_fresh_runs": 2,
+  "assertion_preserved": "summary.message_count == 1",
+  "note": "The fixture input-count assertion passed; the output-count assertion failed. Both received records were complete."
+}

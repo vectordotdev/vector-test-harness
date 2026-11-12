@@ -1,0 +1,5 @@
+---
+- name: Drain and stop the Beats receiver before the TCP summary is captured
+  systemd:
+    name: vth-beats-consumer
+    state: stopped

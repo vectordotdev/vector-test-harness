@@ -6,9 +6,6 @@ sources:
     include:
       - "{{ test_file_location }}*"
     read_from: beginning
-    ignore_checkpoints: true
-    fingerprint:
-      strategy: device_and_inode
 
 sinks:
   out:

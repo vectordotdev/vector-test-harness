@@ -2,4 +2,6 @@
 - include_tasks: stop.yml
 
 - name: Reset state
-  shell: rm -rf /opt/splunkforwarder/var/lib/splunk/fishbucket/{*,.*}
+  command: find /opt/splunkforwarder/var/lib/splunk/fishbucket -mindepth 1 -delete
+  args:
+    removes: /opt/splunkforwarder/var/lib/splunk/fishbucket

@@ -35,7 +35,7 @@
         action: stop
 
     - include_role:
-        name: test_servers
+        name: "{{ 'http_test_server' if test_subject == 'fluentd' else 'test_servers' }}"
       vars:
         action: register_summary
 
@@ -86,7 +86,7 @@
         action: stop
 
     - include_role:
-        name: test_servers
+        name: "{{ 'http_test_server' if test_subject == 'fluentd' else 'test_servers' }}"
       vars:
         action: register_summary
 

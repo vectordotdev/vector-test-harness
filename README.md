@@ -14,10 +14,10 @@ and Ansible, and analyzes recorded results.
 
 > [!NOTE]
 > The Vector configs target **0.61.0**. Local wrapped-JSON and SIGHUP checks have
-> passed with that version on macOS arm64. Cloud execution, other subject
-> installers, and Linux profiling require validation in their target environments.
-> Historical results in case READMEs describe older versions and workloads;
-> establish fresh baselines for the current configs.
+> passed with that version on macOS arm64. The [2026-11-12 AWS baseline](results/2026-11-12/README.md)
+> records Linux runs with the pinned comparison agents, including observed
+> correctness failures. Historical case tables describe older versions and
+> workloads. CPU and allocation profiling remain separate experiments.
 
 ## Setup
 
@@ -197,6 +197,10 @@ fixtures likewise need an image containing the current helper.
 
 ## Performance data
 
+The [2026-11-12 AWS baseline](results/2026-11-12/README.md) records all configured
+remote cases and the three standalone workloads with Vector 0.61.0, including
+versions, hardware, sample counts, and observed correctness failures.
+
 `vth results` summarizes dstat measurements. `vth compare` queries recorded
 measurements; it does not run either Vector binary. `vth export` writes the
 website's `performance_tests` JSON and uploads it to
@@ -225,8 +229,8 @@ Failed queries and timeouts are errors; paginated query results are combined.
 
 Supply a binary or build an explicit revision. `vth build` uses an isolated clone
 under `.cache/builds/`, requires its own Cargo `target`, and records the resolved
-commit and build settings. Establish fresh performance baselines for the chosen
-configs and binaries.
+commit and build settings. The [AWS baseline](results/2026-11-12/README.md) records
+Vector 0.61.0; establish fresh measurements for other configs and binaries.
 
 ```sh
 vth build --revision <commit>

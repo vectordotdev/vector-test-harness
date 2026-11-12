@@ -1,0 +1,31 @@
+[
+  {
+    "configuration": "high_concurrency",
+    "count": 1,
+    "cpu_sys_avg": 3.1541451612903226,
+    "cpu_sys_max": 6.516,
+    "cpu_usr_avg": 93.96524193548389,
+    "cpu_usr_max": 97.243,
+    "disk_read_avg": 700234.3225806452,
+    "disk_read_sum": 43414528.0,
+    "disk_writ_sum": 6684672.0,
+    "duration_avg": 61.00099992752075,
+    "duration_max": 61.00099992752075,
+    "io_read_sum": 1686.0,
+    "io_writ_sum": 428.0,
+    "load_avg_1m": 1.9132258064516128,
+    "mem_used_avg": 647804003.0967742,
+    "mem_used_max": 699097088.0,
+    "name": "real_world_1_performance",
+    "net_recv_avg": 31204982.822580647,
+    "net_recv_sum": 1934708935.0,
+    "net_send_avg": 34508090.51612903,
+    "net_send_sum": 2139501612.0,
+    "sock_total_sum": 10663.0,
+    "subject": "vector",
+    "tcp_act_sum": 757.0,
+    "tcp_clo_sum": 0.0,
+    "tcp_syn_sum": 349.0,
+    "version": "0.61.0"
+  }
+]

@@ -11,11 +11,18 @@ truncation. Failing to do so typically results loss of any new data written to t
 4. A unique new line is added to the test log file.
 5. Assert that the downstream service received the unique new line.
 
+## AWS baseline — 2026-11-12
+
+See the [current AWS report](../../results/2026-11-12/README.md) for this case’s
+configurations, pinned versions, hardware, measured outcomes, and sampling limits.
+Performance figures use one run per subject/configuration. Correctness results
+retain the existing assertions, including any observed failures.
+
 ## Historical results
 
-These results describe earlier Vector versions and workload definitions. They
-have not been re-measured with the Vector 0.61 configurations; establish a new
-baseline before comparing performance or claiming current correctness.
+These tables archive earlier Vector versions and workload definitions. Use the
+dated AWS baseline above for current measurements; software, configurations, and
+measurement methods differ from the historical experiments.
 
 |     Subject | Result  |
 |------------:|:-------:|

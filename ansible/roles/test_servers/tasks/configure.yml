@@ -10,3 +10,9 @@
   vars:
     action: configure
     address: "{{ tcp_address }}"
+
+- include_role:
+    name: beats_test_server
+  vars:
+    beats_server_action: configure
+  when: beats_consumer_port is defined

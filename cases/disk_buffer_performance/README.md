@@ -6,24 +6,33 @@ This test measures the performance of the subject's disk buffer.
 
 1. Each subjects is configured to receive and send data over TCP.
 2. The TCP producer and consmer are separate instances to help ensure performance is not tainted.
-3. Each subject is configured to store it's buffers on-disk, syncing as much as possible, with
-   a limit of 100mb.
+3. Each subject uses the disk-buffer capacity and synchronization policy in its case configuration.
 4. Data is piped to the subject, from 5 producers, as fast as possible, for 60 seconds.
 5. [Performance data][performance_data] is collected and persisted to S3 for analysis.
 
 ### Caveats
 
-Many of the subjects are designed to buffer data in memory and sync to disk on fixed intervals.
-In many cases, the subject failed to write data to disk at all for the duration of our test.
-Therefore, for the purpose of this test, we configured each subject to sync to disk as
-aggressively as possible. This more accurately embodies the goal of disk-based buffers and it
-aligns durability guarantees across subjects since this is the default behavior of Vector.
+The configured durability policies differ. Logstash checkpoints every event,
+while [Vector synchronizes its disk buffer every 500ms](https://vector.dev/docs/architecture/buffering-model/).
+Interpret the measurements with those settings; they do not compare equivalent
+crash-durability guarantees.
+
+This performance case observes traffic and host load. It does not establish
+that every accepted event reached durable storage; the separate persistence
+case checks recovery after a restart and permits partial loss.
+
+## AWS baseline — 2026-11-12
+
+See the [current AWS report](../../results/2026-11-12/README.md) for this case’s
+configurations, pinned versions, hardware, measured outcomes, and sampling limits.
+Performance figures use one run per subject/configuration. Correctness results
+retain the existing assertions, including any observed failures.
 
 ## Historical results
 
-These results describe earlier Vector versions and workload definitions. They
-have not been re-measured with the Vector 0.61 configurations; establish a new
-baseline before comparing performance or claiming current correctness.
+These tables archive earlier Vector versions and workload definitions. Use the
+dated AWS baseline above for current measurements; software, configurations, and
+measurement methods differ from the historical experiments.
 
 ```
 $ vth compare -t disk_buffer_performance

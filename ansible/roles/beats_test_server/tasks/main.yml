@@ -1,0 +1,2 @@
+---
+- include_tasks: "{{ beats_server_action }}.yml"
