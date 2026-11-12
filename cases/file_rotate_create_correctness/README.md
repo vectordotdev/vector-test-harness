@@ -1,57 +1,9 @@
-# File Rotate Create Correctness Test
+# file_rotate_create_correctness
 
-This test verifies that a file is correctly followed when rotated in the manner of
-`logrotate`'s `create` directive. The subject should continue to read data sent to the
-rotated file and recognize the new file in it's place. Failure to do so results in data
-loss as well as duplicate data.
+This remote case has been retired.
 
-## Design
+The assertion counts frames without verifying all three unique payloads; product-specific framing can change the outcome.
 
-1. Each subject is configured to tail a test log file and send it to a downstream service.
-2. The subject is started.
-3. The test log file is renamed in a way that it matches the configured patterns.
-4. A new empty file is created in it's place.
-5. A unique new line is written to both files.
-6. Assert that the downstream service received both new unique lines _and_ did not receive
-   duplicate data.
-
-## Historical results
-
-These results describe earlier Vector versions and workload definitions. They
-have not been re-measured with the Vector 0.61 configurations; establish a new
-baseline before comparing performance or claiming current correctness.
-
-|     Subject | Result  |
-|------------:|:-------:|
-|    Filebeat |    ✅    |
-|   FluentBit |    ✅    |
-|     FluentD |    ✅    |
-|    Logstash |    ✅    |
-|   Splunk HF |    ✅    |
-|   Splunk UF |    ✅    |
-|  **Vector** |    ✅    |
-
-## Try it
-
-You can run this test via:
-
-```
-vth run -t file_rotate_create_correctness -s vector
-```
-
-## Resources
-
-* [Setup][setup]
-* [Development][development]
-* [How it works][how_it_works]
-* [Vector docs][docs]
-* [Vector repo][repo]
-* [Vector website][website]
-
-
-[development]: /README.md#development
-[docs]: https://vector.dev/docs/
-[how_it_works]: /README.md#how-it-works
-[repo]: https://github.com/vectordotdev/vector
-[setup]: /README.md#setup
-[website]: https://vector.dev
+See the [comparison audit](../../docs/comparisons.md) for the publication criteria.
+Historical scorecards and new numerical comparisons have been removed; raw run
+artifacts remain in private storage and the case history remains in Git.

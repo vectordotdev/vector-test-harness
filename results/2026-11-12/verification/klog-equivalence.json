@@ -1,0 +1,27 @@
+{
+  "verified_at": "2026-11-12T18:17:54.101662+00:00",
+  "vector_version": "vector 0.61.0 (aarch64-apple-darwin 17e017e 2026-10-29 16:03:40.929269968)",
+  "os": "Darwin",
+  "architecture": "arm64",
+  "input_sha256": "86b548ddafb620083fcb34ba35bad6ebad8c7a55bbfdea43f5ec0e797b0c1574",
+  "expected_events": 1000000,
+  "method": "Both full pipelines replayed the entire checked-in fixture with a JSON file sink replacing blackhole. All output records compared as a multiset, including deterministic input-derived timestamps and all application fields. Only source-generated timestamp and timestamp_end fields on records without an input numeric ts were excluded. Original captures retained privately.",
+  "results": [
+    {
+      "config": "remap-multihop.yaml",
+      "config_sha256": "dccf209b4d8068c7c0bfd870270b7a321b781ca158f27f41c32e154fd6aea440",
+      "received_events": 1000000,
+      "payload_multiset_sha256": "fbd74d40b6bcf4b65ccc6a56030b8a8657626d6b84630fa30f7ef50e33595c07",
+      "distinct_payloads": 2
+    },
+    {
+      "config": "remap-nohop.yaml",
+      "config_sha256": "a2137e31686a4f03ecc8d97bd269d103fbf63f2fb7b74db8cd6964ccfd27ce7d",
+      "received_events": 1000000,
+      "payload_multiset_sha256": "fbd74d40b6bcf4b65ccc6a56030b8a8657626d6b84630fa30f7ef50e33595c07",
+      "distinct_payloads": 2
+    }
+  ],
+  "status": "equivalent",
+  "vector_binary_sha256": "bd0b6bea1c9aff9acbcc505b973943d750570771dd9e1d263b298e312cc4b41e"
+}

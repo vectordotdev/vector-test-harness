@@ -14,3 +14,6 @@ massif.out*
 target/
 *.zip
 *.svg
+
+# Offline export output is generated data, not a published comparison.
+/results.json

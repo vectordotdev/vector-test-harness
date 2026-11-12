@@ -17,3 +17,16 @@ binary needs the stdin source and blackhole sink enabled. To build a revision,
 use `vth build --revision <commit>`.
 
 See the [standalone guide](../README.md) for measurement and artifact details.
+
+## AWS baseline — 2026-11-12
+
+Vector 0.61.0 on an AWS `c5.large` (2 vCPUs, 4 GiB RAM), Ubuntu 22.04.5,
+using the checked-in fixture and config:
+
+| Measured runs | Warmups | Mean elapsed | Sample standard deviation |
+| --- | --- | --- | --- |
+| 10 | 1 | 1.3272 s | 0.0087 s |
+
+The `wall-clock-with-streamed-input-v1` measurement includes process execution
+and input streaming. [Individual timings and hashes](../../../results/2026-11-12/standalone/stdin_to_blackhole.json)
+identify the binary, fixture, config, and harness revision.

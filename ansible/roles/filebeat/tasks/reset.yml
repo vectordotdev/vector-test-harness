@@ -1,2 +1,7 @@
 ---
 - include_tasks: "stop.yml"
+
+- name: Clear Filebeat state between runs
+  command: find /var/lib/filebeat -mindepth 1 -delete
+  args:
+    removes: /var/lib/filebeat

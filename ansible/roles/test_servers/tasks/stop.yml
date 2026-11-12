@@ -1,5 +1,11 @@
 ---
 - include_role:
+    name: beats_test_server
+  vars:
+    beats_server_action: stop
+  when: test_subject == 'filebeat' and beats_consumer_port is defined
+
+- include_role:
     name: file_test_server
   vars:
     action: stop

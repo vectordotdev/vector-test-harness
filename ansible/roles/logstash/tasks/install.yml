@@ -35,7 +35,7 @@
 
 - name: Install logstash
   apt:
-    name: logstash
+    name: 'logstash=1:{{ version }}-1'
     state: present
 
 - name: Fix logstash data directory ownership

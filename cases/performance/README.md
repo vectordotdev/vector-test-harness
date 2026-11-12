@@ -8,7 +8,8 @@ and share a focused check for plain and structured records.
 The two-node and single-node remap variants parse each record once and perform
 identical timestamp handling. Text records pass through reduction once; JSON
 records pass directly to the sink. Container-envelope parsing lives in the
-separate correctness cases. These definitions require new performance baselines.
+separate correctness cases. The [retained Vector-only measurements](../../results/2026-11-12/README.md)
+records measurements for the current definitions with Vector 0.61.0.
 
 ```sh
 vth build --revision <commit>
@@ -39,3 +40,7 @@ vth profile file_to_blackhole --vector-bin /path/to/vector --tool perf
 `generate` retains existing logs unless `--reset-logs` is supplied. `bench` requires
 a finite stdin workload. `perf`, Valgrind, and Inferno remain external tools.
 Use `--dry-run` to inspect command and artifact paths without running them.
+
+Publish configuration comparisons only after checking equivalent output on the
+full fixture. Remote cross-product benchmark cases have been removed under the
+[comparison audit](../../docs/comparisons.md).

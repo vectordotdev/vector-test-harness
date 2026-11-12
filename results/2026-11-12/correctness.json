@@ -1,0 +1,214 @@
+[
+  {
+    "case": "docker_partial_events_merging_correctness",
+    "configuration": "default",
+    "subject": "vector",
+    "status": "failed",
+    "observation": "One complete container input record produced two identical complete records; input-count assertion passed in a fresh reproduction. Exact output-count assertion retained.",
+    "measurement_started_at": "2026-11-12T15:34:02.775265+00:00",
+    "measurement_finished_at": "2026-11-12T15:34:50.206430+00:00",
+    "hardware": "1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/docker_partial_events_merging_correctness/ansible/config_files/vector.yaml": "7a39dfb5a0e67a88ba15256e637b5dfe352e68ca54e68318902f31bb5ab534d7"
+    },
+    "configuration_sha256": {
+      "cases/docker_partial_events_merging_correctness/configurations/default/ansible.yml": "9f4b5c3ea7cd67c4933648da1f518a9059f747cdb88c0452b629a3a0e33cb886",
+      "cases/docker_partial_events_merging_correctness/configurations/default/terraform.tfvars": "d44eca4483657349d888ea2fba438d2d254f670bd051c9170b94b3d46f598461"
+    },
+    "assertion_tasks_passed": 1,
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "58470cac277b1a5c4f03e7f6a2dda0315757a24ae16e91c5c47e996e997d507d",
+    "receiver_summaries": [
+      {
+        "receiver": "tcp_test_server_summary.json",
+        "message_count": 2,
+        "first_message_sha256": "186d668073c49f7f061e63d048b7e024d1dc4d18619789a5fd52b01bf7cf99bd",
+        "last_message_sha256": "186d668073c49f7f061e63d048b7e024d1dc4d18619789a5fd52b01bf7cf99bd"
+      }
+    ],
+    "verification_contract": "one-complete-Docker-record-v1",
+    "expected_output_records": 1,
+    "observed_output_records": 2,
+    "all_application_fields_verified": 1353,
+    "canonical_application_payload_sha256": "5b4bc62821a4ddd68323a545864c07288b45d5fdd940fe8fddbab62909dbface"
+  },
+  {
+    "case": "wrapped_json_correctness",
+    "configuration": "default",
+    "subject": "filebeat",
+    "status": "passed",
+    "observation": "Existing assertions passed.",
+    "measurement_started_at": "2026-11-12T17:16:54.715976+00:00",
+    "measurement_finished_at": "2026-11-12T17:17:47.157964+00:00",
+    "hardware": "1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/wrapped_json_correctness/ansible/config_files/filebeat.yml": "b820786aae87511d7f8715b50efb26f9f45e4a6fc65a137c72741600fd32146d"
+    },
+    "configuration_sha256": {
+      "cases/wrapped_json_correctness/configurations/default/ansible.yml": "ab753775a525fa02f9e458c02b3fbe6a7eddd26cdf10c237ae6708db8d7bbb15",
+      "cases/wrapped_json_correctness/configurations/default/terraform.tfvars": "b39337f534f33f675e4a9aca4fdf9c17ea235eb8b9cc0cfd17acd28e840856f9"
+    },
+    "assertion_tasks_passed": 1,
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "68e6552c8d0681d6f6ab111f89f5414ac97c0af9a6f0ab4fc0cdd04100a123a2",
+    "receiver_summaries": [
+      {
+        "receiver": "tcp_test_server_summary.json",
+        "message_count": 1,
+        "first_message_sha256": "bccd44984da01ee737be240b31bd93b52e3dc53e75dee7cc3d1e7a14c0fe1a76",
+        "last_message_sha256": "bccd44984da01ee737be240b31bd93b52e3dc53e75dee7cc3d1e7a14c0fe1a76"
+      }
+    ],
+    "verification_contract": "one-input-one-decoded-message-v1",
+    "observed_output_records": 1,
+    "expected_application_fields": {
+      "message": "Hello world"
+    },
+    "contract_evidence": {
+      "kind": "Captured TCP JSON summary and payload",
+      "summary_sha256": "c3d17eb7f30de46b0d1b5793b0351cf4f50e5a82d1715bdc9a43e52eec43a58d"
+    }
+  },
+  {
+    "case": "wrapped_json_correctness",
+    "configuration": "default",
+    "subject": "fluentd",
+    "status": "passed",
+    "observation": "Existing assertions passed.",
+    "measurement_started_at": "2026-11-12T17:23:10.034842+00:00",
+    "measurement_finished_at": "2026-11-12T17:23:30.640672+00:00",
+    "hardware": "1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/wrapped_json_correctness/ansible/config_files/td-agent.conf": "6179f2a116264f21f3a58798b0643725fc6dce425238df1d9d11ce2273b8c6ca"
+    },
+    "configuration_sha256": {
+      "cases/wrapped_json_correctness/configurations/default/ansible.yml": "ab753775a525fa02f9e458c02b3fbe6a7eddd26cdf10c237ae6708db8d7bbb15",
+      "cases/wrapped_json_correctness/configurations/default/terraform.tfvars": "b39337f534f33f675e4a9aca4fdf9c17ea235eb8b9cc0cfd17acd28e840856f9"
+    },
+    "assertion_tasks_passed": 1,
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "68e6552c8d0681d6f6ab111f89f5414ac97c0af9a6f0ab4fc0cdd04100a123a2",
+    "verification": "Exactly one decoded JSON record in file output.",
+    "verification_contract": "one-input-one-decoded-message-v1",
+    "observed_output_records": 1,
+    "expected_application_fields": {
+      "message": "Hello world"
+    },
+    "contract_evidence": {
+      "kind": "Executed file-output count and payload assertions",
+      "run_log_sha256": "46ae708a18172ca577ebcefe0b3398dfab00f3739f26e76e0d1d19b79fd01329"
+    }
+  },
+  {
+    "case": "wrapped_json_correctness",
+    "configuration": "default",
+    "subject": "logstash",
+    "status": "passed",
+    "observation": "Existing assertions passed.",
+    "measurement_started_at": "2026-11-12T17:23:30.928266+00:00",
+    "measurement_finished_at": "2026-11-12T17:24:09.680596+00:00",
+    "hardware": "1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/wrapped_json_correctness/ansible/config_files/logstash.settings.yml": "c8d918ad99862caad66505336ebfd05fc85ccb29b8f2b2efd206f562a22c4892",
+      "cases/wrapped_json_correctness/ansible/config_files/logstash.pipeline.conf": "f27f10ae176aee0f0d78d15f74e88abc34a794d46774dd4b88aeee824bfa7f1e"
+    },
+    "configuration_sha256": {
+      "cases/wrapped_json_correctness/configurations/default/ansible.yml": "ab753775a525fa02f9e458c02b3fbe6a7eddd26cdf10c237ae6708db8d7bbb15",
+      "cases/wrapped_json_correctness/configurations/default/terraform.tfvars": "b39337f534f33f675e4a9aca4fdf9c17ea235eb8b9cc0cfd17acd28e840856f9"
+    },
+    "assertion_tasks_passed": 1,
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "68e6552c8d0681d6f6ab111f89f5414ac97c0af9a6f0ab4fc0cdd04100a123a2",
+    "receiver_summaries": [
+      {
+        "receiver": "tcp_test_server_summary.json",
+        "message_count": 1,
+        "first_message_sha256": "159210b983cda5239937dcb6d172de5ddf706bc311aaac827a5a6b25243fc8d7",
+        "last_message_sha256": "159210b983cda5239937dcb6d172de5ddf706bc311aaac827a5a6b25243fc8d7"
+      }
+    ],
+    "verification_contract": "one-input-one-decoded-message-v1",
+    "observed_output_records": 1,
+    "expected_application_fields": {
+      "message": "Hello world"
+    },
+    "contract_evidence": {
+      "kind": "Captured TCP JSON summary and payload",
+      "summary_sha256": "89de1f673e97bd17d40e64364009355734c3d386810fe076939ea5c440cfbb24"
+    }
+  },
+  {
+    "case": "wrapped_json_correctness",
+    "configuration": "default",
+    "subject": "fluentbit",
+    "status": "passed",
+    "observation": "Existing assertions passed.",
+    "measurement_started_at": "2026-11-12T17:27:27.347653+00:00",
+    "measurement_finished_at": "2026-11-12T17:27:41.969554+00:00",
+    "hardware": "1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/wrapped_json_correctness/ansible/config_files/td-agent-bit.conf": "2992faa784b6b675149c7928f8d7215993d4b1f91b7489c7d34541b58d8b2510",
+      "cases/wrapped_json_correctness/ansible/config_files/td-agent-bit.parsers.conf": "3927d955bcae4c5b4096eaa5477d236b5cc9ca613f050829f1f8e3b71b0f4769"
+    },
+    "configuration_sha256": {
+      "cases/wrapped_json_correctness/configurations/default/terraform.tfvars": "b39337f534f33f675e4a9aca4fdf9c17ea235eb8b9cc0cfd17acd28e840856f9",
+      "cases/wrapped_json_correctness/configurations/default/ansible.yml": "ab753775a525fa02f9e458c02b3fbe6a7eddd26cdf10c237ae6708db8d7bbb15"
+    },
+    "assertion_tasks_passed": 1,
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "ebeb8c2e4b252017617fa1213d6f4b16db1b0c96b5584dc5f137470a08694427",
+    "verification": "Exactly one decoded JSON record in file output.",
+    "verification_contract": "one-input-one-decoded-message-v1",
+    "observed_output_records": 1,
+    "expected_application_fields": {
+      "message": "Hello world"
+    },
+    "contract_evidence": {
+      "kind": "Executed file-output count and payload assertions",
+      "run_log_sha256": "6a1cf2b9cbf9c8b1fcf50cdb6606c2039f0e7f00edc22426321c799bc1b76aa9"
+    }
+  },
+  {
+    "case": "wrapped_json_correctness",
+    "configuration": "default",
+    "subject": "vector",
+    "status": "passed",
+    "observation": "Existing assertions passed.",
+    "measurement_started_at": "2026-11-12T17:47:09.834766+00:00",
+    "measurement_finished_at": "2026-11-12T17:47:24.385048+00:00",
+    "hardware": "1 \u00d7 c5.large subject",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz",
+    "fixture_sha256": {
+      "cases/wrapped_json_correctness/ansible/config_files/vector.yaml": "aa8213ef2e6284347a80fa9d5360c7f8f0e2446e56ed1dfe2b404a462c73c9d0"
+    },
+    "configuration_sha256": {
+      "cases/wrapped_json_correctness/configurations/default/terraform.tfvars": "b39337f534f33f675e4a9aca4fdf9c17ea235eb8b9cc0cfd17acd28e840856f9",
+      "cases/wrapped_json_correctness/configurations/default/ansible.yml": "ab753775a525fa02f9e458c02b3fbe6a7eddd26cdf10c237ae6708db8d7bbb15"
+    },
+    "assertion_tasks_passed": 1,
+    "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+    "source_patch_sha256": "58a85f977ff15d712c8dae5e34b5be82ca26eafdf78e7e663c06064a85d40894",
+    "receiver_summaries": [
+      {
+        "receiver": "tcp_test_server_summary.json",
+        "message_count": 1,
+        "first_message_sha256": "0e3d9dff9c039442e9ea1c646823fd26af5f418ca52296d6b5b6146b817b79f5",
+        "last_message_sha256": "0e3d9dff9c039442e9ea1c646823fd26af5f418ca52296d6b5b6146b817b79f5"
+      }
+    ],
+    "verification_contract": "one-input-one-decoded-message-v1",
+    "observed_output_records": 1,
+    "expected_application_fields": {
+      "message": "Hello world"
+    },
+    "contract_evidence": {
+      "kind": "Captured TCP JSON summary and payload",
+      "summary_sha256": "8fb202e581aa353f4890d7275ede09ee8dad3d593b6cd0cf1c23bfed352a219b"
+    }
+  }
+]

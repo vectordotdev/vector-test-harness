@@ -1,0 +1,58 @@
+{
+  "architecture": "x86_64",
+  "case": "klog_remap_to_blackhole",
+  "harness_binary_sha256": "ff6e2ee66942dc1217a92189a91509f9d5d0aa0f7eb072782dfa8104015c5801",
+  "harness_dirty": false,
+  "harness_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+  "harness_version": "0.1.0",
+  "input": "cases/performance/klog_remap_to_blackhole/baked.log.gz",
+  "input_sha256": "86b548ddafb620083fcb34ba35bad6ebad8c7a55bbfdea43f5ec0e797b0c1574",
+  "method": "wall-clock-with-streamed-input-v1",
+  "os": "linux",
+  "results": [
+    {
+      "binary": "/usr/bin/vector",
+      "binary_sha256": "4d4cf6e792e723516e4cefde4471612109951aa7eecae45f00cf7380ebf4d898",
+      "config": "cases/performance/klog_remap_to_blackhole/configs/remap-multihop.yaml",
+      "config_sha256": "dccf209b4d8068c7c0bfd870270b7a321b781ca158f27f41c32e154fd6aea440",
+      "label": "candidate",
+      "mean_seconds": 10.682864412399999,
+      "seconds": [
+        10.616168416,
+        10.631141541,
+        10.732053197,
+        10.724861551,
+        10.560304585,
+        10.71455923,
+        10.714700098,
+        10.593703446,
+        10.868048901,
+        10.673103159
+      ],
+      "stddev_seconds": 0.08862163392176131
+    },
+    {
+      "binary": "/usr/bin/vector",
+      "binary_sha256": "4d4cf6e792e723516e4cefde4471612109951aa7eecae45f00cf7380ebf4d898",
+      "config": "cases/performance/klog_remap_to_blackhole/configs/remap-nohop.yaml",
+      "config_sha256": "a2137e31686a4f03ecc8d97bd269d103fbf63f2fb7b74db8cd6964ccfd27ce7d",
+      "label": "candidate",
+      "mean_seconds": 10.0367168982,
+      "seconds": [
+        10.025237343,
+        9.939373716,
+        10.103368617,
+        10.041593376,
+        10.104859063,
+        10.080920013,
+        9.989985444,
+        10.08971309,
+        10.025188827,
+        9.966929493
+      ],
+      "stddev_seconds": 0.058372920331151615
+    }
+  ],
+  "schema_version": 1,
+  "warmup": 1
+}

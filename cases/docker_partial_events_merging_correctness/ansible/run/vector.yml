@@ -18,6 +18,19 @@
   wait_for:
     timeout: 15
 
+- name: Read the container's original log output
+  command:
+    argv: [docker, logs, "{{ container_name }}"]
+  register: docker_fixture_log
+  changed_when: false
+
+- name: Verify the fixture emitted one complete record
+  assert:
+    that:
+      - docker_fixture_log.stdout_lines | length == 1
+      - (docker_fixture_log.stdout | from_json).bzz == 'bzz_value'
+    fail_msg: "Fixture emitted {{ docker_fixture_log.stdout_lines | length }} Docker records; expected one complete record"
+
 - name: Remove test container
   include_role:
     name: test_docker_container

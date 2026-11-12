@@ -1,5 +1,0 @@
----
-- include_role:
-    name: vector
-  vars:
-    action: configure

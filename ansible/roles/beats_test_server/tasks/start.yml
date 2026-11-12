@@ -1,0 +1,10 @@
+---
+- name: Start the Beats receiver
+  systemd:
+    name: vth-beats-consumer
+    state: started
+
+- name: Wait for the Beats receiver
+  wait_for:
+    port: "{{ beats_consumer_port }}"
+    timeout: 120

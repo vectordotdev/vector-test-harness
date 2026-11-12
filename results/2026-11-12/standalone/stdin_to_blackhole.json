@@ -1,0 +1,37 @@
+{
+  "architecture": "x86_64",
+  "case": "stdin_to_blackhole",
+  "harness_binary_sha256": "ff6e2ee66942dc1217a92189a91509f9d5d0aa0f7eb072782dfa8104015c5801",
+  "harness_dirty": false,
+  "harness_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+  "harness_version": "0.1.0",
+  "input": "cases/performance/file_to_blackhole/baked.log.gz",
+  "input_sha256": "86b548ddafb620083fcb34ba35bad6ebad8c7a55bbfdea43f5ec0e797b0c1574",
+  "method": "wall-clock-with-streamed-input-v1",
+  "os": "linux",
+  "results": [
+    {
+      "binary": "/usr/bin/vector",
+      "binary_sha256": "4d4cf6e792e723516e4cefde4471612109951aa7eecae45f00cf7380ebf4d898",
+      "config": "cases/performance/stdin_to_blackhole/vector.yaml",
+      "config_sha256": "5b8e375befcac6cd59b9b7f14f4e830d79b68427245508a10a7d2b4584af4fba",
+      "label": "candidate",
+      "mean_seconds": 1.3271713564,
+      "seconds": [
+        1.318907367,
+        1.323056184,
+        1.31768303,
+        1.339967819,
+        1.340881747,
+        1.337205314,
+        1.3231186240000001,
+        1.323727557,
+        1.324012633,
+        1.323153289
+      ],
+      "stddev_seconds": 0.008705476351230092
+    }
+  ],
+  "schema_version": 1,
+  "warmup": 1
+}

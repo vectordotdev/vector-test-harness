@@ -1,5 +1,0 @@
----
-- include_role:
-    name: fluentbit
-  vars:
-    action: configure

@@ -163,6 +163,8 @@ resource "aws_glue_catalog_table" "vector_tests" {
 
   parameters = {
     EXTERNAL = "TRUE"
+    # Six dstat metadata/header lines, followed by the since-boot sample.
+    "skip.header.line.count" = "7"
   }
 
   partition_keys {
@@ -198,10 +200,6 @@ resource "aws_glue_catalog_table" "vector_tests" {
     ser_de_info {
       name                  = "vector-tests"
       serialization_library = "org.apache.hadoop.hive.serde2.OpenCSVSerde"
-
-      parameters = {
-        "skip.header.line.count" = 7
-      }
     }
 
     columns {
@@ -225,11 +223,7 @@ resource "aws_glue_catalog_table" "vector_tests" {
       type = "double"
     }
     columns {
-      name = "cpu_hiq"
-      type = "double"
-    }
-    columns {
-      name = "cpu_siq"
+      name = "cpu_stl"
       type = "double"
     }
     columns {
@@ -265,15 +259,15 @@ resource "aws_glue_catalog_table" "vector_tests" {
       type = "double"
     }
     columns {
+      name = "mem_free"
+      type = "double"
+    }
+    columns {
       name = "mem_buff"
       type = "double"
     }
     columns {
       name = "mem_cach"
-      type = "double"
-    }
-    columns {
-      name = "mem_free"
       type = "double"
     }
     columns {
@@ -294,10 +288,6 @@ resource "aws_glue_catalog_table" "vector_tests" {
     }
     columns {
       name = "procs_new"
-      type = "double"
-    }
-    columns {
-      name = "procs_total"
       type = "double"
     }
     columns {

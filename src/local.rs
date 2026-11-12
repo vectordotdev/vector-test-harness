@@ -426,6 +426,9 @@ struct BTreeSamples<'a>(std::collections::BTreeMap<&'a str, Vec<f64>>);
 pub fn profile(runtime: &Runtime, args: ProfileArgs) -> Result<()> {
     let workload = workload(runtime, &args.workload)?;
     runtime.mkdir(&workload.output)?;
+    if args.workload.case == "file_to_blackhole" {
+        runtime.mkdir(&workload.dir.join("data"))?;
+    }
     for config in &workload.configs {
         let name = config
             .file_stem()

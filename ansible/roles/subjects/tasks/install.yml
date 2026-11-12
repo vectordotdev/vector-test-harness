@@ -35,7 +35,4 @@
     action: install
     version_with_hash: "{{ preinstalled_splunk_universal_forwarder_version }}"
 
-- include_role:
-    name: subjects
-  vars:
-    action: save_facts
+- include_tasks: save_facts.yml

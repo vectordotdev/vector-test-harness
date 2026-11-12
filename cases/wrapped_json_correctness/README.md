@@ -1,72 +1,24 @@
-# Wrapped JSON Correctness Test
+# Wrapped JSON correctness
 
-This test verifies that wrapped JSON documents are parsed correctly:
+Every supported subject receives the same input:
 
 ```json
 {"log":"{\"message\":\"Hello world\"}"}
 ```
 
-This is a _very_ important for environments that wrap log output in a JSON document, such
-as Docker and Kubernetes.
+After outer and inner JSON decoding, exactly one application record must contain
+`message: Hello world`. Transport adapters decode Beats or JSON output before the
+same count and payload assertion. Additional product metadata is outside this
+contract. This check does not compare throughput or general product quality.
 
-## Historical results
-
-These results describe earlier Vector versions and workload definitions. They
-have not been re-measured with the Vector 0.61 configurations; establish a new
-baseline before comparing performance or claiming current correctness.
-
-|     Subject | Result  |
-|------------:|:-------:|
-|    Filebeat |    ✅    |
-|   FluentBit |    ❌    |
-|     FluentD |    ✅    |
-|    Logstash |    ✅    |
-|   Splunk HF |    ✅    |
-|   Splunk UF |    ✅    |
-|  **Vector** |    ✅    |
-
-## Design
-
-The subject is configured to:
-
-1. Receive the following data:
-
-   ```json
-   {"log":"{\"message\":\"Hello world\"}"}
-   ```
-
-2. Decode the outer JSON envelope with the socket source's JSON codec.
-3. Decode the inner `log` string with one remap and remove that envelope field.
-4. Output the decoded application fields, re-encoded as JSON. Other outer fields
-   are retained.
-
-## Try It
-
-Run the local Vector check without cloud infrastructure:
+Supported subjects are Filebeat, Fluent Bit, Fluentd, Logstash and Vector. The
+[retained AWS results](../../results/2026-11-12/README.md) record their pinned
+versions, actual received counts and observed payload checks.
 
 ```sh
+vth run -t wrapped_json_correctness -s vector -v 0.61.0
 vth check wrapped_json_correctness --vector-bin /path/to/vector
 ```
 
-For the remote case:
-
-```sh
-vth run -t wrapped_json_correctness -s vector
-```
-
-## Resources
-
-* [Setup][setup]
-* [Development][development]
-* [How it works][how_it_works]
-* [Vector docs][docs]
-* [Vector repo][repo]
-* [Vector website][website]
-
-
-[development]: /README.md#development
-[docs]: https://vector.dev/docs/
-[how_it_works]: /README.md#how-it-works
-[repo]: https://github.com/vectordotdev/vector
-[setup]: /README.md#setup
-[website]: https://vector.dev
+The local Vector check additionally verifies that the envelope field is removed.
+See the [comparison requirements](../../docs/comparisons.md).

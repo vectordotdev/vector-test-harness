@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-12",
+  "region": "us-east-1",
+  "architecture": "x86_64",
+  "os": "Ubuntu 22.04.5 LTS",
+  "kernel": "6.8.0-1069-aws",
+  "image_built_at": "2026-11-12T00:23:25Z",
+  "harness_base_revision": "2e8f3b8cf28cd2cb1d70c8abaa5f4df11f7b8ad9",
+  "versions": {
+    "vector": "0.61.0",
+    "filebeat": "8.14.3",
+    "fluent_bit": "3.2.7",
+    "td_agent": "4.5.2-1",
+    "fluentd": "1.16.3",
+    "fluent_plugin_out_http": "1.3.5",
+    "logstash_deb": "1:8.17.3-1",
+    "splunk_heavy_forwarder": "9.2.2-d76edf6f0a15",
+    "splunk_universal_forwarder": "9.2.2-d76edf6f0a15",
+    "dstat": "0.8.0",
+    "rust": "1.94.0",
+    "terraform": "1.9.5",
+    "ansible_core": "2.21.6"
+  },
+  "binary_sha256": {
+    "vector": "4d4cf6e792e723516e4cefde4471612109951aa7eecae45f00cf7380ebf4d898",
+    "dstat": "a9d44a6f8f32ec12bddd0221b7ba6bfb882a48dfd5111bf1a43f5f2e51a10d0c",
+    "vth_guest": "74eb79aeb29dbc06a4c79b160eed78774b1b487f427cfd8a82f15bc15ae57d2c"
+  },
+  "sampling": {
+    "standalone_finite_repetitions": 10,
+    "standalone_finite_warmups": 1
+  },
+  "notes": [
+    "Remote performance numbers and unsupported correctness conclusions were withdrawn after the comparison audit.",
+    "The image versions describe installed packages, not a comparative feature or quality certification.",
+    "Retained wrapped-JSON subjects share one input, an exact output count and the same decoded application-message check.",
+    "Finite timing datasets use one warmup and ten measured repetitions on the same c5.large host with the same Vector binary and fixture.",
+    "Full-fixture delivery/equivalence checks were performed separately on macOS arm64 with Vector 0.61.0 and file output replacing blackhole.",
+    "Timings include process startup, input streaming, pipeline reduction, drain and shutdown; they are not isolated transform CPU costs.",
+    "The untransformed klog stdin reference and continuous-file rate observation are withheld as comparative results."
+  ],
+  "publication_scope": {
+    "remote_performance": "withdrawn",
+    "remote_correctness_pairs": 6,
+    "standalone_timing_workloads": [
+      "stdin_to_blackhole",
+      "klog_remap_to_blackhole"
+    ],
+    "continuous_file_capacity": "not published"
+  }
+}

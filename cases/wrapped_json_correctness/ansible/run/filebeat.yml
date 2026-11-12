@@ -34,4 +34,5 @@
 
 - assert:
     that:
+      - summary.message_count == 1
       - first_message.message == "Hello world"

@@ -5,3 +5,14 @@
     dest: "/opt/splunkforwarder/etc/system/local/{{ item.dest }}"
     mode: 0644
   with_items: "{{ configuration_files }}"
+
+- name: Keep the universal forwarder's built-in log monitors off the test output
+  blockinfile:
+    path: /opt/splunkforwarder/etc/system/local/inputs.conf
+    marker: "# {mark} VTH internal monitor routing"
+    block: |
+      [monitor://$SPLUNK_HOME/var/log/splunk/splunkd.log]
+      _TCP_ROUTING=discard
+
+      [monitor://$SPLUNK_HOME/var/log/splunk/metrics.log]
+      _TCP_ROUTING=discard

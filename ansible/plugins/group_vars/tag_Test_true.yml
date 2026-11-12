@@ -1,0 +1,6 @@
+---
+# Keep shared EC2 defaults beside the inventory so every case loads them.
+ansible_ssh_private_key_file: "{{ lookup('env','VECTOR_TEST_SSH_PRIVATE_KEY') | default(omit) }}"
+ansible_ssh_common_args: "{{ ansible_ssh_private_key_file | ternary('-o IdentitiesOnly=yes', '') }} -o StrictHostKeyChecking=no"
+ansible_python_interpreter: "/usr/bin/python3"
+test_file_path: "/tmp/test_file_output"

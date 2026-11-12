@@ -7,7 +7,7 @@ EOF
 }
 
 variable "instance_count" {
-  type = string
+  type    = string
   default = 1
 
   description = <<EOF
@@ -24,7 +24,7 @@ EOF
 }
 
 variable "instance_type" {
-  type = string
+  type    = string
   default = "t3.micro"
 
   description = <<EOF
@@ -49,7 +49,7 @@ EOF
 }
 
 variable "security_group_ids" {
-  type = list
+  type = list(any)
 
   description = <<EOF
 A list of EC2 security group IDs to apply to the EC2 instance(s) started

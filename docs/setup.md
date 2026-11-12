@@ -64,9 +64,8 @@ Versions come from `config/subjects.json`. The AMI build also installs the Rust
 
 ```sh
 vth list
-vth run -t tcp_to_tcp_performance -s vector -v 0.61.0 --dry-run
-vth run -t tcp_to_tcp_performance -s vector -v 0.61.0
-vth results -t tcp_to_tcp_performance
+vth run -t wrapped_json_correctness -s vector -v 0.61.0 --dry-run
+vth run -t wrapped_json_correctness -s vector -v 0.61.0
 ```
 
 `-c` selects a configuration; the default is `default`. Available variants are
@@ -84,20 +83,23 @@ Custom builds can be installed with
 
 ```sh
 vth ssh <instance-address>
-vth compare -t tcp_to_tcp_performance -s vector -v <baseline> -v <candidate>
+vth compare --input /path/to/archived-athena-response.json
 ```
 
 The SSH command selects the same identity as Ansible. Inspect VM services with
 `journalctl`. `ANSIBLE_EXTRA_ARGS=-vvv` enables Ansible debug output.
 
-`compare` and `export` use Athena. Set `VECTOR_TEST_ATHENA_OUTPUT` to an authorized
-query-results S3 URI when the legacy default is unavailable. Raw dstat results
+`compare` and offline `export --no-upload` inspect archived host measurements.
+Website publication is disabled until a verified comparison contract exists.
+For Athena access, set `VECTOR_TEST_ATHENA_OUTPUT` to an authorized
+query-results S3 URI when the legacy default is unavailable, and
+`VECTOR_TEST_ATHENA_DATABASE` to select your catalog database. Raw dstat results
 remain in the configured results bucket under the historical partitions.
 
 ## Teardown
 
 ```sh
-vth teardown -t tcp_to_tcp_performance --yes
+vth teardown -t wrapped_json_correctness --yes
 ```
 
 Use the same configuration and user ID as the run. The CLI initializes that
@@ -118,6 +120,7 @@ tools. Packer and Linux profiling tools are separate optional dependencies.
 `GENERATE_SSH_KEY` and `INJECT_SSH_KEY` remain supported by the Rust entrypoint;
 mounted identities can be configured directly instead.
 
-The archived workloads and installers still need validation against your chosen
-Vector version and environment. A successful harness unit/integration test does
-not certify AWS provisioning, a Docker image, or a benchmark result.
+The [retained AWS observations](../results/2026-11-12/README.md) records the versions,
+environment, and observed results of the current campaign. Validate other
+versions and environments separately. Harness unit/integration tests cover the
+runner; they do not certify a new AMI, container image, or benchmark result.

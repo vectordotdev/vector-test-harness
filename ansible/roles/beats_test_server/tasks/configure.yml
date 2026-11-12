@@ -1,0 +1,52 @@
+---
+- name: Create isolated Beats receiver directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: logstash
+    group: logstash
+    mode: '0755'
+  loop:
+    - /etc/vth-beats-consumer
+    - /var/lib/vth-beats-consumer
+    - /var/log/vth-beats-consumer
+
+- name: Reuse installed Logstash JVM and logging defaults
+  copy:
+    src: "/etc/logstash/{{ item }}"
+    dest: "/etc/vth-beats-consumer/{{ item }}"
+    remote_src: true
+    mode: '0644'
+  loop:
+    - jvm.options
+    - log4j2.properties
+
+- name: Configure the Beats receiver with an in-memory queue
+  copy:
+    content: |
+      path.data: /var/lib/vth-beats-consumer
+      path.logs: /var/log/vth-beats-consumer
+      pipeline.workers: 1
+      pipeline.batch.delay: 1
+      queue.type: memory
+    dest: /etc/vth-beats-consumer/logstash.yml
+    mode: '0644'
+
+- name: Install Beats-to-JSON receiver configuration
+  template:
+    src: pipeline.conf
+    dest: /etc/vth-beats-consumer/pipeline.conf
+    mode: '0644'
+
+- name: Install the Beats receiver service
+  template:
+    src: vth-beats-consumer.service
+    dest: /etc/systemd/system/vth-beats-consumer.service
+    mode: '0644'
+
+- name: Leave the Beats receiver stopped until the case starts
+  systemd:
+    name: vth-beats-consumer
+    daemon_reload: true
+    enabled: false
+    state: stopped
