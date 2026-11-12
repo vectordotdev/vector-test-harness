@@ -13,10 +13,8 @@ and Ansible, and analyzes recorded results.
 [Results](#recorded-data-and-publication) · [Profiling](#standalone-performance-experiments)
 
 > [!NOTE]
-> Vector configs target **0.61.0**. The [comparison audit](docs/comparisons.md)
-> retires remote benchmarks and correctness scorecards whose equivalence could
-> not be established. The [retained results](results/2026-11-12/README.md) cover
-> narrowly defined checks and verified Vector-only workloads.
+> Vector configs target **0.61.0**. See the [retained results](results/2026-11-12/README.md)
+> and [comparison requirements](docs/comparisons.md).
 
 ## Setup
 
@@ -41,14 +39,12 @@ Install additional tools for the workflows you use:
 | Local correctness checks | A Vector binary; macOS or Linux. |
 | Standalone benchmarks | A Vector binary; Git and its build dependencies if using `vth build`. |
 | Profiling and flamegraphs | Linux with `perf` or Valgrind; Inferno tools for flamegraphs; `file_gen` for continuous file input. |
-| Remote cases | AWS CLI and credentials, Terraform 1.0+, Ansible with its AWS inventory dependencies, and SSH. See the [setup guide](docs/setup.md) for compatible Ansible/SDK versions. Automatic egress-IP discovery also uses `curl`. |
+| Remote cases | AWS CLI and credentials, Terraform 1.0+, Ansible with [amazon.aws](https://github.com/ansible-collections/amazon.aws#requirements) and Python boto3/botocore, SSH, and `curl`. Follow the collection's version requirements. |
 | Cloud results | AWS CLI and credentials with access to the results bucket and, for comparison/export, Athena. |
 | AMI builds | Remote prerequisites plus Packer and its Amazon/Ansible plugins. |
 
 `vth doctor` checks installed tools without contacting AWS; it reports missing
 remote prerequisites even if you only intend to run locally.
-See the [cloud setup guide](docs/setup.md) for account, inventory, AMI, and
-container setup, and the [migration guide](docs/migration.md) for old entry points.
 
 ## Usage
 
@@ -92,9 +88,9 @@ These definitions run with `vth run -t <case> -s <subject>`. Both use the
 | [wrapped_json_correctness](cases/wrapped_json_correctness/) | Filebeat, Fluent Bit, Fluentd, Logstash, Vector | One nested JSON input produces exactly one decoded application record with the expected message. |
 | [docker_partial_events_merging_correctness](cases/docker_partial_events_merging_correctness/) | Vector only | One complete Docker input produces exactly one complete output, including the final payload field. |
 
-The [comparison audit](docs/comparisons.md) explains the removed cases. Their
-README stubs preserve old links, but their runnable definitions and scorecards
-are gone. The [subject catalog](config/subjects.json) records installed versions;
+Retired cases retain a README explaining removal. To tear down their existing
+resources, use a checkout containing the original Terraform files.
+The [subject catalog](config/subjects.json) records installed versions;
 it does not certify general feature support or represent current releases.
 
 ### Standalone workloads
@@ -144,11 +140,17 @@ then run selected subjects sequentially. Inputs, receivers and assertions
 are defined by each case's playbooks. These runs remain separate from the
 local `check`, `bench`, and `profile` commands.
 
-Set up credentials, buckets, SSH identity, and user ID following the
-[cloud setup guide](docs/setup.md). `vth bootstrap-aws` can create account
-prerequisites, or copy `.env.example` to `.env` for existing resources. It does
-not provision the shared Athena dataset; `global-bootstrap` is a separate legacy
-workflow with its own Terraform backend.
+Configure AWS credentials, then create account resources and build the AMI:
+
+```sh
+vth bootstrap-aws --user-id <user>
+packer plugins install github.com/hashicorp/amazon
+packer plugins install github.com/hashicorp/ansible
+vth build-amis
+```
+
+For existing resources, copy `.env.example` to `.env` instead of bootstrapping.
+The legacy shared Athena dataset uses `vth global-bootstrap` separately.
 
 Explicit CLI options override supported environment settings, which override
 `.env`. The file is parsed as data; `vth` never executes `.envrc` or shell code
@@ -196,9 +198,6 @@ vth compare --input /path/to/athena-response.json
 vth export --input /path/to/athena-response.json --no-upload
 ```
 
-Dstat reports retain historical positive-sample selection and trimming. Athena
-uses its configured catalog schema and query method; see
-[measurement compatibility](docs/migration.md#compatibility-and-deliberate-changes).
 Historical S3 keys have no user partition, so `results --user-id` is rejected.
 Set `VECTOR_TEST_ATHENA_DATABASE` and `VECTOR_TEST_ATHENA_OUTPUT` for your catalog
 and authorized query-output location. Failed queries and timeouts are errors.
