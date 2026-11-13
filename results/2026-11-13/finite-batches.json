@@ -1,0 +1,278 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-13",
+  "scope": "Vector-only finite input-release-to-verified-output observations; not sustained capacity or cross-product rankings",
+  "workload": {
+    "fixture": "apache-records-v1",
+    "measured_events_per_run": 1000000,
+    "logical_input_bytes_per_measured_run_including_newlines": 187000000,
+    "canary_events_per_run": 1,
+    "warmup_events_per_run": 1000,
+    "verification_reference_bytes": 187187187,
+    "repetitions_per_case_and_path": 5,
+    "run_order": "direct/Vector pairs, alternating which path runs first on successive repetitions"
+  },
+  "measurement": {
+    "t0": "immediately before publishing measured input",
+    "t1": "final expected application record fully verified",
+    "duration_acceptance": "clean shutdown, complete receiver drain, no verification, Vector or finalization errors",
+    "excluded": [
+      "fixture and expected-record preparation",
+      "process startup",
+      "canary and warmup"
+    ],
+    "raw_report_flags": {
+      "performance_result": false,
+      "measurement.calibrated": false
+    },
+    "raw_flag_basis": "Individual checks do not certify performance; receiver headroom was assessed separately for this cohort."
+  },
+  "environment": {
+    "cloud": "AWS",
+    "region": "us-east-1",
+    "instance_type": "c5.4xlarge",
+    "architecture": "x86_64",
+    "cpu_model": "Intel Xeon Platinum 8275CL @ 3.00GHz",
+    "guest_logical_cpus": 8,
+    "smt_enabled": false,
+    "memory_bytes": 32911282176,
+    "os": "Ubuntu 22.04.5 LTS",
+    "kernel": "6.8.0-1069-aws",
+    "vector_workers": 2,
+    "vector_cpu_affinity": "6,7",
+    "harness_cpu_affinity": "2,3",
+    "management_sampler_cpu_affinity": "0,1",
+    "exclusive_cpu_reservation": false
+  },
+  "delivery": {
+    "transport": "same-host loopback",
+    "queues": "memory, blocking on full",
+    "sink_acknowledgements": false,
+    "durability": "normal operation only; no crash recovery or durable-storage claim",
+    "file_input": "freshly written; filesystem cache not evicted",
+    "output_order_asserted": false,
+    "producer_chunk_bytes": 16384,
+    "tcp_receiver_reads_per_pass": 16,
+    "timeout_seconds": 90
+  },
+  "verification": {
+    "runs": 40,
+    "vector_runs": 20,
+    "direct_runs": 20,
+    "total_verified_events": 40040040,
+    "expected_events_each_run": 1001001,
+    "all_runs_passed": true,
+    "all_receivers_drained": true,
+    "all_vector_exits_graceful": true,
+    "anomalies_across_all_runs": {
+      "missing": 0,
+      "duplicates": 0,
+      "unknown": 0,
+      "corrupt": 0,
+      "malformed": 0
+    },
+    "measured_fixture_hash_basis": "Vector hashes logical input records; direct hashes transport-encoded input."
+  },
+  "headroom": {
+    "assessment": "Direct paths completed faster; approximate receiver CPU during Vector runs stayed below 37% of one core. Direct times are diagnostic and are not subtracted.",
+    "cpu_sample_interval_seconds": 0.01,
+    "cpu_sample_basis": "Approximate procfs phase-window samples; may include boundary overhead or omit polling intervals, not exact Rust t0/t1 CPU.",
+    "file_direct_basis": "Text-TCP producer-to-verifier path; does not calibrate disk or file-source cost.",
+    "excluded_trials": "Earlier receiver-limited and previous-runtime diagnostic cohorts are excluded."
+  },
+  "subject": {
+    "name": "Vector",
+    "version": "0.61.0",
+    "build": "17e017e, x86_64-unknown-linux-gnu",
+    "binary_sha256": "4d4cf6e792e723516e4cefde4471612109951aa7eecae45f00cf7380ebf4d898"
+  },
+  "source": {
+    "matching_revision": "d0f53a48c4f058ec4649a816a1796212f5639259",
+    "basis": "All captured build, runtime, query and config files listed below match this revision; README was subsequently edited.",
+    "capture_base_revision": "142112283f06f1351564bd2a497850863f094928",
+    "capture_dirty": true,
+    "archive_sha256": "96c82d45ca92863b501743001acc8ea79f6688f7c2ce22bd1c30872e2838f732",
+    "runner_binary_sha256": "c7b2ea9aa2053945a575040431e6d930203252130d4bc388ddd24a6d75ad8e28",
+    "files_sha256": {
+      "Cargo.toml": "d877586f5e241a34b8b6b1cc7f57ce83514296065dc6b7b084cda5659915a98e",
+      "Cargo.lock": "e7499935682b8d34f7d6b7315448c3c1d9bda00fb26eaeacff92f49ef0df797b",
+      "src/runtime.rs": "b6eb7fe33bc1c55dab8ed83ae0c71becbf7bc6907cc653aceda63f509798aa42",
+      "src/aws.rs": "d8b0fd350f44fdca2e683e661e4721c57934e73a10e70dd1d9af717b7fe9cbc8",
+      "src/local.rs": "8184bfb8e4187f35aff62662b2969e6e0f27fa0f10eb75b15b986ba29d25fecb",
+      "src/correctness.rs": "3e92107995159302659f0dbd2cc30163911f56c543c8ce5d75aa0ceed13e990c",
+      "src/analysis.rs": "3c104874dca7e1088cee7640d1c7ba5ac90b21899ecdde14c8bff22b171ac70b",
+      "src/infra.rs": "e117de04902daff6e98ed381024752eb5c683742d127687dd544fb61393d2bc1",
+      "src/main.rs": "ef2de379efe40ee62f943b018267830b59b92eced036d6441e45bf59c922c9da",
+      "src/guest.rs": "ca669d14ca159f8474d6b996f5e7c06774e17b498836d06376b5f767b8c8d9ac",
+      "src/cli.rs": "db5c1253aa0c438dfaed94c058fbbc6f1464a349ab88971318b0bdbe9c614160",
+      "src/delivery/receiver.rs": "d47f5701342eee76cae925f06677bf33a2d8347a8023355e1945cc9a0ee337cb",
+      "src/delivery/fixture.rs": "76fdb83685ab4e1f959a82eb1cda9a19ba42e7a7b9bfb4b795ec0ed636323dda",
+      "src/delivery/mod.rs": "f42b2f5ff3d68f612243a63aa90a9d6527fcfaa124717f03acc4002fefe5ce87",
+      "src/delivery/calibration.rs": "2f8162aac208f131b919be8ac710fcaf41ccaec87902b823b0d71ab86d292f70",
+      "src/delivery/environment.rs": "707fdd5449bc0805fdd502202199c19502b761b84ced6e44e657a8edbf88de35",
+      "cases/tcp_to_tcp_performance/vector.yaml": "59e00c551b33b18ac727132d0231cfb3a16c596fd06f2dafff3fe9ede1f2b83c",
+      "cases/tcp_to_http_performance/vector.yaml": "96f8e7bdd4a70aa6a16fea13ce9aee4248ce09b09b0e2183e77825fc03e14937",
+      "cases/file_to_tcp_performance/vector.yaml": "6a5a1860c9a94aa6be07925c0ef34804f78cf8594df48766ce06ee6545ba2ac2",
+      "cases/regex_parsing_performance/vector.yaml": "0bfa432019ec368586887ed4a44c6ef3fbe19a16b9402da64ea7791829b801b8",
+      "cases/tcp_to_blackhole_performance/vector.yaml": "b5180cce97ddf60af3c7ddf3105e58c6c373167820a89b32df93a7b84233d663",
+      "queries/compare.sql": "25d5e85a8421ff32ef90160db4ab4785b91252764089539aea74dfedd2545aa6",
+      "queries/export.sql": "a4bf31d358da3aa49ad08dc14350e54287fffc125e417664c91f6f9eed798086"
+    }
+  },
+  "commands": {
+    "vector": "taskset --cpu-list 2,3 vth --no-dotenv check <case> --vector-bin /path/to/vector --vector-cpus 6,7 --events 1000000 --timeout-secs 90 --output <new-directory>",
+    "direct": "taskset --cpu-list 2,3 vth --no-dotenv calibrate <transport> --events 1000000 --timeout-secs 90 --output <new-directory>"
+  },
+  "raw_artifacts": {
+    "availability": "Raw reports, logs, CPU samples and build snapshots retained privately; this file publishes their result summaries and report hashes.",
+    "archive_sha256": "53331459fa12d8356f62ce4bf1381f734c74100f8c69b421a85e39b5e12a631a",
+    "archive_bytes": 689069,
+    "fixtures": "Regenerable fixtures omitted from the archive; run IDs, hashes and generator source retained."
+  },
+  "cases": [
+    {
+      "case": "tcp_to_tcp_performance",
+      "label": "TCP → TCP",
+      "config": "cases/tcp_to_tcp_performance/vector.yaml",
+      "config_sha256": "59e00c551b33b18ac727132d0231cfb3a16c596fd06f2dafff3fe9ede1f2b83c",
+      "vector": {
+        "median_seconds": 1.148348389,
+        "min_seconds": 1.147685641,
+        "max_seconds": 1.196323527,
+        "receiver_cpu_fraction_of_one_core": {
+          "min": 0.18352501802659782,
+          "max": 0.1938820622764769
+        },
+        "runs": [
+          {"run_id": "000000000000000018e7a09a15b7aa13", "seconds": 1.148348389, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "24fdb2ad1db04242bfbeb23b54f54ccc336fd341e88c2ab8aade0c510d2bd852", "raw_report_sha256": "f56967b0bed20010812174dc0d665c09161485701474b282487eb04507304fa5", "config_rendered_sha256": "3eb76b9c50a3322f691435fdefb2145c770436fe121759d3b7d04e22310175a9", "exit_code": 0, "graceful_exit": true},
+          {"run_id": "000000000000000018e7a09b1010005e", "seconds": 1.1644246759999999, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "d2c8ddee1dc55b280f75bc4c31a9ab8fb65a691397badfbfb2bad7a93edcd914", "raw_report_sha256": "0551d2b64cf142c14f4f5a0aca98165ce61ebef119290c67efa03122518e5d07", "config_rendered_sha256": "3380c476eccebf0b6ad225a3f23da3ee42851dac58440fb3ef03aa20d5bcd5c4", "exit_code": 0, "graceful_exit": true},
+          {"run_id": "000000000000000018e7a09d9afb71ba", "seconds": 1.196323527, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "748a57b01f6d472139ed931e345b34feb8a37b08729d42ad16880744f647f5b3", "raw_report_sha256": "4b8df1afd013b6ccdfa5ef29fb1cdfd4fb71ee5a212759e1829e12738fd8967f", "config_rendered_sha256": "d0fca82a788548178c4416f370f52d75dfa0da3b10b4c14cab3022d31324c4e6", "exit_code": 0, "graceful_exit": true},
+          {"run_id": "000000000000000018e7a09ea056f5e6", "seconds": 1.148238768, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "7b353d5683b26edb925f8c9d372a919e3af323e5854a501bc5f067e620314462", "raw_report_sha256": "2f7fa4b5b3d8a26d24e6806e60ce7363d4ca822b62601ce8ae43afcacb8b83ae", "config_rendered_sha256": "5aa5ba05a2cf47ed03674dd9130155a4ec36315cc05c96b36f1dc0c16404ca42", "exit_code": 0, "graceful_exit": true},
+          {"run_id": "000000000000000018e7a0a12d017b6f", "seconds": 1.147685641, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "357039d8b734eb8d0072e570d91fbf56f1281f0c5b69d0a144e39637803df3e3", "raw_report_sha256": "a66e515289670f1f2b8a02bada2ba56eef134c3cf0929dca04a984d9899ac79e", "config_rendered_sha256": "484cf90a85d22c9341e6af900b1bb467fdc19a459499c4d76705174b42c6dae9", "exit_code": 0, "graceful_exit": true}
+        ]
+      },
+      "direct": {
+        "median_seconds": 0.238231243,
+        "min_seconds": 0.237440691,
+        "max_seconds": 0.239575965,
+        "transport": "tcp",
+        "measured_encoded_payload_bytes": 187000000,
+        "runs": [
+          {"run_id": "000000000000000018e7a0994e035cc4", "seconds": 0.237440691, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "0bd4dfa274efe10565fed7e8d288f43141c72d98f669a5f5dec7a87225067e1b", "raw_report_sha256": "c9690795dbff012861778897ed8d05e906e01c683444908eff111d2e34b18b67"},
+          {"run_id": "000000000000000018e7a09c0b926625", "seconds": 0.238386869, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "d49795ed09e71ea4d005a744bc81e64415e65195bd4524ec1cc5c47dffd0b206", "raw_report_sha256": "0d96ce65fbb23102ad0621cd1767a3af08d92cb69f1b2a1b8b862aae65bc4b56"},
+          {"run_id": "000000000000000018e7a09cd3463bb5", "seconds": 0.239575965, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "865f02a59b5f69bf80cd2ac77407d12061cdf1ece805f1d8f660455161700f85", "raw_report_sha256": "24182ef09907e85917e7fa4c58969f405a91c1ca9124374fe2e2d0e5d0d22415"},
+          {"run_id": "000000000000000018e7a09f9cfa12d2", "seconds": 0.238205708, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "71db3c917f19de02de44b95e9684012e2c8c4c483499481feba30e24c8084a95", "raw_report_sha256": "df6519d67544f217aa4f084cbdb7c7df5792c9926439ba601d79285142781848"},
+          {"run_id": "000000000000000018e7a0a0654bf6e2", "seconds": 0.238231243, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "f8750df8bd8618c4503fbd2028c61a9ecd12f00b48bee637acb89601b305da6c", "raw_report_sha256": "27c8eff74a71b9a557ef3c6b0f9ed813f764344ebe200133529f15b52c7fe224"}
+        ]
+      }
+    },
+    {
+      "case": "tcp_to_http_performance",
+      "label": "TCP → HTTP",
+      "config": "cases/tcp_to_http_performance/vector.yaml",
+      "config_sha256": "96f8e7bdd4a70aa6a16fea13ce9aee4248ce09b09b0e2183e77825fc03e14937",
+      "vector": {
+        "median_seconds": 1.619247058,
+        "min_seconds": 1.610528795,
+        "max_seconds": 1.621935479,
+        "receiver_cpu_fraction_of_one_core": {
+          "min": 0.25375459852998505,
+          "max": 0.25569358566764544
+        },
+        "runs": [
+          {"run_id": "000000000000000018e7a0a31b97f792", "seconds": 1.621935479, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "c8a353f04f69a379a59027274436cb45139514503b203dcdc7568e4e3dc6bb35", "raw_report_sha256": "90d8f60f5c8871e32905653c965a2488144972ccd5b26ffd35fe5c984092a965", "config_rendered_sha256": "e9ad2a2c02302674918c5b2be7627bda9fe17eb0f113d446bc40c084a5f634eb", "exit_code": 0, "graceful_exit": true},
+          {"run_id": "000000000000000018e7a0a43feb3cc2", "seconds": 1.620552602, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "36074f23b23ba88a9e72d2808d029c5f6f23c459c1393519ba317a868919d3e1", "raw_report_sha256": "729f39f06d88e1a7a044eeda833c4de5bafdb18cde6b11d45cbf646f01378eeb", "config_rendered_sha256": "0c19e0e7c382aedf470f988f38c783817215e0f1b7fd7ecd6f311897a21914ee", "exit_code": 0, "graceful_exit": true},
+          {"run_id": "000000000000000018e7a0a74a58059c", "seconds": 1.610528795, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "5652de3bb8b07f60333f1894a616799226498dbb531d4d6b9c007f9f2b11de0c", "raw_report_sha256": "7bbf5ac15ac0e0dbc04b0641bfb991f7c0a07f112b0b42b84b7f50dcbc8d11db", "config_rendered_sha256": "9481458127151dc7f01b6445eb6c57de589762f353cc2b777dfe3ff6fa0afeeb", "exit_code": 0, "graceful_exit": true},
+          {"run_id": "000000000000000018e7a0a86ddc9a8a", "seconds": 1.619247058, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "eb544d81087672a03992159a410547d1528c1a9702836d98c0b3c7533b9e1067", "raw_report_sha256": "73141c02784880ba55ed245ebd3892de66e6eee0b81f9bfbe9d77dacb4b31b09", "config_rendered_sha256": "072f9e9556a8ac7848de2e7836d6c0c0d9754f56955ac63f02c18206f1a0e639", "exit_code": 0, "graceful_exit": true},
+          {"run_id": "000000000000000018e7a0ab804242e0", "seconds": 1.615886433, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "1df96d798326080a0a083fe03442b168d4024cceba52a302f124faaf3fc9de29", "raw_report_sha256": "b7f0418742acacd05b8cc8cb786c9c90643b66ae786aec271f8fb13be8cf7385", "config_rendered_sha256": "9b97e5c9a40101618f521a180b9c7eb302ae44ac05ff39ce4978b9816f61fa0c", "exit_code": 0, "graceful_exit": true}
+        ]
+      },
+      "direct": {
+        "median_seconds": 0.581602274,
+        "min_seconds": 0.580933914,
+        "max_seconds": 0.58414286,
+        "transport": "http",
+        "measured_encoded_payload_bytes": 203000000,
+        "runs": [
+          {"run_id": "000000000000000018e7a0a22959775a", "seconds": 0.581451866, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "0b3059be434acb6dec0ce0f17843daec5daa9d4aa7bc4ce2586e025df270a979", "raw_report_sha256": "5330169edec443be7673f7e8cf1b4a1ca177489f8033cc7d61cd5eb07ad906a8"},
+          {"run_id": "000000000000000018e7a0a56363c8f9", "seconds": 0.581602274, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "5a8bc65bccc70b6fd00c685b4942c2c1b0141c21d151c16b6ac3d25e8159188c", "raw_report_sha256": "b5d9058fc5bd13a0431e8443a996577bdc61e1ebdbacb95803d3e483c26b7f7b"},
+          {"run_id": "000000000000000018e7a0a655a09381", "seconds": 0.58414286, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "2a142f70cf3ba02a673477d80e995f2645fdcc99b22a1e1b51f507037f50e8cc", "raw_report_sha256": "b0e3862fd1cfd68da7213b539e5b5fdcfe9a08ea8e8247d929674fab48e509de"},
+          {"run_id": "000000000000000018e7a0a99296629b", "seconds": 0.580933914, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "45891febf86e4064c3d7a3f22d111cdc7b935378049708ec5db81882c52698c4", "raw_report_sha256": "67d17488fde3a3454063c4ccd99b6646eb8a0059d32890307907a60e6abf1aba"},
+          {"run_id": "000000000000000018e7a0aa857e0257", "seconds": 0.583010689, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "a7d3802ce530a223396192fb41a65dc6a87376b668abb32e00715932edeff6e9", "raw_report_sha256": "9162ed52dad594f2685f0f06811e091d8c981c0546976ecafcca789f95c4b49e"}
+        ]
+      }
+    },
+    {
+      "case": "file_to_tcp_performance",
+      "label": "File → TCP",
+      "config": "cases/file_to_tcp_performance/vector.yaml",
+      "config_sha256": "6a5a1860c9a94aa6be07925c0ef34804f78cf8594df48766ce06ee6545ba2ac2",
+      "vector": {
+        "median_seconds": 3.582514338,
+        "min_seconds": 3.5719953479999997,
+        "max_seconds": 3.753057066,
+        "receiver_cpu_fraction_of_one_core": {
+          "min": 0.06157005433179289,
+          "max": 0.06728755823660329
+        },
+        "runs": [
+          {"run_id": "000000000000000018e7a0ad6e74e8dc", "seconds": 3.581603701, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "ee018a031e2f3a6dfe78758757fec3fd3c38992b0f37db54a7fb2b7259af7fd7", "raw_report_sha256": "bce6d8682d1e03e534f37e0ecefae897d762545fa6008c7b18749e8468914111", "config_rendered_sha256": "c962946199712bd9b4de46489a6d1555a70b7dfe180414793ddaac06835e4772", "exit_code": 0, "graceful_exit": true},
+          {"run_id": "000000000000000018e7a0aef97f9882", "seconds": 3.693881092, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "8d330f960bb40b6d590ab7b918140964a881f3ac0b4074e1a8d4816898c38857", "raw_report_sha256": "a04d2705c27ff38b6ce5281ef59345efacae3018e8bd6befa21de4abec1a8f4a", "config_rendered_sha256": "d56e5a2ae1050e7ff59b77228daf0b0a07aa63e31acc9257a29cd38f1e7e13f5", "exit_code": 0, "graceful_exit": true},
+          {"run_id": "000000000000000018e7a0b22046bbd9", "seconds": 3.5719953479999997, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "91bd507677d57e36d47208ce10a377e275ef1da9e67d0e5058cc96a742fd8006", "raw_report_sha256": "492654419880be03dcd8ac2f3ebdc55fa82c6678d667ada6575226cdf3b4de06", "config_rendered_sha256": "e55b46eaf33f087e5695359b5c33f6d0355036ed5f3fd7b6ea823452d21c90b8", "exit_code": 0, "graceful_exit": true},
+          {"run_id": "000000000000000018e7a0b3ac7b8962", "seconds": 3.582514338, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "c971f3be4270c75310dc75100e7cd4ff5b600acbb76f12fd09e200db426ce1c0", "raw_report_sha256": "c2eaca4c1d8bd67bd92123e052e9496daaca486784d427dcf9975db1a5f83372", "config_rendered_sha256": "78723b3fb4c0e66d3ba9b894a743a332029f1f24ded558d9ff53472635fcd23d", "exit_code": 0, "graceful_exit": true},
+          {"run_id": "000000000000000018e7a0b6cc42e5f9", "seconds": 3.753057066, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "45625646ae053664a8bf948098506e977c909f20eeeda317a00c1ed868f7e880", "raw_report_sha256": "2f30cb6cf8a6b27029218e42979b91caf6ecdc7729d12075247f12cb3f070d17", "config_rendered_sha256": "44bfed637decd402a1ec8c1a8e1dcba8c938badb875ded8050db0357fa29ed6d", "exit_code": 0, "graceful_exit": true}
+        ]
+      },
+      "direct": {
+        "median_seconds": 0.236741148,
+        "min_seconds": 0.236118359,
+        "max_seconds": 0.238531786,
+        "transport": "tcp",
+        "measured_encoded_payload_bytes": 187000000,
+        "runs": [
+          {"run_id": "000000000000000018e7a0aca60fa579", "seconds": 0.238531786, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "02e92ab263f4e366f6d966ce6577d67e77ea4668d198a68b2beb67b2213f78a2", "raw_report_sha256": "10ad166eb4ebc422cea2a6d7c4f46bb3ae5b2ec8e0a65d14fa7dc9668e3894e1"},
+          {"run_id": "000000000000000018e7a0b08c760de7", "seconds": 0.237205451, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "b61ac2eec9110717683b76a7fcc94c3d86ba8431918591ad3a6d60c71eecf2cd", "raw_report_sha256": "6c122ccd4f42089f75e3d02d221f1c8593626968fb4546400a9760af0c744cdb"},
+          {"run_id": "000000000000000018e7a0b157daf7b7", "seconds": 0.236741148, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "ec53b6e31142a7be9edf19b5b15778e6f0acfc4de1b1f0198b870948f2ebc0b1", "raw_report_sha256": "de05a50bb29a59bb65e643fa57e5362f13a22434bd512f5137875e92c3c1e4ac"},
+          {"run_id": "000000000000000018e7a0b538ff6b4a", "seconds": 0.236118359, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "761e758a572fd812f0ef605e0efbdaa545d21a7e2bfb1fe856215ebc674d6f94", "raw_report_sha256": "d6dbb6abf5da77a2020f6bebfb957c708e98a820bce443c0d8797c468290c84e"},
+          {"run_id": "000000000000000018e7a0b6020724e7", "seconds": 0.236666206, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "b5c25478b2fe6547ee8b8c029a737c68f285ac36ce1d4e38bf9f1ee52cd805b9", "raw_report_sha256": "37e8c6c3e00d3410a3cf5cc51d75cd7d4beed2575af10b28c4152ca87bdf6eb4"}
+        ]
+      }
+    },
+    {
+      "case": "regex_parsing_performance",
+      "label": "TCP → regex parsing → TCP",
+      "config": "cases/regex_parsing_performance/vector.yaml",
+      "config_sha256": "0bfa432019ec368586887ed4a44c6ef3fbe19a16b9402da64ea7791829b801b8",
+      "vector": {
+        "median_seconds": 4.748520698,
+        "min_seconds": 4.735189116,
+        "max_seconds": 4.768379354,
+        "receiver_cpu_fraction_of_one_core": {
+          "min": 0.3652239979981233,
+          "max": 0.36736251680759147
+        },
+        "runs": [
+          {"run_id": "000000000000000018e7a0b9da0c891b", "seconds": 4.768379354, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "b44a2355a84a1242108211f149831a9f94a0ab3fcd58ab3707166def2b4c514d", "raw_report_sha256": "529918f2a38f03a216cdbfc1a52aff57885ccc25f6b83396de9b1299a357e5d7", "config_rendered_sha256": "bf9cc0a2707b13c9274b411c735560fdbb516c72cf17edc68b8a5283451a4bff", "exit_code": 0, "graceful_exit": true},
+          {"run_id": "000000000000000018e7a0bbad89d996", "seconds": 4.748520698, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "527c0fcb42be6d8a6b7f11a88fb9d92ca7bf28dbeb1dfadcd7fdd4cf2e17d3cc", "raw_report_sha256": "5463631da0a350bba3e0e8bb423fce5e1bf71a3fd336b6d9f3e636d6d9f88af1", "config_rendered_sha256": "3acc392f0f8079d83f3ea5eaa44692c38f019b89689b733170f964f7c987b940", "exit_code": 0, "graceful_exit": true},
+          {"run_id": "000000000000000018e7a0c06d756352", "seconds": 4.747470312, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "57d504861c3a27c74bcbf3bf102e5709682a7749af5f3062d62490e70a530bc4", "raw_report_sha256": "dd614205bd5fd70963e1b817f996096beb286ca0843f60c431de6b23b14a8d05", "config_rendered_sha256": "906dfd5bb838589748b906322e7afc39be274e6a6e6df89ae990ca84e2ff93e0", "exit_code": 0, "graceful_exit": true},
+          {"run_id": "000000000000000018e7a0c2402bce9c", "seconds": 4.735189116, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "ce7f5ab2ad03e4aed7016a46d9327486fc2a167348f2b30dac24e3810e04a89c", "raw_report_sha256": "06babdbf53bbc3ab49ebe61e1a4267214bb57687c186026565180c1e1bd655f8", "config_rendered_sha256": "a6442a4779ec24e4b11b3be266ffaee32568e8dc61b21a4073033dae2f8ed970", "exit_code": 0, "graceful_exit": true},
+          {"run_id": "000000000000000018e7a0c6fdae2377", "seconds": 4.756412743, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "5c46f8466ec013f6570a50c71241e83be1221dcbd2826bf16f97124713ebe54c", "raw_report_sha256": "da32526c8a1efab7915a0c58fdd063f7766f01a405f4fc1165023ec1d8cd6d93", "config_rendered_sha256": "171537b49c58198c2592d10b44f615e0c70f5be9fa2e5792d096b24a99304b3a", "exit_code": 0, "graceful_exit": true}
+        ]
+      },
+      "direct": {
+        "median_seconds": 1.731066886,
+        "min_seconds": 1.728414297,
+        "max_seconds": 1.73447861,
+        "transport": "parsed-json",
+        "measured_encoded_payload_bytes": 273000000,
+        "runs": [
+          {"run_id": "000000000000000018e7a0b864e18942", "seconds": 1.731228873, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "845b106d7ff1213e03a4ffd53ce1ba30a59b3dd3c75b7c09e8142ebb0737a7bd", "raw_report_sha256": "47885a1268c3217e72becadbf03bd2055092cb106d87b87a195b6b9b27c78c1c"},
+          {"run_id": "000000000000000018e7a0bd7f9833d9", "seconds": 1.728414297, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "d4750c2aaf3aa5b6f4a914dcb453b49df67769d481faefc8d009bbd400fe311f", "raw_report_sha256": "893f929001c42265506add7938b6eb7b268f45f054a81d0119ec6e33284400c6"},
+          {"run_id": "000000000000000018e7a0bef68c2730", "seconds": 1.731066886, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "979f4117d1e331a7e2e27faa93ac889d7d2035e61a452e843aaee2e3e9863ccc", "raw_report_sha256": "bb411bbda262a25f1364ef6e1b6937a558a0609bc7f2ce02ea40a809e54cf17d"},
+          {"run_id": "000000000000000018e7a0c41103390c", "seconds": 1.73447861, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "5cdb18b6e7d2982672d5f271ef64c4b84398c1cf7989719fe9336ec245bb2068", "raw_report_sha256": "e43e7da79ad409e6a0eadb7d7a98947812c7231b490ae6ca4158386b4b32b00a"},
+          {"run_id": "000000000000000018e7a0c5875766c0", "seconds": 1.728968811, "outcome": "passed", "verified_events": 1001001, "drained": true, "measured_fixture_sha256": "65c90189d06f23b777d6fbfa4788e8cf381caa81ac2e556be19a71d958ee9f1b", "raw_report_sha256": "9c707cd19cc10bbbdf942d948de723a8e1a6f72e52f016114f495ea5482b37ed"}
+        ]
+      }
+    }
+  ]
+}
