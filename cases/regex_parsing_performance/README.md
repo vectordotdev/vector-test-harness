@@ -1,9 +1,9 @@
 # regex_parsing_performance
 
-This remote case has been retired.
+Run locally: `vth check regex_parsing_performance --vector-bin /path/to/vector`.
 
-Parser patterns, error handling and output fields differ; output equivalence and successfully parsed event counts were not verified.
+The TCP source feeds a `parse_regex!` remap; the TCP sink emits newline-delimited
+JSON. The receiver checks exact objects containing eight string fields:
+`host`, `user`, `bytes_in`, `timestamp`, `method`, `path`, `status`, `bytes_out`.
 
-See the [comparison audit](../../docs/comparisons.md) for the publication criteria.
-Historical scorecards and new numerical comparisons have been removed; raw run
-artifacts remain in private storage and the case history remains in Git.
+Uses the shared [finite workload contract](../../README.md#finite-workload-contract).

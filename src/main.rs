@@ -2,6 +2,7 @@ mod analysis;
 mod aws;
 mod cli;
 mod correctness;
+mod delivery;
 mod guest;
 mod infra;
 mod local;
@@ -74,6 +75,13 @@ fn execute(cli: Cli, inherited: Option<Runtime>) -> Result<()> {
         Commands::Doctor => infra::doctor(&runtime),
         Commands::Check(args) => {
             let code = correctness::run(&runtime, args)?;
+            if code != 0 {
+                std::process::exit(code);
+            }
+            Ok(())
+        }
+        Commands::Calibrate(args) => {
+            let code = delivery::calibrate(&runtime, args)?;
             if code != 0 {
                 std::process::exit(code);
             }

@@ -1,9 +1,8 @@
 # tcp_to_tcp_performance
 
-This remote case has been retired.
+Run locally: `vth check tcp_to_tcp_performance --vector-bin /path/to/vector`.
 
-Raw forwarding, event construction, encodings and receiver protocols differ. Host traffic alone cannot establish comparable event throughput.
+The TCP source decodes newline-delimited bytes and the TCP sink forwards the
+original text with newline framing.
 
-See the [comparison audit](../../docs/comparisons.md) for the publication criteria.
-Historical scorecards and new numerical comparisons have been removed; raw run
-artifacts remain in private storage and the case history remains in Git.
+Uses the shared [finite workload contract](../../README.md#finite-workload-contract).

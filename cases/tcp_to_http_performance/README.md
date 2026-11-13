@@ -1,9 +1,9 @@
 # tcp_to_http_performance
 
-This remote case has been retired.
+Run locally: `vth check tcp_to_http_performance --vector-bin /path/to/vector`.
 
-Encoding, batching and HTTP request semantics differ. Network counters were not tied to verified equivalent payload delivery.
+The TCP source forwards records to an HTTP/1 receiver as uncompressed POST
+batches of newline-delimited JSON containing only `message`.
+Batching uses a 256-event limit, 100 ms flush timeout and one request at a time.
 
-See the [comparison audit](../../docs/comparisons.md) for the publication criteria.
-Historical scorecards and new numerical comparisons have been removed; raw run
-artifacts remain in private storage and the case history remains in Git.
+Uses the shared [finite workload contract](../../README.md#finite-workload-contract).

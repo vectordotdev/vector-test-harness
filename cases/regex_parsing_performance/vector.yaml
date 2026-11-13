@@ -1,0 +1,35 @@
+data_dir: {{ data_dir }}
+
+sources:
+  in:
+    type: socket
+    mode: tcp
+    address: {{ source_address }}
+    framing:
+      method: newline_delimited
+    decoding:
+      codec: bytes
+
+transforms:
+  apache_common_parser:
+    inputs: ["in"]
+    type: remap
+    source: |
+      . = parse_regex!(.message, r'^(?P<host>[\w\.]+) - (?P<user>[\w]+) (?P<bytes_in>[\d]+) \[(?P<timestamp>[^\]]*)\] "(?P<method>[\w]+) (?P<path>[^"]*)" (?P<status>[\d]+) (?P<bytes_out>[\d]+)$')
+
+sinks:
+  out:
+    buffer:
+      type: memory
+      max_events: 512
+      when_full: block
+    acknowledgements:
+      enabled: false
+    inputs: ["apache_common_parser"]
+    type: socket
+    mode: tcp
+    address: {{ receiver_address }}
+    framing:
+      method: newline_delimited
+    encoding:
+      codec: json

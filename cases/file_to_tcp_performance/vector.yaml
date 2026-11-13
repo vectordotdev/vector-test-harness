@@ -1,0 +1,26 @@
+data_dir: {{ data_dir }}
+
+sources:
+  in:
+    type: file
+    include: [{{ input_file }}]
+    read_from: beginning
+    ignore_checkpoints: true
+    line_delimiter: "\n"
+
+sinks:
+  out:
+    buffer:
+      type: memory
+      max_events: 512
+      when_full: block
+    acknowledgements:
+      enabled: false
+    inputs: ["in"]
+    type: socket
+    mode: tcp
+    address: {{ receiver_address }}
+    framing:
+      method: newline_delimited
+    encoding:
+      codec: text

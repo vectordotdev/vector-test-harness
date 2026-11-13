@@ -408,6 +408,13 @@ fn differences(expected: &[Expected], received: &[&Received]) -> Vec<String> {
 }
 
 pub fn run(runtime: &Runtime, args: CheckArgs) -> Result<i32> {
+    if args.case.is_workload() {
+        return crate::delivery::run(runtime, args);
+    }
+    ensure!(
+        args.delivery.is_default() && args.vector_cpus.is_none(),
+        "finite delivery controls apply only to workload cases"
+    );
     ensure!(
         cfg!(unix),
         "local correctness checks currently require a Unix host"
@@ -480,6 +487,7 @@ pub fn run(runtime: &Runtime, args: CheckArgs) -> Result<i32> {
     let payloads = match args.case {
         CheckCase::WrappedJson => vec![json!({"log":"{\"message\":\"Hello world\"}"})],
         CheckCase::Sighup => vec![json!({"log":"First line"}), json!({"log":"Second line"})],
+        _ => bail!("workload checks use the delivery runner"),
     };
     let expected = match args.case {
         CheckCase::WrappedJson => vec![Expected {
@@ -499,6 +507,7 @@ pub fn run(runtime: &Runtime, args: CheckArgs) -> Result<i32> {
                 absent: vec![],
             },
         ],
+        _ => bail!("workload checks use the delivery runner"),
     };
     let report = json!({
         "schema_version": 1,
