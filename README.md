@@ -20,18 +20,17 @@ See the [comparison requirements](docs/comparisons.md).
 
 ## Vector-only finite-batch results
 
-Measured on 2026-11-13 with Vector **0.61.0**: five runs per workload, each
-with **1,000,000 measured records / 187 MB** including line delimiters. One AWS
+Measured on 2026-11-13. Input sizes include line delimiters. One AWS
 `c5.4xlarge` ran Ubuntu 22.04.5 with SMT disabled. Vector used two workers on
 two CPUs; the harness used two different CPUs. Affinity did not reserve CPUs
 exclusively.
 
-| Workload | Median completion | Observed min–max |
-| --- | ---: | ---: |
-| TCP → TCP | 1.148 s | 1.148–1.196 s |
-| TCP → HTTP | 1.619 s | 1.611–1.622 s |
-| File → TCP | 3.583 s | 3.572–3.753 s |
-| TCP → regex parsing → TCP | 4.749 s | 4.735–4.768 s |
+| Workload | Vector | Measured records | Input size | Runs | Median completion | Observed min–max |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| TCP → TCP | 0.61.0 | 1,000,000 | 187 MB | 5 | 1.148 s | 1.148–1.196 s |
+| TCP → HTTP | 0.61.0 | 1,000,000 | 187 MB | 5 | 1.619 s | 1.611–1.622 s |
+| File → TCP | 0.61.0 | 1,000,000 | 187 MB | 5 | 3.583 s | 3.572–3.753 s |
+| TCP → regex parsing → TCP | 0.61.0 | 1,000,000 | 187 MB | 5 | 4.749 s | 4.735–4.768 s |
 
 Timing covers input publication through verification of the last expected
 record. Startup, canary, warmup and preparation of the 187.2 MB verification
