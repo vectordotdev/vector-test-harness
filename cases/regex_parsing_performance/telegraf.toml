@@ -1,0 +1,21 @@
+[agent]
+  interval = "1s"
+  round_interval = false
+  metric_batch_size = 256
+  metric_buffer_limit = 16384
+  flush_interval = "50ms"
+  flush_jitter = "0s"
+  collection_jitter = "0s"
+  omit_hostname = true
+
+[[inputs.socket_listener]]
+  service_address = @VTH_SOURCE_URI@
+  splitting_strategy = "newline"
+  data_format = "grok"
+  grok_patterns = ['^%{IP:host} - %{WORD:user} %{INT:bytes_in} \[%{DATA:timestamp}\] "%{WORD:method} %{NOTSPACE:path}" %{INT:status} %{INT:bytes_out}$']
+  grok_unique_timestamp = "disable"
+
+[[outputs.socket_writer]]
+  address = @VTH_RECEIVER_URI@
+  data_format = "template"
+  template = "{{ .Fields | toJson }}\n"

@@ -56,7 +56,7 @@ fn socat_loop(args: &[String]) -> io::Result<i32> {
     }
 }
 
-fn longlog() -> io::Result<i32> {
+pub(crate) fn longlog_payload() -> String {
     // Match the original Ruby fixture's keys and values, including insertion order.
     let mut message = String::from("{\"message\":\"Log text\"");
     for first in b'a'..=b'b' {
@@ -68,6 +68,11 @@ fn longlog() -> io::Result<i32> {
         }
     }
     message.push('}');
+    message
+}
+
+fn longlog() -> io::Result<i32> {
+    let message = longlog_payload();
     if message.len() < 16 * 1024 {
         return Err(invalid(
             "long-log fixture must exceed Docker's splitting threshold",

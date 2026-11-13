@@ -1,0 +1,25 @@
+service:
+  flush: 0.05
+  grace: 5
+  daemon: off
+  log_level: info
+
+pipeline:
+  inputs:
+    - name: tail
+      tag: records
+      path: {{ input_file }}
+      read_from_head: true
+      refresh_interval: 1
+      buffer_chunk_size: 64K
+      buffer_max_size: 64K
+      mem_buf_limit: 16M
+      storage.type: memory
+  outputs:
+    - name: tcp
+      match: records
+      host: {{ receiver_host }}
+      port: {{ receiver_port }}
+      raw_message_key: '$log'
+      workers: 2
+      retry_limit: no_retries

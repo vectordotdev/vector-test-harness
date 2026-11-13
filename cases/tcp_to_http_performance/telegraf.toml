@@ -1,0 +1,26 @@
+[agent]
+  interval = "1s"
+  round_interval = false
+  metric_batch_size = 256
+  metric_buffer_limit = 16384
+  flush_interval = "50ms"
+  flush_jitter = "0s"
+  collection_jitter = "0s"
+  omit_hostname = true
+
+[[inputs.socket_listener]]
+  service_address = @VTH_SOURCE_URI@
+  splitting_strategy = "newline"
+  data_format = "value"
+  data_type = "string"
+
+[[outputs.http]]
+  url = @VTH_RECEIVER_URI@
+  method = "POST"
+  timeout = "5s"
+  use_batch_format = true
+  content_encoding = "identity"
+  data_format = "template"
+  template = "{{ dict \"message\" (.Field \"value\") | toJson }}\n"
+  [outputs.http.headers]
+    Content-Type = "application/x-ndjson"

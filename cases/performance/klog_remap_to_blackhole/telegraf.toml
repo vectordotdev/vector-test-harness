@@ -1,0 +1,71 @@
+[agent]
+  precision = "1ns"
+  interval = "1s"
+  round_interval = false
+  metric_batch_size = 1024
+  metric_buffer_limit = 16384
+  flush_interval = "10ms"
+  flush_jitter = "0s"
+  collection_jitter = "0s"
+  omit_hostname = false
+[[inputs.tail]]
+  files = ["/dev/stdin"]
+  pipe = true
+  watch_method = "poll"
+  max_undelivered_lines = 1024
+  path_tag = ""
+  data_format = "grok"
+  grok_patterns = ['^%{GREEDYDATA:value}$']
+  grok_unique_timestamp = "disable"
+[[inputs.internal]]
+  # Native timer events flush the pending text group after idle; they are dropped.
+  name_prefix = "vth_tick_"
+  collect_memstats = false
+  interval = "1s"
+
+[[processors.starlark]]
+  source = '''
+load("json.star", "json")
+load("time.star", "time")
+state = {"pending": None, "last": None}
+def event(metric, log, kind):
+    metric.fields.clear()
+    metric.fields["log_json"] = json.encode(log)
+    metric.fields["log_type"] = kind
+    if type(log) == "dict" and type(log.get("ts")) in ["int", "float"]:
+        metric.time = int(float(log["ts"]) * 1000000000)
+    return metric
+def apply(metric):
+    if metric.name.startswith("vth_tick_"):
+        if state["pending"] != None and time.now() - state["last"] >= 30 * time.second:
+            result = state["pending"]
+            state["pending"] = None
+            return result
+        return None
+    text = metric.fields["value"]
+    parsed = []
+    err = catch(lambda: parsed.append(json.decode(text)))
+    if err == None:
+        return event(metric, parsed[0], "json")
+    starts = len(text) >= 6 and text[0] in "IWEF" and text[1:5].isdigit() and text[5].isspace()
+    result = None
+    if starts and state["pending"] != None:
+        result = state["pending"]
+        state["pending"] = None
+    if state["pending"] == None:
+        # Keep source delivery tracking while a text group waits for continuation.
+        state["pending"] = event(deepcopy(metric, track=True), text, "text")
+    else:
+        previous = json.decode(state["pending"].fields["log_json"])
+        combined = previous + "\n" + text
+        if len(combined) > 1048576:
+            fail("merged klog record exceeds 1 MiB")
+        state["pending"].fields["log_json"] = json.encode(combined)
+    state["last"] = time.now()
+    return result
+'''
+[[outputs.file]]
+  files = [@VTH_CAPTURE_FILE@]
+  data_format = "template"
+  template = '''{"log":{{ .Field "log_json" }},"log_type":{{ .Field "log_type" | toJson }},"host":{{ .Tag "host" | toJson }},"source_type":"stdin","timestamp":{{ .Time.UTC.Format "2006-01-02T15:04:05.999999999Z07:00" | toJson }}}
+'''

@@ -2,11 +2,17 @@
 //! A duration is accepted only after full verification and cleanup. Receivers do not depend on
 //! subject's transport envelopes beyond the explicitly selected output format.
 
+mod adapters;
 mod calibration;
+mod docker;
 mod environment;
 mod fixture;
+mod functional;
+mod metrics;
+mod protocol;
 mod receiver;
-mod subject;
+pub(crate) mod standalone;
+pub(crate) mod subject;
 
 pub use calibration::run as calibrate;
 
@@ -30,7 +36,7 @@ use crate::{
     runtime::{check_file, sha256, Invocation, Runtime, INTERRUPTED},
 };
 use fixture::Fixture;
-use receiver::{Receiver, Transport};
+use receiver::Receiver;
 use subject::Subject;
 
 const WARMUP: usize = 1_000;
@@ -66,6 +72,8 @@ struct Target {
     child: Child,
     status: Option<ExitStatus>,
     subject: Subject,
+    last_count: Option<u64>,
+    count_output: bool,
 }
 
 impl Target {
@@ -76,9 +84,20 @@ impl Target {
         prefix: &str,
         subject: Subject,
     ) -> Result<Self> {
+        Self::spawn_with_stdin(runtime, invocation, output, prefix, subject, Stdio::null())
+    }
+
+    fn spawn_with_stdin(
+        runtime: &Runtime,
+        invocation: &Invocation,
+        output: &Path,
+        prefix: &str,
+        subject: Subject,
+        stdin: Stdio,
+    ) -> Result<Self> {
         let mut command = runtime.command(invocation);
         command
-            .stdin(Stdio::null())
+            .stdin(stdin)
             .stdout(fs::File::create(
                 output.join(format!("{prefix}.stdout.log")),
             )?)
@@ -94,6 +113,8 @@ impl Target {
             child: command.spawn().context("start subject process")?,
             status: None,
             subject,
+            last_count: None,
+            count_output: false,
         })
     }
 
@@ -132,14 +153,14 @@ impl Target {
 
     fn stop(&mut self, deadline: Instant) -> Result<Value> {
         let already_exited = self.status()?.is_some();
-        let signaled = !already_exited && self.signal("TERM")?;
-        while self.status()?.is_none()
+        let signaled = self.signal("TERM")?;
+        while (self.status()?.is_none() || self.signal("0")?)
             && Instant::now() < deadline
             && !INTERRUPTED.load(Ordering::SeqCst)
         {
             thread::sleep(POLL);
         }
-        let forced = self.status()?.is_none();
+        let forced = self.status()?.is_none() || self.signal("0")?;
         if forced {
             let _ = self.signal("KILL");
             let _ = self.child.kill();
@@ -151,13 +172,15 @@ impl Target {
             "exit_code": status.code(),
             "unexpected_exit": already_exited,
             "forced": forced,
-            "graceful": signaled && !forced && status.success(),
+            "graceful": !already_exited && signaled && !forced && status.success(),
         }))
     }
 }
 
 impl Drop for Target {
     fn drop(&mut self) {
+        // A supervisor can exit while its workers still own the output sockets.
+        let _ = self.signal("KILL");
         if self.child.try_wait().ok().flatten().is_none() {
             let _ = self.signal("KILL");
             let _ = self.child.kill();
@@ -173,31 +196,69 @@ struct Logs {
 }
 
 fn logs(output: &Path, subject: Subject) -> Result<Logs> {
+    read_logs(output, subject, false)
+}
+
+fn read_logs(output: &Path, subject: Subject, finalized: bool) -> Result<Logs> {
     let mut result = Logs::default();
-    for name in [
-        format!("{}.stdout.log", subject.name()),
-        format!("{}.stderr.log", subject.name()),
-    ] {
-        let path = output.join(name);
+    let mut paths = vec![
+        output.join(format!("{}.stdout.log", subject.name())),
+        output.join(format!("{}.stderr.log", subject.name())),
+    ];
+    if matches!(subject, Subject::SplunkHf | Subject::SplunkUf) {
+        paths.extend(
+            adapters::splunk::extra_logs(output)
+                .into_iter()
+                .filter(|path| path.exists()),
+        );
+    }
+    for path in paths {
         ensure!(
             fs::metadata(&path)?.len() <= LOG_LIMIT as u64,
             "subject log exceeds 1 MiB"
         );
         let bytes = fs::read(path)?;
         for line in bytes.split_inclusive(|byte| *byte == b'\n') {
-            if subject == Subject::FluentBit {
+            if subject != Subject::Vector {
                 if result.errors.len() < 8 {
                     if let Some(error) = subject.text_error(line) {
                         result.errors.push(error);
                     }
                 }
+                let delta = match subject {
+                    Subject::Telegraf => adapters::telegraf::count_delta(line),
+                    Subject::Filebeat => adapters::filebeat::count_delta(line),
+                    _ => None,
+                };
+                if let Some(delta) = delta {
+                    result.events = Some(
+                        result
+                            .events
+                            .unwrap_or(0)
+                            .checked_add(delta)
+                            .context("native output counter overflow")?,
+                    );
+                }
+                if subject == Subject::Filebeat {
+                    if let Some(total) = adapters::filebeat::count_total(line) {
+                        ensure!(
+                            total >= result.events.unwrap_or(0),
+                            "native total is below observed output counter deltas"
+                        );
+                        result.events = Some(total);
+                    }
+                }
                 continue;
             }
-            if !line.ends_with(b"\n") {
+            if !line.ends_with(b"\n") && !finalized {
                 continue;
             }
-            let Ok(value) = serde_json::from_slice::<Value>(line) else {
-                continue;
+            let value = match serde_json::from_slice::<Value>(line) {
+                Ok(value) => value,
+                Err(error) if finalized && !line.ends_with(b"\n") => {
+                    return Err(error).context("incomplete final Vector log record");
+                }
+                Err(_) => continue,
             };
             let fields = value.get("fields").unwrap_or(&value);
             if value["level"] == "ERROR" && result.errors.len() < 8 {
@@ -227,6 +288,34 @@ fn logs(output: &Path, subject: Subject) -> Result<Logs> {
     Ok(result)
 }
 
+fn logs_final(output: &Path, subject: Subject) -> Result<Logs> {
+    if matches!(subject, Subject::SplunkHf | Subject::SplunkUf) {
+        for path in adapters::splunk::extra_logs(output) {
+            ensure!(
+                fs::metadata(&path).is_ok_and(|metadata| metadata.len() > 0),
+                "required native subject log missing or empty: {}",
+                path.display()
+            );
+        }
+        adapters::splunk::capture_logs(output)?;
+    }
+    let mut result = read_logs(output, subject, true)?;
+    if matches!(subject, Subject::SplunkHf | Subject::SplunkUf) {
+        result.events = adapters::splunk::count(output)?;
+        ensure!(
+            !output.join("splunk-counter.json").exists() || result.events.is_some(),
+            "final native Splunk discard count missing"
+        );
+        if result.events.is_some() {
+            fs::copy(
+                output.join("native-metrics.json"),
+                output.join("native-metrics.final.json"),
+            )?;
+        }
+    }
+    Ok(result)
+}
+
 fn observe(
     target: &mut Target,
     receiver: Option<&Receiver>,
@@ -236,7 +325,12 @@ fn observe(
     budget(deadline)?;
     target.running()?;
     let observed = logs(log, target.subject)?;
-    if !observed.errors.is_empty() {
+    // Retain Splunk's complete record proof even when its startup diagnostics
+    // are unrelated to this pipeline. Final health still rejects every ERROR
+    // and clears the timing; no diagnostic is hidden or treated as benign.
+    if !observed.errors.is_empty()
+        && !matches!(target.subject, Subject::SplunkHf | Subject::SplunkUf)
+    {
         return Err(stopped("failed", observed.errors.join("; ")));
     }
     if let Some(receiver) = receiver {
@@ -248,7 +342,19 @@ fn observe(
         }
         Ok(receiver.unique())
     } else {
-        Ok(observed.events.unwrap_or(0) as usize)
+        let count = if target.count_output {
+            observed.events.or(metrics::count(target.subject, log)?)
+        } else {
+            None
+        };
+        if let Some(count) = count {
+            ensure!(
+                target.last_count.is_none_or(|previous| count >= previous),
+                "native output counter decreased"
+            );
+            target.last_count = Some(count);
+        }
+        Ok(count.unwrap_or(0) as usize)
     }
 }
 
@@ -392,9 +498,11 @@ fn render(
     output: &Path,
     source: SocketAddr,
     receiver: SocketAddr,
+    metrics_port: u16,
+    subject: Subject,
+    case: CheckCase,
 ) -> Result<String> {
-    let mut result = template.to_owned();
-    for (key, value) in [
+    let values = [
         (
             "data_dir",
             output.join("data").to_string_lossy().into_owned(),
@@ -406,18 +514,68 @@ fn render(
                 .to_string_lossy()
                 .into_owned(),
         ),
+        (
+            "position_file",
+            output.join("data/position").to_string_lossy().into_owned(),
+        ),
+        ("container_name", docker::name(output)),
+        (
+            "container_log",
+            output
+                .join("docker-container.log")
+                .to_string_lossy()
+                .into_owned(),
+        ),
+        ("docker_socket", "unix:///var/run/docker.sock".to_owned()),
         ("source_address", source.to_string()),
         ("source_host", source.ip().to_string()),
         ("source_port", source.port().to_string()),
+        ("source_uri", format!("tcp://{source}")),
         ("receiver_address", receiver.to_string()),
         ("receiver_host", receiver.ip().to_string()),
         ("receiver_port", receiver.port().to_string()),
-        ("receiver_uri", format!("http://{receiver}/")),
-    ] {
-        result = result.replace(&format!("{{{{ {key} }}}}"), &serde_json::to_string(&value)?);
+        (
+            "receiver_uri",
+            if matches!(case, CheckCase::TcpToHttp) {
+                format!("http://{receiver}/")
+            } else {
+                format!("tcp://{receiver}")
+            },
+        ),
+        ("metrics_port", metrics_port.to_string()),
+    ];
+    if matches!(subject, Subject::SplunkHf | Subject::SplunkUf) {
+        let mut bundle: Value =
+            serde_json::from_str(template).context("invalid Splunk config bundle")?;
+        for value in bundle
+            .as_object_mut()
+            .context("Splunk bundle must be an object")?
+            .values_mut()
+        {
+            let mut rendered = value
+                .as_str()
+                .context("Splunk config must be a string")?
+                .to_owned();
+            for (key, value) in &values {
+                rendered = rendered.replace(&format!("@VTH_{}@", key.to_ascii_uppercase()), value);
+            }
+            ensure!(
+                !rendered.contains("@VTH_"),
+                "unresolved Splunk config marker"
+            );
+            *value = json!(rendered);
+        }
+        return Ok(serde_json::to_string_pretty(&bundle)?);
+    }
+    let native_templates = template.contains("@VTH_");
+    let mut result = template.to_owned();
+    for (key, value) in values {
+        let value = serde_json::to_string(&value)?;
+        result = result.replace(&format!("{{{{ {key} }}}}"), &value);
+        result = result.replace(&format!("@VTH_{}@", key.to_ascii_uppercase()), &value);
     }
     ensure!(
-        !result.contains("{{"),
+        !result.contains("@VTH_") && (native_templates || !result.contains("{{")),
         "unresolved workload config template"
     );
     Ok(result)
@@ -444,15 +602,17 @@ fn execute(
     report: &mut Value,
     deadline: Instant,
 ) -> Result<()> {
+    if matches!(args.case, CheckCase::DockerPartial) {
+        return docker::execute(runtime, args, binary, output, template, report, deadline);
+    }
+    if !args.case.is_workload() {
+        return functional::execute(runtime, args, binary, output, template, report, deadline);
+    }
     let token = report["run_id"]
         .as_str()
         .context("missing run identifier")?
         .to_owned();
-    let subject = if args.fluent_bit_bin.is_some() {
-        Subject::FluentBit
-    } else {
-        Subject::Vector
-    };
+    let subject = args.selected_subject();
     let fixture_token = args
         .delivery
         .seed
@@ -482,16 +642,14 @@ fn execute(
         CheckCase::TcpToBlackhole => None,
         case => Some(Receiver::start_with_reads(
             fixture.clone(),
-            match case {
-                CheckCase::RegexParsing => Transport::ParsedJson,
-                CheckCase::TcpToHttp => Transport::HttpJson,
-                _ => Transport::Text,
-            },
+            subject.transport(case),
             args.delivery.receiver_reads_per_pass as usize,
         )?),
     };
     let reservation = TcpListener::bind((Ipv4Addr::LOCALHOST, 0))?;
     let source_address = reservation.local_addr()?;
+    let metrics_reservation = TcpListener::bind((Ipv4Addr::LOCALHOST, 0))?;
+    let metrics_port = metrics_reservation.local_addr()?.port();
     let receiver_address = SocketAddr::from((
         Ipv4Addr::LOCALHOST,
         receiver.as_ref().map_or(1, Receiver::port),
@@ -500,14 +658,42 @@ fn execute(
     budget(deadline)?;
     fs::write(
         &config,
-        render(template, output, source_address, receiver_address)?,
+        render(
+            template,
+            output,
+            source_address,
+            receiver_address,
+            metrics_port,
+            subject,
+            args.case,
+        )?,
     )?;
+    if matches!(args.case, CheckCase::TcpToBlackhole)
+        && matches!(subject, Subject::FluentBit | Subject::Fluentd)
+    {
+        fs::write(
+            output.join("metrics-endpoint.json"),
+            serde_json::to_vec_pretty(&json!({
+                "url":format!("http://127.0.0.1:{metrics_port}/{}", if subject == Subject::FluentBit { "api/v1/metrics" } else { "api/plugins.json" }),
+                "basis":"native completed-output counter observed before shutdown; count-only, no payload proof",
+            }))?,
+        )?;
+    }
+    if matches!(subject, Subject::SplunkHf | Subject::SplunkUf) {
+        adapters::splunk::prepare(binary, output, &fs::read_to_string(&config)?)?;
+        report["subject"]["engine_binary_sha256"] =
+            json!(sha256(&adapters::splunk::engine_binary(binary)?)?);
+    }
     fs::copy(&inputs[0], output.join("input/input.log"))?;
     report["config_sha256"] = json!(sha256(&config)?);
 
     phase(output, report, "version")?;
     budget(deadline)?;
-    let version_spec = Invocation::new(&binary.to_string_lossy(), output).args(["--version"]);
+    if subject == Subject::Logstash {
+        adapters::logstash::prepare(output)?;
+    }
+    let version_spec = Invocation::new(&binary.to_string_lossy(), output)
+        .args(subject.version_args().iter().copied());
     let mut version = Target::spawn(runtime, &version_spec, output, "version", subject)?;
     while version.status()?.is_none() {
         budget(deadline)?;
@@ -540,7 +726,9 @@ fn execute(
     report["invocation"] = serde_json::to_value(&invocation)?;
     phase(output, report, "startup")?;
     drop(reservation);
+    drop(metrics_reservation);
     let mut target = Target::spawn(runtime, &invocation, output, subject.name(), subject)?;
+    target.count_output = matches!(args.case, CheckCase::TcpToBlackhole);
     report["process"] = json!({"pid":target.child.id(),"state":"running"});
     save(output, report)?;
     let log = output.to_path_buf();
@@ -619,6 +807,7 @@ fn execute(
     } else {
         deadline.min(Instant::now() + Duration::from_secs(2))
     };
+    let count_before_shutdown = target.last_count;
     let cleanup = target.stop(cleanup_deadline);
     // Drop guarantees a kill/reap if the explicit shutdown encountered an I/O error.
     drop(target);
@@ -630,7 +819,7 @@ fn execute(
             json!({"graceful":false,"error":error.to_string()})
         }
     };
-    let final_logs = match logs(&log, subject) {
+    let final_logs = match logs_final(&log, subject) {
         Ok(logs) => Some(logs),
         Err(error) => {
             finalization_errors.push(format!("log inspection: {error:#}"));
@@ -647,11 +836,14 @@ fn execute(
             }
         },
         None => {
-            let count = final_logs.as_ref().and_then(|logs| logs.events);
+            let final_count = final_logs.as_ref().and_then(|logs| logs.events);
+            let count = final_count.or(count_before_shutdown);
             json!({
                 "kind":"terminal_count_only", "passed":count == Some(fixture.total() as u64),
                 "expected":fixture.total(), "processed":count,
                 "identities_verified":false, "payloads_verified":false,
+                "counter_basis":if final_count.is_some() { "last native output counter in final logs" } else { "last observed native completed-output counter before shutdown" },
+                "counter_read_from_final_logs":final_count.is_some(),
             })
         }
     };
@@ -719,6 +911,13 @@ fn finish_measurement(report: &mut Value, case: CheckCase, passed: bool) {
 }
 
 pub fn run(runtime: &Runtime, args: CheckArgs) -> Result<i32> {
+    if args.case.is_standalone() {
+        return standalone::run(runtime, args);
+    }
+    ensure!(
+        args.case.is_workload() || (args.delivery.is_default() && args.vector_cpus.is_none()),
+        "finite delivery controls apply only to workload cases"
+    );
     ensure!(cfg!(unix), "workload checks currently require a Unix host");
     ensure!(
         args.vector_cpus.is_none() || cfg!(target_os = "linux"),
@@ -729,20 +928,18 @@ pub fn run(runtime: &Runtime, args: CheckArgs) -> Result<i32> {
             || args.delivery.receiver_reads_per_pass == 16,
         "--receiver-reads-per-pass applies only to TCP receivers"
     );
-    let (subject, binary) = if let Some(binary) = &args.fluent_bit_bin {
+    let subject = args.selected_subject();
+    if matches!(args.case, CheckCase::Sighup) {
         ensure!(
-            matches!(args.case, CheckCase::TcpToTcp),
-            "Fluent Bit is supported only for tcp_to_tcp_performance"
+            !matches!(
+                subject,
+                Subject::Filebeat | Subject::SplunkHf | Subject::SplunkUf
+            ),
+            "{} cannot reload the output destination through SIGHUP without restarting",
+            subject.display_name()
         );
-        (Subject::FluentBit, binary)
-    } else {
-        (
-            Subject::Vector,
-            args.vector_bin
-                .as_ref()
-                .context("supply --vector-bin or --fluent-bit-bin")?,
-        )
-    };
+    }
+    let binary = args.binary().context("supply a subject binary")?;
     let binary = runtime.path(binary)?;
     check_file(&binary)?;
     let source = runtime
@@ -773,11 +970,14 @@ pub fn run(runtime: &Runtime, args: CheckArgs) -> Result<i32> {
         &output,
         SocketAddr::from((Ipv4Addr::LOCALHOST, 1)),
         SocketAddr::from((Ipv4Addr::LOCALHOST, 2)),
+        3,
+        subject,
+        args.case,
     )?;
     if runtime.dry_run {
         println!(
             "{}",
-            json!({"action":"verify_workload","case":args.case.name(),"subject":subject.name(),"binary":binary,"output":output,"config_source":source,"delivery":args.delivery,"subject_cpus":args.vector_cpus,"vector_cpus":if subject == Subject::Vector { args.vector_cpus.as_deref() } else { None },"warmup":WARMUP,"canary":1,"performance_result":false})
+            json!({"action":"verify_workload","case":args.case.name(),"subject":subject.name(),"binary":binary,"output":output,"config_source":source,"delivery":args.delivery,"subject_cpus":args.vector_cpus,"vector_cpus":if subject == Subject::Vector { args.vector_cpus.as_deref() } else { None },"warmup":if args.case.is_workload() { WARMUP } else { 0 },"canary":if args.case.is_workload() { 1 } else { 0 },"performance_result":false})
         );
         return Ok(0);
     }
@@ -791,7 +991,7 @@ pub fn run(runtime: &Runtime, args: CheckArgs) -> Result<i32> {
     let deadline = started + Duration::from_secs(args.timeout_secs);
     let mut report = json!({
         "schema_version":1,"case":args.case.name(),"outcome":"running","passed":null,
-        "phase":"setup","purpose":"workload_verification","performance_result":false,
+        "phase":"setup","purpose":if args.case.is_workload() { "workload_verification" } else { "application_correctness" },"performance_result":false,
         "timeout_secs":args.timeout_secs,"os":std::env::consts::OS,"architecture":std::env::consts::ARCH,
         "run_id":format!("{nonce:032x}"),
         "subject":{"name":subject.name(),"binary":binary,"sha256":binary_sha256},
@@ -834,7 +1034,11 @@ pub fn run(runtime: &Runtime, args: CheckArgs) -> Result<i32> {
     report["outcome"] = json!(outcome);
     report["passed"] = json!(code == 0);
     report["reason"] = json!(reason);
-    finish_measurement(&mut report, args.case, code == 0);
+    if args.case.is_workload() {
+        finish_measurement(&mut report, args.case, code == 0);
+    } else {
+        report["measurement"] = json!({"status":"unavailable","seconds":null,"reason":"functional application contract; no performance measurement"});
+    }
     report["elapsed_seconds"] = json!(started.elapsed().as_secs_f64());
     save(&output, &report)?;
     Ok(code)
@@ -894,6 +1098,19 @@ mod tests {
         let observed = logs(dir.path(), Subject::Vector).unwrap();
         assert_eq!(observed.events, Some(11_001));
         assert_eq!(observed.errors, ["processing failed"]);
+
+        fs::write(
+            dir.path().join("vector.stderr.log"),
+            "{\"level\":\"ERROR\",\"message\":\"final failure\"}",
+        )
+        .unwrap();
+        assert!(logs(dir.path(), Subject::Vector).unwrap().errors.is_empty());
+        assert_eq!(
+            logs_final(dir.path(), Subject::Vector).unwrap().errors,
+            ["final failure"]
+        );
+        fs::write(dir.path().join("vector.stderr.log"), "{\"level\":").unwrap();
+        assert!(logs_final(dir.path(), Subject::Vector).is_err());
 
         fs::write(
             dir.path().join("vector.stdout.log"),

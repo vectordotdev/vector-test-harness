@@ -1,0 +1,25 @@
+service:
+  flush: 0.05
+  grace: 5
+  daemon: off
+  log_level: info
+  http_server: on
+  http_listen: 127.0.0.1
+  http_port: {{ metrics_port }}
+
+pipeline:
+  inputs:
+    - name: tcp
+      tag: records
+      listen: {{ source_host }}
+      port: {{ source_port }}
+      format: none
+      chunk_size: 64
+      buffer_size: 64
+      mem_buf_limit: 16M
+      storage.type: memory
+  outputs:
+    - name: 'null'
+      alias: destination
+      match: records
+      workers: 2

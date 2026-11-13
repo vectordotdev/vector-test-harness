@@ -4,8 +4,8 @@
 
 # Vector Test Harness
 
-A Rust CLI for local correctness checks, Vector workload timing and profiling,
-and remote AWS cases using Terraform and Ansible. Vector configs target **0.61.0**.
+A Rust CLI for local correctness checks, finite workloads, profiling and remote
+AWS cases using Terraform and Ansible. Vector configs target **0.61.0**.
 
 ## Comparisons
 
@@ -71,6 +71,7 @@ do not support dry runs.
 | `vth list` | List remote cases and standalone workloads. |
 | `vth meta <mode>` | Print case or subject metadata. |
 | `vth check <case>` | Run a local correctness or delivery check. |
+| `vth matrix` | Run the current cases across supplied product binaries and retain every outcome. |
 | `vth calibrate <tcp\|parsed-json\|http>` | Measure the direct finite producer-to-verifier path. |
 | `vth run` | Provision and run a remote case; `test` is an alias. |
 | `vth teardown` | Destroy a case's cloud resources. |
@@ -95,21 +96,23 @@ do not support dry runs.
 | Case | Commands | Purpose |
 | --- | --- | --- |
 | [wrapped_json_correctness](cases/wrapped_json_correctness/) | `check`, `run` | Decode one nested JSON input into exactly one expected application record. |
-| [sighup_correctness](cases/sighup_correctness/) | `check` | Verify Vector switches receivers after reload, with correct payloads and counts. |
-| [docker_partial_events_merging_correctness](cases/docker_partial_events_merging_correctness/) | `run` | Verify one complete Docker input produces one complete output. |
+| [sighup_correctness](cases/sighup_correctness/) | `check` | Verify an output switch after reload, with the same main PID and exact payloads/counts. |
+| [docker_partial_events_merging_correctness](cases/docker_partial_events_merging_correctness/) | `check`, `run` | Reassemble a real container's fragments into exactly one intact record. |
 | [file_to_tcp_performance](cases/file_to_tcp_performance/) | `check` | Verify every file record at a TCP receiver. |
-| [tcp_to_tcp_performance](cases/tcp_to_tcp_performance/) | `check` | Verify Vector or Fluent Bit forwarding, including duplicates and losses. |
+| [tcp_to_tcp_performance](cases/tcp_to_tcp_performance/) | `check` | Verify forwarding, including duplicates, corruption and losses. |
 | [regex_parsing_performance](cases/regex_parsing_performance/) | `check` | Verify every parsed field and output record. |
 | [tcp_to_http_performance](cases/tcp_to_http_performance/) | `check` | Verify records inside complete HTTP batches. |
 | [tcp_to_blackhole_performance](cases/tcp_to_blackhole_performance/) | `check` | Check the terminal processed count; no payload/delivery proof. |
-| [stdin_to_blackhole](cases/performance/stdin_to_blackhole/) | `bench`, `profile` | Stream a finite gzip fixture through Vector. |
-| [klog_remap_to_blackhole](cases/performance/klog_remap_to_blackhole/) | `bench`, `profile` | Compare equivalent one-node and two-node remapping. |
-| [file_to_blackhole](cases/performance/file_to_blackhole/) | `generate`, `profile` | Profile a continuous file workload; no capacity result is published. |
+| [stdin_to_blackhole](cases/performance/stdin_to_blackhole/) | `check`, `bench`, `profile` | Feed the original finite gzip fixture; `check` requires an exact terminal count. |
+| [klog_remap_to_blackhole](cases/performance/klog_remap_to_blackhole/) | `check`, `bench`, `profile` | Verify multiline/JSON semantics and full-fixture output; retain Vector's one-node/two-node variants. |
+| [file_to_blackhole](cases/performance/file_to_blackhole/) | `check`, `generate`, `profile` | Profile the original continuous file workload; no delivery or capacity claim. |
 
-Local TCP forwarding supports Vector and Fluent Bit; other local checks are
-Vector-only. Remote wrapped JSON supports Filebeat, Fluent Bit, Fluentd,
-Logstash and Vector; the Docker case is Vector-only. Both remote cases use the
-`default` configuration. [subjects.json](config/subjects.json) records versions.
+Local adapters cover Vector, Fluent Bit, Telegraf, Filebeat, Fluentd, Logstash,
+Splunk HF and Splunk UF. Not every product supports every contract; the matrix
+keeps unsupported cases, missing environments, unfinished adapters and failures
+visible. Remote wrapped JSON supports five products; the legacy remote Docker
+case is Vector-only. [subjects.json](config/subjects.json) records remote versions;
+local reports record the supplied binary's actual version and hash.
 
 ## Local checks
 
@@ -119,7 +122,38 @@ vth check sighup_correctness --vector-bin /path/to/vector
 vth check file_to_tcp_performance --vector-bin /path/to/vector
 vth check tcp_to_tcp_performance --vector-bin /path/to/vector --seed 7
 vth check tcp_to_tcp_performance --fluent-bit-bin /path/to/fluent-bit --seed 7
+vth check tcp_to_tcp_performance --subject telegraf --subject-bin /path/to/telegraf --seed 7
 ```
+
+`vth matrix --runtimes runtimes.json --output results` runs cases sequentially
+and updates `results/matrix.json` after each one. Supply binary paths and optional
+scoped environment variables:
+
+```json
+{"subjects":{"vector":{"binary":"/path/to/vector"},"telegraf":{"binary":"/path/to/telegraf"}}}
+```
+
+Use `--subjects vector,telegraf` or `--cases tcp_to_tcp_performance` to select a
+subset. Missing runtimes remain explicit. Matrix budgets default to 90 seconds
+per case and 300 seconds for klog; `--timeout-secs` overrides either default.
+Individual `check` budgets default to 30 seconds, or 300 seconds for klog.
+Docker checks require a local Linux
+daemon and `VTH_DOCKER_IMAGE` set to a prepared immutable image ID/digest. Continuous
+file checks require Linux `perf`, a pinned `VTH_FILEGEN_BIN`, and port 9000 free.
+Complete Splunk's native first-run setup, including terms acceptance and an
+administrator account; the harness neither accepts licenses nor provisions credentials.
+
+The same verifier checks application records across native text, JSON, Forward,
+Beats and HTTP Bulk envelopes. Bulk endpoints emulate acknowledgement only;
+there is no Elasticsearch indexing or durability proof. Count-only stdin/discard
+checks and process profiles never receive delivery timings. Klog checks use a
+small interleaved continuation canary and the full original fixture, capturing
+output to files for exact payload checks rather than timing discard. Filebeat's
+stdin and klog profiles use native CEL and buffer the finite input through EOF;
+this does not establish streaming capacity. A failed health, shutdown or
+verification check invalidates any candidate timing. Matrix execution is
+sequential, with no exclusive host reservation or headroom calibration. Its
+finite completion times are diagnostics, not a product ranking.
 
 ### Finite workload contract
 
@@ -142,17 +176,19 @@ Continuous-load regression testing is outside this work.
   final error checks. A failure clears the duration.
 
 These are normal-operation runs with memory queues; crash recovery and durable
-delivery are not established. Sink acknowledgements are disabled; TCP has no
-application acknowledgement, and HTTP success means receiver verification,
-without durable storage. Logical input bytes include line delimiters;
+delivery are not established. Where the protocol requires an application
+acknowledgement, the receiver sends it after validation. TCP acknowledgements
+alone do not prove delivery, and HTTP/Bulk success does not imply durable storage.
+Logical input bytes include line delimiters;
 receiver byte counters cover all phases and count encoded application payload,
 excluding HTTP headers. File inputs are freshly written and the filesystem
 cache is not evicted. Blackhole verifies only its processed count and has no
 receiver completion time.
 
 `vth calibrate tcp` measures the direct producer-to-verifier path without Vector;
-`parsed-json` and `http` cover the other output formats. Use the same `--events`
-for checks and baselines. `--producer-chunk-bytes` and TCP-only
+`parsed-json` and `http` cover plain parsed-JSON and HTTP-message paths. Native
+Beats, Forward and Bulk paths need separate headroom validation. Use the same
+`--events` for checks and baselines. `--producer-chunk-bytes` and TCP-only
 `--receiver-reads-per-pass` support IO batching sensitivity checks. These are
 diagnostics; baseline durations are not subtracted from Vector durations.
 On Linux, `--subject-cpus` (`--vector-cpus` remains an alias) places the subject
@@ -164,8 +200,9 @@ Finite completion timings do not establish sustained capacity or product ranking
 
 Artifacts and `result.json` are saved under `.cache/runs/check-<case>-<id>/`,
 or a new `--output` directory.
-Exit codes: `0` passed; `1` incorrect output, unexpected exit or setup error;
-`2` timeout, interruption or runner error after setup.
+For `check`, exit codes are `0` passed, `1` a failed check or preflight error,
+and `2` timeout, interruption, unavailable environment or runner error.
+The matrix also returns nonzero when pending or missing cases remain.
 
 ## Remote runs
 

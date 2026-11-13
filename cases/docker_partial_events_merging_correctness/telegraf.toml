@@ -1,0 +1,38 @@
+[agent]
+  interval = "1s"
+  round_interval = false
+  metric_batch_size = 256
+  metric_buffer_limit = 16384
+  flush_interval = "50ms"
+  flush_jitter = "0s"
+  collection_jitter = "0s"
+  omit_hostname = true
+
+[[inputs.tail]]
+  files = [@VTH_CONTAINER_LOG@]
+  initial_read_offset = "beginning"
+  watch_method = "poll"
+  max_undelivered_lines = 16384
+  path_tag = ""
+  data_format = "json"
+  json_string_fields = ["log", "stream"]
+
+[[processors.starlark]]
+  source = '''
+state = {"partial": ""}
+def apply(metric):
+    if metric.fields["stream"] != "stdout":
+        fail("unexpected Docker stream")
+    text = state["partial"] + metric.fields["log"]
+    if not text.endswith("\n"):
+        state["partial"] = text
+        return None
+    state["partial"] = ""
+    metric.fields["log"] = text[:-1]
+    return metric
+'''
+
+[[outputs.socket_writer]]
+  address = @VTH_RECEIVER_URI@
+  data_format = "template"
+  template = "{{ .Field \"log\" }}\n"

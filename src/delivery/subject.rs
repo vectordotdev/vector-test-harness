@@ -2,19 +2,36 @@
 
 use std::path::Path;
 
+use super::{adapters, receiver::Transport};
+use crate::cli::CheckCase;
 use crate::runtime::Invocation;
 
-#[derive(Clone, Copy, PartialEq, Eq)]
-pub(super) enum Subject {
+#[derive(Debug, Clone, Copy, PartialEq, Eq, clap::ValueEnum)]
+pub enum Subject {
     Vector,
+    #[value(name = "fluent-bit", alias = "fluentbit")]
     FluentBit,
+    Telegraf,
+    Filebeat,
+    Fluentd,
+    Logstash,
+    #[value(name = "splunk-hf", alias = "splunk_heavy_forwarder")]
+    SplunkHf,
+    #[value(name = "splunk-uf", alias = "splunk_universal_forwarder")]
+    SplunkUf,
 }
 
 impl Subject {
-    pub(super) fn name(self) -> &'static str {
+    pub(crate) fn name(self) -> &'static str {
         match self {
             Self::Vector => "vector",
             Self::FluentBit => "fluent-bit",
+            Self::Telegraf => "telegraf",
+            Self::Filebeat => "filebeat",
+            Self::Fluentd => "fluentd",
+            Self::Logstash => "logstash",
+            Self::SplunkHf => "splunk-hf",
+            Self::SplunkUf => "splunk-uf",
         }
     }
 
@@ -22,6 +39,12 @@ impl Subject {
         match self {
             Self::Vector => "Vector",
             Self::FluentBit => "Fluent Bit",
+            Self::Telegraf => "Telegraf",
+            Self::Filebeat => "Filebeat",
+            Self::Fluentd => "Fluentd",
+            Self::Logstash => "Logstash",
+            Self::SplunkHf => "Splunk Heavy Forwarder",
+            Self::SplunkUf => "Splunk Universal Forwarder",
         }
     }
 
@@ -29,13 +52,33 @@ impl Subject {
         match self {
             Self::Vector => "vector.yaml",
             Self::FluentBit => "fluent-bit.yaml",
+            Self::Telegraf => "telegraf.toml",
+            Self::Filebeat => "filebeat.yml",
+            Self::Fluentd => "fluentd.conf",
+            Self::Logstash => "logstash.conf",
+            Self::SplunkHf => "splunk-hf.conf",
+            Self::SplunkUf => "splunk-uf.conf",
         }
     }
 
     pub(super) fn identifies(self, version: &str) -> bool {
+        match self {
+            Self::Telegraf => return adapters::telegraf::identifies(version),
+            Self::Filebeat => return adapters::filebeat::identifies(version),
+            Self::Fluentd => return adapters::fluentd::identifies(version),
+            Self::Logstash => return adapters::logstash::identifies(version),
+            Self::SplunkHf => return adapters::splunk::identifies(version, false),
+            Self::SplunkUf => return adapters::splunk::identifies(version, true),
+            _ => {}
+        }
         let prefix = match self {
             Self::Vector => "vector ",
             Self::FluentBit => "Fluent Bit v",
+            Self::Telegraf => "Telegraf ",
+            Self::Filebeat => "filebeat version ",
+            Self::Fluentd => "fluentd ",
+            Self::Logstash => "logstash ",
+            Self::SplunkHf | Self::SplunkUf => "Splunk ",
         };
         version.starts_with(prefix)
             && version[prefix.len()..]
@@ -61,8 +104,24 @@ impl Subject {
         } else {
             Invocation::new(&binary.to_string_lossy(), output)
         };
-        let mut invocation =
-            launch.args(["--config".to_owned(), config.to_string_lossy().into_owned()]);
+        let mut invocation = match self {
+            Self::Telegraf => {
+                return adapters::telegraf::configure(launch, output, config, timeout_secs)
+            }
+            Self::Filebeat => {
+                return adapters::filebeat::configure(launch, output, config, timeout_secs)
+            }
+            Self::Fluentd => {
+                return adapters::fluentd::configure(launch, output, config, timeout_secs)
+            }
+            Self::Logstash => {
+                return adapters::logstash::configure(launch, output, config, timeout_secs)
+            }
+            Self::SplunkHf | Self::SplunkUf => {
+                return adapters::splunk::configure(launch, output, config, timeout_secs)
+            }
+            _ => launch.args(["--config".to_owned(), config.to_string_lossy().into_owned()]),
+        };
         match self {
             Self::Vector => {
                 invocation = invocation
@@ -96,11 +155,20 @@ impl Subject {
                 // This environment variable overrides the configured log level.
                 invocation.unset_env = vec!["FLB_LOG_LEVEL".into()];
             }
+            _ => {}
         }
         invocation
     }
 
     pub(super) fn text_error(self, line: &[u8]) -> Option<String> {
+        match self {
+            Self::Telegraf => return adapters::telegraf::error(line),
+            Self::Filebeat => return adapters::filebeat::error(line),
+            Self::Fluentd => return adapters::fluentd::error(line),
+            Self::Logstash => return adapters::logstash::error(line),
+            Self::SplunkHf | Self::SplunkUf => return adapters::splunk::error(line),
+            _ => {}
+        }
         if self != Self::FluentBit {
             return None;
         }
@@ -113,6 +181,32 @@ impl Subject {
         let (level, message) = remainder.trim_start().strip_prefix('[')?.split_once(']')?;
         matches!(level.trim(), "error" | "fatal")
             .then(|| message.trim().chars().take(1024).collect())
+    }
+
+    pub(super) fn version_args(self) -> &'static [&'static str] {
+        match self {
+            Self::Telegraf => adapters::telegraf::version_args(),
+            Self::Filebeat => adapters::filebeat::version_args(),
+            Self::Fluentd => adapters::fluentd::version_args(),
+            Self::Logstash => adapters::logstash::version_args(),
+            Self::SplunkHf | Self::SplunkUf => adapters::splunk::version_args(),
+            _ => &["--version"],
+        }
+    }
+
+    pub(super) fn transport(self, case: CheckCase) -> Transport {
+        match (self, case) {
+            (Self::Filebeat, CheckCase::TcpToHttp) => Transport::ElasticBulk,
+            (Self::Filebeat, CheckCase::RegexParsing) => Transport::BeatsParsed,
+            (Self::Filebeat, _) => Transport::BeatsMessage,
+            (Self::Fluentd, CheckCase::TcpToHttp) => Transport::HttpJson,
+            (Self::Fluentd, CheckCase::RegexParsing) => Transport::ForwardParsed,
+            (Self::Fluentd, _) => Transport::ForwardMessage,
+            (Self::FluentBit, CheckCase::TcpToHttp) => Transport::HttpLogJson,
+            (_, CheckCase::TcpToHttp) => Transport::HttpJson,
+            (_, CheckCase::RegexParsing) => Transport::ParsedJson,
+            _ => Transport::Text,
+        }
     }
 }
 

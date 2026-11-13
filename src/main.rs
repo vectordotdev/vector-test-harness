@@ -1,11 +1,11 @@
 mod analysis;
 mod aws;
 mod cli;
-mod correctness;
 mod delivery;
 mod guest;
 mod infra;
 mod local;
+mod matrix;
 mod runtime;
 
 use anyhow::{bail, Result};
@@ -74,7 +74,14 @@ fn execute(cli: Cli, inherited: Option<Runtime>) -> Result<()> {
         Commands::Ssh { args } => infra::ssh(&runtime, args),
         Commands::Doctor => infra::doctor(&runtime),
         Commands::Check(args) => {
-            let code = correctness::run(&runtime, args)?;
+            let code = delivery::run(&runtime, args)?;
+            if code != 0 {
+                std::process::exit(code);
+            }
+            Ok(())
+        }
+        Commands::Matrix(args) => {
+            let code = matrix::run(&runtime, args)?;
             if code != 0 {
                 std::process::exit(code);
             }

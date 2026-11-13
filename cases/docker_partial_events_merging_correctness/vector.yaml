@@ -1,0 +1,17 @@
+data_dir: @VTH_DATA_DIR@
+sources:
+  input:
+    type: docker_logs
+    docker_host: @VTH_DOCKER_SOCKET@
+    include_containers: [@VTH_CONTAINER_NAME@]
+    auto_partial_merge: true
+sinks:
+  destination:
+    type: socket
+    inputs: [input]
+    address: @VTH_RECEIVER_ADDRESS@
+    mode: tcp
+    encoding:
+      codec: text
+    framing:
+      method: newline_delimited
