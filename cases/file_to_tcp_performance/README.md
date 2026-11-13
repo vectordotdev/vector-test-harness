@@ -1,9 +1,9 @@
 # file_to_tcp_performance
 
-This remote case has been retired.
+Run locally: `vth check file_to_tcp_performance --vector-bin /path/to/vector`.
 
-Finite files can be consumed during warmup, and disk reads, compressed wire bytes and delivered payload bytes are different metrics. End-to-end records were not verified.
+The file source reads a fresh finite fixture from the beginning, ignoring
+checkpoints, and sends newline-delimited text to a TCP receiver.
+Files are recently written; the filesystem cache is not evicted.
 
-See the [comparison audit](../../docs/comparisons.md) for the publication criteria.
-Historical scorecards and new numerical comparisons have been removed; raw run
-artifacts remain in private storage and the case history remains in Git.
+Uses the shared [finite workload contract](../../README.md#finite-workload-contract).

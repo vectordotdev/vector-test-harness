@@ -44,6 +44,7 @@ do not support dry runs.
 | `vth list` | List remote cases and standalone workloads. |
 | `vth meta <mode>` | Print case or subject metadata. |
 | `vth check <case>` | Run a local Vector correctness check. |
+| `vth calibrate <tcp\|parsed-json\|http>` | Measure the finite producer-to-verifier path without Vector. |
 | `vth run` | Provision and run a remote case; `test` is an alias. |
 | `vth teardown` | Destroy a case's cloud resources. |
 | `vth bootstrap-aws` | Create account prerequisites and write `.env`. |
@@ -69,6 +70,11 @@ do not support dry runs.
 | [wrapped_json_correctness](cases/wrapped_json_correctness/) | `check`, `run` | Decode one nested JSON input into exactly one expected application record. |
 | [sighup_correctness](cases/sighup_correctness/) | `check` | Verify Vector switches receivers after reload, with correct payloads and counts. |
 | [docker_partial_events_merging_correctness](cases/docker_partial_events_merging_correctness/) | `run` | Verify one complete Docker input produces one complete output. |
+| [file_to_tcp_performance](cases/file_to_tcp_performance/) | `check` | Verify every file record at a TCP receiver. |
+| [tcp_to_tcp_performance](cases/tcp_to_tcp_performance/) | `check` | Verify forwarded records, including duplicates and losses. |
+| [regex_parsing_performance](cases/regex_parsing_performance/) | `check` | Verify every parsed field and output record. |
+| [tcp_to_http_performance](cases/tcp_to_http_performance/) | `check` | Verify records inside complete HTTP batches. |
+| [tcp_to_blackhole_performance](cases/tcp_to_blackhole_performance/) | `check` | Check the terminal processed count; no payload/delivery proof. |
 | [stdin_to_blackhole](cases/performance/stdin_to_blackhole/) | `bench`, `profile` | Stream a finite gzip fixture through Vector. |
 | [klog_remap_to_blackhole](cases/performance/klog_remap_to_blackhole/) | `bench`, `profile` | Compare equivalent one-node and two-node remapping. |
 | [file_to_blackhole](cases/performance/file_to_blackhole/) | `generate`, `profile` | Profile a continuous file workload; no capacity result is published. |
@@ -77,15 +83,55 @@ do not support dry runs.
 Fluentd, Logstash and Vector; the Docker case is Vector-only. Both remote cases
 use the `default` configuration. [subjects.json](config/subjects.json) records versions.
 
-## Local correctness checks
+## Local checks
 
 ```sh
 vth check wrapped_json_correctness --vector-bin /path/to/vector
 vth check sighup_correctness --vector-bin /path/to/vector
+vth check file_to_tcp_performance --vector-bin /path/to/vector
 ```
 
-Checks verify payloads and counts after shutdown. Artifacts and `result.json`
-are saved under `.cache/runs/check-<case>-<id>/`, or a new `--output` directory.
+### Finite workload contract
+
+Receiver-backed workloads measure completion of known input from A to B. They
+use deterministic Apache-like records with sequential IDs and run-specific
+payloads.
+Continuous-load regression testing is outside this work.
+
+- Verify one canary, then 1,000 warmup records, before releasing the measured
+  fixture: 10,000 records by default, configurable with `--events`.
+- Verify every expected application payload or parsed field, with no missing,
+  duplicate, unexpected, malformed or corrupted records. Output order is not
+  asserted.
+- Time from immediately before measured input is published until the final
+  expected record is fully verified. Fixture preparation, startup and warmup
+  are excluded; input publication and receiver verification are included.
+  Expected record data is prepared before timing; its memory size is recorded.
+- Accept the duration only after clean shutdown, complete receiver drain and
+  final error checks. A failure clears the duration.
+
+These are normal-operation runs with memory queues; crash recovery and durable
+delivery are not established. Sink acknowledgements are disabled; TCP has no
+application acknowledgement, and HTTP success means receiver verification,
+without durable storage. Logical input bytes include line delimiters;
+receiver byte counters cover all phases and count encoded application payload,
+excluding HTTP headers. File inputs are freshly written and the filesystem
+cache is not evicted. Blackhole verifies only its processed count and has no
+receiver completion time.
+
+`vth calibrate tcp` measures the direct producer-to-verifier path without Vector;
+`parsed-json` and `http` cover the other output formats. Use the same `--events`
+for checks and baselines. `--producer-chunk-bytes` and TCP-only
+`--receiver-reads-per-pass` support IO batching sensitivity checks. These are
+diagnostics; baseline durations are not subtracted from Vector durations.
+On Linux, `--vector-cpus` places Vector on a CPU list independently of a
+`taskset`-placed harness; reports record observed placement and host metadata.
+Affinity does not reserve CPUs exclusively.
+Check producer and receiver headroom for each workload and execution environment.
+Finite completion timings do not establish sustained capacity or product rankings.
+
+Artifacts and `result.json` are saved under `.cache/runs/check-<case>-<id>/`,
+or a new `--output` directory.
 Exit codes: `0` passed; `1` incorrect output, unexpected exit or setup error;
 `2` timeout, interruption or runner error after setup.
 

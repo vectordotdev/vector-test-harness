@@ -1,0 +1,38 @@
+data_dir: {{ data_dir }}
+
+sources:
+  in:
+    type: socket
+    mode: tcp
+    address: {{ source_address }}
+    framing:
+      method: newline_delimited
+    decoding:
+      codec: bytes
+
+sinks:
+  out:
+    buffer:
+      type: memory
+      max_events: 512
+      when_full: block
+    acknowledgements:
+      enabled: false
+    inputs: ["in"]
+    type: http
+    uri: {{ receiver_uri }}
+    method: post
+    compression: none
+    healthcheck:
+      enabled: false
+    framing:
+      method: newline_delimited
+    encoding:
+      codec: json
+      only_fields: ["message"]
+    batch:
+      max_events: 256
+      timeout_secs: 0.1
+    request:
+      retry_attempts: 0
+      concurrency: 1

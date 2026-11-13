@@ -288,30 +288,110 @@ fn dry_run_has_no_external_or_filesystem_side_effects() {
     ]);
     assert!(fixture.invocations().is_empty());
     assert!(!fixture.root().join("local-check").exists());
+    let output = fixture.run(&[
+        "--dry-run",
+        "calibrate",
+        "tcp",
+        "--events",
+        "1000000",
+        "--producer-chunk-bytes",
+        "262144",
+        "--receiver-reads-per-pass",
+        "64",
+        "--output",
+        "direct-calibration",
+    ]);
+    let plan: Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(plan["delivery"]["events"], 1_000_000);
+    assert_eq!(plan["delivery"]["producer_chunk_bytes"], 262_144);
+    assert_eq!(plan["delivery"]["receiver_reads_per_pass"], 64);
+    assert!(fixture.invocations().is_empty());
+    assert!(!fixture.root().join("direct-calibration").exists());
+}
+
+#[test]
+fn finite_delivery_controls_reject_inapplicable_or_unbounded_values() {
+    let fixture = Fixture::new();
+    for case in ["wrapped_json_correctness", "sighup_correctness"] {
+        for (option, value) in [
+            ("--events", "100"),
+            ("--producer-chunk-bytes", "262144"),
+            ("--receiver-reads-per-pass", "64"),
+            ("--vector-cpus", "0"),
+        ] {
+            let output = fixture
+                .command()
+                .args([
+                    "--dry-run",
+                    "check",
+                    case,
+                    "--vector-bin",
+                    "/missing/vector",
+                    option,
+                    value,
+                ])
+                .output()
+                .unwrap();
+            assert!(!output.status.success());
+            assert!(String::from_utf8_lossy(&output.stderr).contains("only to workload cases"));
+        }
+    }
+    for (option, value) in [
+        ("--events", "0"),
+        ("--events", "1000001"),
+        ("--producer-chunk-bytes", "0"),
+        ("--receiver-reads-per-pass", "0"),
+        ("--receiver-reads-per-pass", "257"),
+    ] {
+        let output = fixture
+            .command()
+            .args(["--dry-run", "calibrate", "tcp", option, value])
+            .output()
+            .unwrap();
+        assert!(!output.status.success());
+    }
+    for value in ["", "1,,2", "2-1", "1;echo"] {
+        let output = fixture
+            .command()
+            .args([
+                "--dry-run",
+                "check",
+                "tcp_to_tcp_performance",
+                "--vector-bin",
+                "/missing/vector",
+                "--vector-cpus",
+                value,
+            ])
+            .output()
+            .unwrap();
+        assert!(!output.status.success());
+        assert!(String::from_utf8_lossy(&output.stderr).contains("expected a nonempty CPU list"));
+    }
+    assert!(fixture.invocations().is_empty());
 }
 
 #[test]
 fn local_check_failures_retain_artifacts_and_reap_vector() {
     let fixture = Fixture::new();
-    for (name, mode, delay, code, outcome, forced) in [
-        ("exited", "failed-vector", "0", 1, "failed", false),
-        ("stalled", "", "10000", 2, "timed_out", true),
+    // Only the stalled case needs a tight deadline; early exit uses the normal budget.
+    for (name, mode, delay, timeout, code, outcome, forced) in [
+        ("exited", "failed-vector", "0", "30", 1, "failed", false),
+        ("stalled", "", "10000", "1", 2, "timed_out", true),
     ] {
-        let started = Instant::now();
-        let output = fixture
-            .command()
+        let mut command = fixture.command();
+        let output = command
             .env("VTH_TEST_MODE", mode)
             .env("VTH_TEST_DELAY_MS", delay)
             .args(["check", "wrapped_json_correctness", "--vector-bin"])
             .arg(tools().path().join("vector"))
-            .args(["--timeout-secs", "1", "--output", name])
+            .args(["--timeout-secs", timeout, "--output", name])
             .output()
             .unwrap();
-        assert_eq!(output.status.code(), Some(code));
-        assert!(started.elapsed() < Duration::from_secs(5));
         let artifacts = fixture.root().join(name);
         let report: Value =
             serde_json::from_slice(&fs::read(artifacts.join("result.json")).unwrap()).unwrap();
+        assert_eq!(output.status.code(), Some(code), "{report}");
+        // Forced cleanup below checks the deadline; CLI setup time varies by host.
         assert_eq!(report["outcome"], outcome);
         assert_eq!(report["complete"], false);
         assert_eq!(report["cleanup"]["forced"], forced);
@@ -645,9 +725,10 @@ fn guest_timeout_and_long_message_preserve_the_existing_contract() {
     assert_eq!(message["aaa"], "aaa_value");
     assert_eq!(message["bzz"], "bzz_value");
     fs::write(fixture.root().join("input"), "message\n").unwrap();
+    let test_tools = tools();
     let start = Instant::now();
     let output = Command::new(env!("CARGO_BIN_EXE_vth-guest"))
-        .env("PATH", tools().path())
+        .env("PATH", test_tools.path())
         .env("VTH_TEST_DELAY_MS", "3000")
         .args([
             "socat-loop",

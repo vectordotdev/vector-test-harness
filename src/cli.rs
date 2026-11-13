@@ -57,8 +57,10 @@ pub enum Commands {
     },
     /// Report installed external tools without contacting AWS.
     Doctor,
-    /// Run an existing correctness case locally with a supplied Vector binary.
+    /// Verify a Vector correctness case or finite workload locally.
     Check(CheckArgs),
+    /// Measure the finite producer-to-verifier path without Vector.
+    Calibrate(CalibrateArgs),
     /// Build a pinned revision in an isolated clone, leaving other checkouts alone.
     Build(BuildArgs),
     /// Time a standalone performance workload with supplied binaries.
@@ -232,6 +234,16 @@ pub enum CheckCase {
     WrappedJson,
     #[value(name = "sighup_correctness")]
     Sighup,
+    #[value(name = "file_to_tcp_performance")]
+    FileToTcp,
+    #[value(name = "tcp_to_tcp_performance")]
+    TcpToTcp,
+    #[value(name = "regex_parsing_performance")]
+    RegexParsing,
+    #[value(name = "tcp_to_http_performance")]
+    TcpToHttp,
+    #[value(name = "tcp_to_blackhole_performance")]
+    TcpToBlackhole,
 }
 
 impl CheckCase {
@@ -239,7 +251,16 @@ impl CheckCase {
         match self {
             Self::WrappedJson => "wrapped_json_correctness",
             Self::Sighup => "sighup_correctness",
+            Self::FileToTcp => "file_to_tcp_performance",
+            Self::TcpToTcp => "tcp_to_tcp_performance",
+            Self::RegexParsing => "regex_parsing_performance",
+            Self::TcpToHttp => "tcp_to_http_performance",
+            Self::TcpToBlackhole => "tcp_to_blackhole_performance",
         }
+    }
+
+    pub fn is_workload(self) -> bool {
+        !matches!(self, Self::WrappedJson | Self::Sighup)
     }
 }
 
@@ -249,7 +270,81 @@ pub struct CheckArgs {
     pub case: CheckCase,
     #[arg(long)]
     pub vector_bin: PathBuf,
+    /// Linux CPU list for Vector only, e.g. 0,2-3 (requires taskset).
+    #[arg(long, value_parser = cpu_list)]
+    pub vector_cpus: Option<String>,
     /// Case budget, including startup, delivery, reload, and graceful shutdown.
+    #[arg(long, default_value_t = 30, value_parser = clap::value_parser!(u64).range(1..=3600))]
+    pub timeout_secs: u64,
+    /// New artifact directory. Existing directories are never overwritten.
+    #[arg(long)]
+    pub output: Option<PathBuf>,
+    #[command(flatten)]
+    pub delivery: DeliveryArgs,
+}
+
+fn cpu_list(value: &str) -> Result<String, String> {
+    parse_cpu_list(value).map(|_| value.to_owned())
+}
+
+pub(crate) fn parse_cpu_list(value: &str) -> Result<std::collections::BTreeSet<u16>, String> {
+    let invalid = || "expected a nonempty CPU list such as 0,2-3 (CPU IDs 0..65535)".to_owned();
+    let mut cpus = std::collections::BTreeSet::new();
+    for part in value.split(',') {
+        let parse = |text: &str| {
+            if text.is_empty() || !text.bytes().all(|byte| byte.is_ascii_digit()) {
+                return Err(invalid());
+            }
+            text.parse::<u16>().map_err(|_| invalid())
+        };
+        if let Some((start, end)) = part.split_once('-') {
+            let start = parse(start)?;
+            let end = parse(end)?;
+            if start > end {
+                return Err(invalid());
+            }
+            cpus.extend(start..=end);
+        } else {
+            cpus.insert(parse(part)?);
+        }
+    }
+    Ok(cpus)
+}
+
+#[derive(Debug, Clone, Args, serde::Serialize)]
+pub struct DeliveryArgs {
+    /// Measured records in a finite workload (in addition to canary and warmup).
+    #[arg(long, default_value_t = 10_000, value_parser = clap::value_parser!(u32).range(1..=1_000_000))]
+    pub events: u32,
+    /// Maximum producer write size; changes IO batching, not logical records.
+    #[arg(long, default_value_t = 16_384, value_parser = clap::value_parser!(u32).range(1024..=1_048_576))]
+    pub producer_chunk_bytes: u32,
+    /// Maximum TCP receiver reads per pass; HTTP uses its own async body reader.
+    #[arg(long, default_value_t = 16, value_parser = clap::value_parser!(u16).range(1..=256))]
+    pub receiver_reads_per_pass: u16,
+}
+
+impl DeliveryArgs {
+    pub fn is_default(&self) -> bool {
+        self.events == 10_000
+            && self.producer_chunk_bytes == 16_384
+            && self.receiver_reads_per_pass == 16
+    }
+}
+
+#[derive(Debug, Clone, Copy, ValueEnum)]
+pub enum CalibrationTransport {
+    Tcp,
+    ParsedJson,
+    Http,
+}
+
+#[derive(Debug, Args)]
+pub struct CalibrateArgs {
+    #[arg(value_enum)]
+    pub transport: CalibrationTransport,
+    #[command(flatten)]
+    pub delivery: DeliveryArgs,
     #[arg(long, default_value_t = 30, value_parser = clap::value_parser!(u64).range(1..=3600))]
     pub timeout_secs: u64,
     /// New artifact directory. Existing directories are never overwritten.
