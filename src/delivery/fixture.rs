@@ -201,11 +201,30 @@ impl Fixture {
 pub(super) enum Format {
     Text,
     ParsedJson,
-    MessageJson,
+    MessageJson(&'static str),
+    ApplicationJson,
+    ApplicationText,
+}
+
+enum Expected {
+    Apache(Fixture),
+    Values {
+        records: Vec<Value>,
+        projection: Option<Vec<String>>,
+    },
+}
+
+impl Expected {
+    fn total(&self) -> usize {
+        match self {
+            Self::Apache(fixture) => fixture.total(),
+            Self::Values { records, .. } => records.len(),
+        }
+    }
 }
 
 pub(super) struct Verifier {
-    fixture: Fixture,
+    expected: Expected,
     format: Format,
     seen: Vec<bool>,
     unique: usize,
@@ -220,9 +239,59 @@ pub(super) struct Verifier {
 
 impl Verifier {
     pub fn new(fixture: Fixture, format: Format) -> Self {
+        Self::with_expected(Expected::Apache(fixture), format)
+    }
+
+    /// Verify an exact multiset of application records. Projection is opt-in for
+    /// contracts that explicitly exclude metadata, such as wrapped JSON's
+    /// application message check; every projected field must still be present.
+    pub fn new_values(
+        expected: Vec<Value>,
+        format: Format,
+        projection: Option<Vec<String>>,
+    ) -> Result<Self> {
+        anyhow::ensure!(
+            matches!(format, Format::ApplicationJson | Format::ApplicationText),
+            "application values require an application format"
+        );
+        if let Some(fields) = &projection {
+            anyhow::ensure!(
+                matches!(format, Format::ApplicationJson),
+                "projection requires JSON application records"
+            );
+            anyhow::ensure!(
+                !fields.is_empty(),
+                "projection must name application fields"
+            );
+            for (index, field) in fields.iter().enumerate() {
+                anyhow::ensure!(
+                    !field.is_empty() && !fields[..index].contains(field),
+                    "projection fields must be nonempty and distinct"
+                );
+            }
+        }
+        let records = expected
+            .into_iter()
+            .map(|value| {
+                if matches!(format, Format::ApplicationText) {
+                    anyhow::ensure!(value.is_string(), "text expectations must be strings");
+                }
+                project(&value, projection.as_deref())
+            })
+            .collect::<Result<Vec<_>>>()?;
+        Ok(Self::with_expected(
+            Expected::Values {
+                records,
+                projection,
+            },
+            format,
+        ))
+    }
+
+    fn with_expected(expected: Expected, format: Format) -> Self {
         Self {
-            seen: vec![false; fixture.total()],
-            fixture,
+            seen: vec![false; expected.total()],
+            expected,
             format,
             unique: 0,
             duplicates: 0,
@@ -236,16 +305,19 @@ impl Verifier {
     }
 
     pub(super) fn start_measurement(&mut self) -> Result<()> {
+        let Expected::Apache(fixture) = &self.expected else {
+            anyhow::bail!("application correctness records are not a timed workload");
+        };
         anyhow::ensure!(
             self.measurement_start.is_none(),
             "measurement already started"
         );
-        anyhow::ensure!(self.fixture.events != 0, "measurement requires events");
+        anyhow::ensure!(fixture.events != 0, "measurement requires events");
         anyhow::ensure!(
             !self.has_errors(),
             "verification has errors before measurement"
         );
-        let prefix = 1 + self.fixture.warmup;
+        let prefix = 1 + fixture.warmup;
         anyhow::ensure!(
             self.unique == prefix && self.seen[..prefix].iter().all(|seen| *seen),
             "measurement requires exactly the verified canary and warmup prefix"
@@ -266,10 +338,16 @@ impl Verifier {
         match self.format {
             // A text frame may include its single protocol newline delimiter.
             Format::Text => self.record_text(bytes.strip_suffix(b"\n").unwrap_or(bytes)),
-            Format::ParsedJson | Format::MessageJson => {
+            Format::ParsedJson | Format::MessageJson(_) | Format::ApplicationJson => {
                 match serde_json::from_slice::<Value>(bytes) {
                     Ok(value) => self.record_json(&value),
                     Err(error) => self.malformed(&format!("invalid JSON: {error}")),
+                }
+            }
+            Format::ApplicationText => {
+                match std::str::from_utf8(bytes.strip_suffix(b"\n").unwrap_or(bytes)) {
+                    Ok(text) => self.record_value(&Value::String(text.to_owned())),
+                    Err(error) => self.malformed(&format!("invalid UTF-8 text: {error}")),
                 }
             }
         }
@@ -285,19 +363,64 @@ impl Verifier {
                 let Some(id) = self.identify(user.as_bytes()) else {
                     return;
                 };
-                self.verify(id, self.fixture.matches_parsed(id, value));
+                let Expected::Apache(fixture) = &self.expected else {
+                    unreachable!("parsed Apache format requires its fixture")
+                };
+                self.verify(id, fixture.matches_parsed(id, value));
             }
-            Format::MessageJson => {
+            Format::MessageJson(key) => {
                 if value.as_object().is_none_or(|fields| fields.len() != 1) {
-                    self.malformed("HTTP event must contain only the message field");
+                    self.malformed(&format!("event must contain only the {key} field"));
                     return;
                 }
-                match value.get("message").and_then(Value::as_str) {
+                match value.get(key).and_then(Value::as_str) {
                     Some(message) => self.record_text(message.as_bytes()),
-                    None => self.malformed("event has no string message field"),
+                    None => self.malformed(&format!("event has no string {key} field")),
                 }
             }
             Format::Text => self.malformed("received JSON for a text fixture"),
+            Format::ApplicationJson => self.record_value(value),
+            Format::ApplicationText => {
+                if value.is_string() {
+                    self.record_value(value);
+                } else {
+                    self.malformed("application text must be a string");
+                }
+            }
+        }
+    }
+
+    fn record_value(&mut self, value: &Value) {
+        let Expected::Values {
+            records,
+            projection,
+        } = &self.expected
+        else {
+            unreachable!("application format requires explicit expected values")
+        };
+        let value = match project(value, projection.as_deref()) {
+            Ok(value) => value,
+            Err(error) => {
+                self.malformed(&error.to_string());
+                return;
+            }
+        };
+        let mut duplicate = false;
+        for (index, expected) in records.iter().enumerate() {
+            if *expected == value {
+                if !self.seen[index] {
+                    self.verify(index, true);
+                    return;
+                }
+                duplicate = true;
+            }
+        }
+        if duplicate {
+            self.duplicates += 1;
+            self.example("duplicate application record");
+        } else {
+            self.corrupt += 1;
+            self.example("application record differs from the expected values");
         }
     }
 
@@ -313,10 +436,13 @@ impl Verifier {
         let Some(id) = self.identify(user) else {
             return;
         };
-        let matches = match self.fixture.expected_text(id) {
+        let Expected::Apache(fixture) = &self.expected else {
+            unreachable!("Apache text format requires its fixture")
+        };
+        let matches = match fixture.expected_text(id) {
             Some(expected) => bytes == expected,
             None => {
-                let expected = self.fixture.record(id);
+                let expected = fixture.record(id);
                 bytes == &expected[..expected.len() - 1]
             }
         };
@@ -349,7 +475,7 @@ impl Verifier {
         } else {
             self.seen[id] = true;
             self.unique += 1;
-            if self.unique == self.fixture.total() && self.measurement_elapsed.is_none() {
+            if self.unique == self.expected.total() && self.measurement_elapsed.is_none() {
                 if let Some(start) = self.measurement_start {
                     self.measurement_elapsed = Some(Instant::now().duration_since(start));
                 }
@@ -377,15 +503,15 @@ impl Verifier {
     }
 
     pub fn passed(&self) -> bool {
-        self.unique == self.fixture.total() && !self.has_errors()
+        self.unique == self.expected.total() && !self.has_errors()
     }
 
     pub fn report(&self) -> Value {
         json!({
             "passed": self.passed(),
-            "expected": self.fixture.total(),
+            "expected": self.expected.total(),
             "unique": self.unique,
-            "missing": self.fixture.total() - self.unique,
+            "missing": self.expected.total() - self.unique,
             "duplicates": self.duplicates,
             "unknown": self.unknown,
             "corrupt": self.corrupt,
@@ -395,6 +521,26 @@ impl Verifier {
     }
 }
 
+fn project(value: &Value, fields: Option<&[String]>) -> Result<Value> {
+    let Some(fields) = fields else {
+        return Ok(value.clone());
+    };
+    let object = value
+        .as_object()
+        .context("projected application record must be an object")?;
+    let mut projected = serde_json::Map::new();
+    for field in fields {
+        projected.insert(
+            field.clone(),
+            object
+                .get(field)
+                .with_context(|| format!("application record is missing projected field {field}"))?
+                .clone(),
+        );
+    }
+    Ok(Value::Object(projected))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -402,7 +548,10 @@ mod tests {
     #[test]
     fn verifies_complete_payloads_and_accounts_for_delivery_anomalies() {
         fn deliver(verifier: &mut Verifier, id: usize, corrupt: bool) {
-            let mut record = verifier.fixture.record(id);
+            let Expected::Apache(fixture) = &verifier.expected else {
+                unreachable!()
+            };
+            let mut record = fixture.record(id);
             if corrupt {
                 let payload = record.iter().rposition(|byte| *byte == b'/').unwrap() + 1;
                 record[payload] = if record[payload] == b'a' { b'b' } else { b'a' };
@@ -410,15 +559,16 @@ mod tests {
             match verifier.format {
                 Format::Text => verifier.record_line(&record),
                 Format::ParsedJson => {
-                    let mut parsed = verifier.fixture.parsed(id);
+                    let mut parsed = fixture.parsed(id);
                     if corrupt {
                         parsed["path"] = json!(format!("{}x", parsed["path"].as_str().unwrap()));
                     }
                     verifier.record_line(&serde_json::to_vec(&parsed).unwrap());
                 }
-                Format::MessageJson => verifier.record_json(&json!({
-                    "message": std::str::from_utf8(&record[..record.len() - 1]).unwrap(),
+                Format::MessageJson(key) => verifier.record_json(&json!({
+                    (key): std::str::from_utf8(&record[..record.len() - 1]).unwrap(),
                 })),
+                Format::ApplicationJson | Format::ApplicationText => unreachable!(),
             }
         }
 
@@ -438,8 +588,10 @@ mod tests {
             (Format::Text, true),
             (Format::ParsedJson, false),
             (Format::ParsedJson, true),
-            (Format::MessageJson, false),
-            (Format::MessageJson, true),
+            (Format::MessageJson("message"), false),
+            (Format::MessageJson("log"), false),
+            (Format::MessageJson("message"), true),
+            (Format::MessageJson("log"), true),
         ] {
             let mut fixture = Fixture::new(2, 1, "test-run".to_owned());
             if cached {
@@ -513,22 +665,64 @@ mod tests {
                 assert_eq!(verifier.unique(), 0);
             }
 
-            if matches!(format, Format::MessageJson) {
+            if let Format::MessageJson(key) = format {
                 let mut verifier = Verifier::new(fixture.clone(), format);
                 verifier.record_json(&json!({
-                    "message": String::from_utf8(fixture.record(0)).unwrap(),
+                    (key): String::from_utf8(fixture.record(0)).unwrap(),
                 }));
                 assert_eq!(verifier.report()["corrupt"], 1);
                 assert_eq!(verifier.unique(), 0);
                 let mut verifier = Verifier::new(fixture.clone(), format);
                 verifier.record_json(&json!({
-                    "message": String::from_utf8(fixture.record(0)).unwrap().trim_end(),
+                    (key): String::from_utf8(fixture.record(0)).unwrap().trim_end(),
                     "extra": "unexpected",
                 }));
                 assert_eq!(verifier.report()["malformed"], 1);
                 assert_eq!(verifier.unique(), 0);
             }
         }
+    }
+
+    #[test]
+    fn application_values_require_exact_multisets_and_explicit_projection() {
+        let mut verifier = Verifier::new_values(
+            vec![json!({"message":"one"}), json!({"message":"one"})],
+            Format::ApplicationJson,
+            None,
+        )
+        .unwrap();
+        verifier.record_line(b"{\"message\":\"one\",\"unexpected\":true}\n");
+        assert_eq!(verifier.report()["corrupt"], 1);
+        verifier.record_json(&json!({"message":"one"}));
+        assert_eq!(verifier.report()["missing"], 1);
+        verifier.record_line(b"{\"message\":\"one\"}\n");
+        assert_eq!(verifier.report()["unique"], 2);
+        verifier.record_json(&json!({"message":"one"}));
+        assert_eq!(verifier.report()["duplicates"], 1);
+        assert!(!verifier.passed());
+        assert!(verifier.start_measurement().is_err());
+
+        let mut verifier = Verifier::new_values(
+            vec![json!({"message":"one"})],
+            Format::ApplicationJson,
+            Some(vec!["message".into()]),
+        )
+        .unwrap();
+        verifier.record_json(&json!({"message":"one","product_metadata":true}));
+        assert!(verifier.passed());
+        verifier.record_json(&json!({"product_metadata":true}));
+        assert_eq!(verifier.report()["malformed"], 1);
+
+        let mut verifier = Verifier::new_values(
+            vec![json!("{\"log\":\"First line\"}")],
+            Format::ApplicationText,
+            None,
+        )
+        .unwrap();
+        verifier.record_line(b"{\"log\":\"First line\"}\n");
+        assert!(verifier.passed());
+        verifier.record_json(&json!({"log":"First line"}));
+        assert_eq!(verifier.report()["malformed"], 1);
     }
 
     #[test]

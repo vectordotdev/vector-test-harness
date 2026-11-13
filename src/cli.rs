@@ -1,5 +1,6 @@
 use std::path::PathBuf;
 
+use crate::delivery::subject::Subject;
 use clap::{Args, Parser, Subcommand, ValueEnum};
 
 #[derive(Debug, Parser)]
@@ -57,8 +58,10 @@ pub enum Commands {
     },
     /// Report installed external tools without contacting AWS.
     Doctor,
-    /// Verify a Vector correctness case or finite workload locally.
+    /// Verify a correctness case or finite workload locally.
     Check(CheckArgs),
+    /// Run selected products across the current local case catalog.
+    Matrix(MatrixArgs),
     /// Measure the finite producer-to-verifier path without Vector.
     Calibrate(CalibrateArgs),
     /// Build a pinned revision in an isolated clone, leaving other checkouts alone.
@@ -244,6 +247,14 @@ pub enum CheckCase {
     TcpToHttp,
     #[value(name = "tcp_to_blackhole_performance")]
     TcpToBlackhole,
+    #[value(name = "docker_partial_events_merging_correctness")]
+    DockerPartial,
+    #[value(name = "stdin_to_blackhole")]
+    StdinToBlackhole,
+    #[value(name = "klog_remap_to_blackhole")]
+    KlogRemap,
+    #[value(name = "file_to_blackhole")]
+    FileToBlackhole,
 }
 
 impl CheckCase {
@@ -256,11 +267,65 @@ impl CheckCase {
             Self::RegexParsing => "regex_parsing_performance",
             Self::TcpToHttp => "tcp_to_http_performance",
             Self::TcpToBlackhole => "tcp_to_blackhole_performance",
+            Self::DockerPartial => "docker_partial_events_merging_correctness",
+            Self::StdinToBlackhole => "stdin_to_blackhole",
+            Self::KlogRemap => "klog_remap_to_blackhole",
+            Self::FileToBlackhole => "file_to_blackhole",
         }
     }
 
     pub fn is_workload(self) -> bool {
-        !matches!(self, Self::WrappedJson | Self::Sighup)
+        matches!(
+            self,
+            Self::FileToTcp
+                | Self::TcpToTcp
+                | Self::RegexParsing
+                | Self::TcpToHttp
+                | Self::TcpToBlackhole
+        )
+    }
+
+    pub fn is_standalone(self) -> bool {
+        matches!(
+            self,
+            Self::StdinToBlackhole | Self::KlogRemap | Self::FileToBlackhole
+        )
+    }
+}
+
+#[derive(Debug, Args)]
+pub struct MatrixArgs {
+    /// JSON file mapping product names to binaries and public runtime environment.
+    #[arg(long)]
+    pub runtimes: PathBuf,
+    /// New artifact directory; its matrix.json is updated after every case.
+    #[arg(long)]
+    pub output: PathBuf,
+    /// Product names; comma-separated or repeated. Defaults to all eight products.
+    #[arg(long, value_enum, value_delimiter = ',', num_args = 1..)]
+    pub subjects: Vec<Subject>,
+    /// Current case names; comma-separated or repeated. Defaults to all eleven cases.
+    #[arg(long, value_enum, value_delimiter = ',', num_args = 1..)]
+    pub cases: Vec<CheckCase>,
+    #[arg(long, default_value_t = 10_000, value_parser = clap::value_parser!(u32).range(1..=1_000_000))]
+    pub events: u32,
+    #[arg(long, default_value_t = 7)]
+    pub seed: u64,
+    /// Override each case budget; defaults to 300s for klog and 90s otherwise.
+    #[arg(long, value_parser = clap::value_parser!(u64).range(1..=3600))]
+    pub timeout_secs: Option<u64>,
+    #[arg(long, default_value_t = 1, value_parser = clap::value_parser!(u16).range(1..=100))]
+    pub runs: u16,
+}
+
+impl MatrixArgs {
+    pub fn timeout_for(&self, case: CheckCase) -> u64 {
+        self.timeout_secs
+            .unwrap_or(if matches!(case, CheckCase::KlogRemap) {
+                300
+            } else {
+                90
+            })
     }
 }
 
@@ -268,19 +333,49 @@ impl CheckCase {
 pub struct CheckArgs {
     #[arg(value_enum)]
     pub case: CheckCase,
-    #[arg(long)]
-    pub vector_bin: PathBuf,
-    /// Linux CPU list for Vector only, e.g. 0,2-3 (requires taskset).
-    #[arg(long, value_parser = cpu_list)]
+    #[arg(
+        long,
+        required_unless_present_any = ["fluent_bit_bin", "subject_bin"],
+        conflicts_with_all = ["fluent_bit_bin", "subject_bin"]
+    )]
+    pub vector_bin: Option<PathBuf>,
+    /// Fluent Bit binary; --subject and --subject-bin also select this product.
+    #[arg(long, conflicts_with = "subject_bin")]
+    pub fluent_bit_bin: Option<PathBuf>,
+    /// Product selected for a local check.
+    #[arg(long, value_enum, requires = "subject_bin")]
+    pub subject: Option<Subject>,
+    /// Binary for --subject; existing product-specific binary flags remain supported.
+    #[arg(long, requires = "subject")]
+    pub subject_bin: Option<PathBuf>,
+    /// Linux CPU list for the selected subject, e.g. 0,2-3 (requires taskset).
+    #[arg(long = "subject-cpus", visible_alias = "vector-cpus", value_parser = cpu_list)]
     pub vector_cpus: Option<String>,
-    /// Case budget, including startup, delivery, reload, and graceful shutdown.
-    #[arg(long, default_value_t = 30, value_parser = clap::value_parser!(u64).range(1..=3600))]
+    /// Case budget including cleanup; klog defaults to 300s, other cases to 30s.
+    #[arg(long, default_value_t = 30, default_value_if("case", "klog_remap_to_blackhole", "300"), value_parser = clap::value_parser!(u64).range(1..=3600))]
     pub timeout_secs: u64,
     /// New artifact directory. Existing directories are never overwritten.
     #[arg(long)]
     pub output: Option<PathBuf>,
     #[command(flatten)]
     pub delivery: DeliveryArgs,
+}
+
+impl CheckArgs {
+    pub fn selected_subject(&self) -> Subject {
+        self.subject.unwrap_or(if self.fluent_bit_bin.is_some() {
+            Subject::FluentBit
+        } else {
+            Subject::Vector
+        })
+    }
+
+    pub fn binary(&self) -> Option<&std::path::Path> {
+        self.subject_bin
+            .as_deref()
+            .or(self.fluent_bit_bin.as_deref())
+            .or(self.vector_bin.as_deref())
+    }
 }
 
 fn cpu_list(value: &str) -> Result<String, String> {
@@ -316,6 +411,9 @@ pub struct DeliveryArgs {
     /// Measured records in a finite workload (in addition to canary and warmup).
     #[arg(long, default_value_t = 10_000, value_parser = clap::value_parser!(u32).range(1..=1_000_000))]
     pub events: u32,
+    /// Reuse identical input records across runs with the same seed.
+    #[arg(long)]
+    pub seed: Option<u64>,
     /// Maximum producer write size; changes IO batching, not logical records.
     #[arg(long, default_value_t = 16_384, value_parser = clap::value_parser!(u32).range(1024..=1_048_576))]
     pub producer_chunk_bytes: u32,
@@ -327,6 +425,7 @@ pub struct DeliveryArgs {
 impl DeliveryArgs {
     pub fn is_default(&self) -> bool {
         self.events == 10_000
+            && self.seed.is_none()
             && self.producer_chunk_bytes == 16_384
             && self.receiver_reads_per_pass == 16
     }

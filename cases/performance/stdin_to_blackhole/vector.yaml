@@ -7,4 +7,5 @@ sources:
 sinks:
   blackhole:
     type: blackhole
+    print_interval_secs: 1
     inputs: ["stdin"]

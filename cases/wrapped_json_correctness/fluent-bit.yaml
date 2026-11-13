@@ -1,0 +1,30 @@
+service:
+  flush: 0.05
+  grace: 5
+  log_level: info
+parsers:
+  - name: inner
+    format: json
+pipeline:
+  inputs:
+    - name: tcp
+      listen: {{ source_host }}
+      port: {{ source_port }}
+      format: json
+      tag: records
+  filters:
+    - name: parser
+      match: records
+      key_name: log
+      parser: inner
+      reserve_data: false
+      preserve_key: false
+  outputs:
+    - name: tcp
+      match: records
+      host: {{ receiver_host }}
+      port: {{ receiver_port }}
+      format: json_lines
+      json_date_key: false
+      workers: 2
+      retry_limit: no_retries

@@ -292,12 +292,14 @@ pub fn run(runtime: &Runtime, args: CalibrateArgs) -> Result<i32> {
     let mut fixture = Fixture::new(
         args.delivery.events as usize,
         WARMUP,
-        format!("{nonce:032x}"),
+        args.delivery
+            .seed
+            .map_or_else(|| format!("{nonce:032x}"), |seed| format!("{seed:032x}")),
     );
     let mut report = json!({
         "schema_version":1,"purpose":"direct_path_calibration","transport":name,
         "phase":"setup","outcome":"running","passed":null,"performance_result":false,
-        "calibrated":false,"subject":null,"run_id":fixture.token,
+        "calibrated":false,"subject":null,"run_id":format!("{nonce:032x}"),
         "os":std::env::consts::OS,"architecture":std::env::consts::ARCH,
         "timeout_secs":args.timeout_secs,"runner":{"sha256":runner_sha256,"version":env!("CARGO_PKG_VERSION")},
         "fixture":{"version":"apache-records-v1","token":fixture.token,

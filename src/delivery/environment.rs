@@ -57,31 +57,36 @@ pub(super) fn capture() -> Value {
     })
 }
 
-pub(super) fn placement(requested: Option<&str>, pid: u32) -> Result<Value> {
-    let vector_cpus = affinity(pid);
+pub(super) fn placement(requested: Option<&str>, pid: u32, subject: &str) -> Result<Value> {
+    let subject_cpus = affinity(pid);
     let harness_cpus = affinity(std::process::id());
     if let Some(requested) = requested {
-        let observed = vector_cpus
+        let observed = subject_cpus
             .as_deref()
             .and_then(|value| parse_cpu_list(value).ok());
         ensure!(
             observed == parse_cpu_list(requested).ok(),
-            "Vector did not apply requested CPU affinity {requested} (observed {vector_cpus:?})"
+            "{subject} did not apply requested CPU affinity {requested} (observed {subject_cpus:?})"
         );
     }
     let disjoint_cpu_sets = harness_cpus
         .as_deref()
         .and_then(|value| parse_cpu_list(value).ok())
         .zip(
-            vector_cpus
+            subject_cpus
                 .as_deref()
                 .and_then(|value| parse_cpu_list(value).ok()),
         )
         .map(|(harness, vector)| harness.is_disjoint(&vector));
-    Ok(json!({
-        "requested_vector_cpus":requested,"observed_vector_cpus":vector_cpus,
+    let mut report = json!({
+        "requested_subject_cpus":requested,"observed_subject_cpus":subject_cpus,
         "observed_harness_cpus":harness_cpus,"disjoint_cpu_sets":disjoint_cpu_sets,
         "exclusive_reservation":false,
         "basis":"affinity observed after warmup; CPU placement does not reserve CPUs exclusively",
-    }))
+    });
+    if subject == "vector" {
+        report["requested_vector_cpus"] = json!(requested);
+        report["observed_vector_cpus"] = report["observed_subject_cpus"].clone();
+    }
+    Ok(report)
 }

@@ -1,0 +1,31 @@
+service:
+  flush: 0.05
+  grace: 5
+  log_level: info
+parsers:
+  - name: application
+    format: json
+pipeline:
+  inputs:
+    - name: tail
+      path: @VTH_CONTAINER_LOG@
+      read_from_head: true
+      multiline.parser: docker
+      buffer_max_size: 64k
+      tag: records
+  filters:
+    - name: parser
+      match: records
+      key_name: log
+      parser: application
+      reserve_data: false
+      preserve_key: false
+  outputs:
+    - name: tcp
+      match: records
+      host: @VTH_RECEIVER_HOST@
+      port: @VTH_RECEIVER_PORT@
+      format: json_lines
+      json_date_key: false
+      workers: 2
+      retry_limit: no_retries

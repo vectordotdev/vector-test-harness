@@ -1,0 +1,33 @@
+# CEL buffers this finite stdin input through EOF; this is a count-only check, not a streaming-capacity measurement.
+logging.level: info
+logging.metrics.period: 100ms
+logging.to_files: false
+max_procs: 2
+filebeat.shutdown_timeout: 5s
+setup.ilm.enabled: false
+setup.template.enabled: false
+queue.mem:
+  events: 16384
+  flush.min_events: 0
+  flush.timeout: 50ms
+
+filebeat.inputs:
+  - type: cel
+    id: vth-cel-stdin
+    interval: 1h
+    resource.url: ""
+    program: |
+      has(state.cursor) && state.cursor.done ? {"events": [], "want_more": false} :
+      string(file("/dev/stdin")).as(text, {
+        "events": text.substring(0, text.size() - 1).split("\n").map(line, {"message": line}),
+        "cursor": {"done": true},
+        "want_more": false
+      })
+
+processors:
+  - drop_fields:
+      fields: [agent, ecs, log, input, host, event]
+      ignore_missing: true
+
+output.discard:
+  enabled: true
