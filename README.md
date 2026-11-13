@@ -18,6 +18,34 @@ matching application records, counts and payloads under a shared delivery and
 durability contract. Native protocols, batching and encodings may differ.
 See the [comparison requirements](docs/comparisons.md).
 
+## Vector-only finite-batch results
+
+Measured on 2026-11-13 with Vector **0.61.0**: five runs per workload, each
+with **1,000,000 measured records / 187 MB** including line delimiters. One AWS
+`c5.4xlarge` ran Ubuntu 22.04.5 with SMT disabled. Vector used two workers on
+two CPUs; the harness used two different CPUs. Affinity did not reserve CPUs
+exclusively.
+
+| Workload | Median completion | Observed min–max |
+| --- | ---: | ---: |
+| TCP → TCP | 1.148 s | 1.148–1.196 s |
+| TCP → HTTP | 1.619 s | 1.611–1.622 s |
+| File → TCP | 3.583 s | 3.572–3.753 s |
+| TCP → regex parsing → TCP | 4.749 s | 4.735–4.768 s |
+
+Timing covers input publication through verification of the last expected
+record. Startup, canary, warmup and preparation of the 187.2 MB verification
+reference are excluded. All 20 Vector runs verified every record with zero
+anomalies, followed by clean shutdown and receiver drain. These are loopback,
+memory-queue runs with sink acknowledgements disabled; file input was freshly
+written and filesystem caches were not evicted. They establish finite
+completion time, not sustained capacity or durable delivery.
+
+[Individual timings, verification outcomes and provenance](results/2026-11-13/finite-batches.json)
+include the matching source revision, config hashes and 20 direct-path
+diagnostics. Direct durations are not subtracted. See the
+[finite workload contract](#finite-workload-contract) for measurement details.
+
 ## Setup
 
 Install with Rust **1.94+**:
