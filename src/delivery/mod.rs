@@ -1,11 +1,12 @@
-//! Finite Vector workload verification and uncalibrated batch timing.
+//! Finite workload verification and uncalibrated batch timing.
 //! A duration is accepted only after full verification and cleanup. Receivers do not depend on
-//! Vector's transport envelopes beyond the explicitly selected output format.
+//! subject's transport envelopes beyond the explicitly selected output format.
 
 mod calibration;
 mod environment;
 mod fixture;
 mod receiver;
+mod subject;
 
 pub use calibration::run as calibrate;
 
@@ -30,6 +31,7 @@ use crate::{
 };
 use fixture::Fixture;
 use receiver::{Receiver, Transport};
+use subject::Subject;
 
 const WARMUP: usize = 1_000;
 const POLL: Duration = Duration::from_millis(5);
@@ -63,6 +65,7 @@ fn budget(deadline: Instant) -> Result<()> {
 struct Target {
     child: Child,
     status: Option<ExitStatus>,
+    subject: Subject,
 }
 
 impl Target {
@@ -71,6 +74,7 @@ impl Target {
         invocation: &Invocation,
         output: &Path,
         prefix: &str,
+        subject: Subject,
     ) -> Result<Self> {
         let mut command = runtime.command(invocation);
         command
@@ -87,8 +91,9 @@ impl Target {
             command.process_group(0);
         }
         Ok(Self {
-            child: command.spawn().context("start Vector process")?,
+            child: command.spawn().context("start subject process")?,
             status: None,
+            subject,
         })
     }
 
@@ -103,7 +108,10 @@ impl Target {
         if let Some(status) = self.status()? {
             return Err(stopped(
                 "failed",
-                format!("Vector exited unexpectedly: {status}"),
+                format!(
+                    "{} exited unexpectedly: {status}",
+                    self.subject.display_name()
+                ),
             ));
         }
         Ok(())
@@ -164,16 +172,27 @@ struct Logs {
     errors: Vec<String>,
 }
 
-fn logs(output: &Path) -> Result<Logs> {
+fn logs(output: &Path, subject: Subject) -> Result<Logs> {
     let mut result = Logs::default();
-    for name in ["vector.stdout.log", "vector.stderr.log"] {
+    for name in [
+        format!("{}.stdout.log", subject.name()),
+        format!("{}.stderr.log", subject.name()),
+    ] {
         let path = output.join(name);
         ensure!(
             fs::metadata(&path)?.len() <= LOG_LIMIT as u64,
-            "Vector log exceeds 1 MiB"
+            "subject log exceeds 1 MiB"
         );
         let bytes = fs::read(path)?;
         for line in bytes.split_inclusive(|byte| *byte == b'\n') {
+            if subject == Subject::FluentBit {
+                if result.errors.len() < 8 {
+                    if let Some(error) = subject.text_error(line) {
+                        result.errors.push(error);
+                    }
+                }
+                continue;
+            }
             if !line.ends_with(b"\n") {
                 continue;
             }
@@ -216,7 +235,7 @@ fn observe(
 ) -> Result<usize> {
     budget(deadline)?;
     target.running()?;
-    let observed = logs(log)?;
+    let observed = logs(log, target.subject)?;
     if !observed.errors.is_empty() {
         return Err(stopped("failed", observed.errors.join("; ")));
     }
@@ -363,7 +382,7 @@ fn connect(
             {
                 thread::sleep(POLL)
             }
-            Err(error) => return Err(error).context("connect to Vector source"),
+            Err(error) => return Err(error).context("connect to subject source"),
         }
     }
 }
@@ -388,7 +407,11 @@ fn render(
                 .into_owned(),
         ),
         ("source_address", source.to_string()),
+        ("source_host", source.ip().to_string()),
+        ("source_port", source.port().to_string()),
         ("receiver_address", receiver.to_string()),
+        ("receiver_host", receiver.ip().to_string()),
+        ("receiver_port", receiver.port().to_string()),
         ("receiver_uri", format!("http://{receiver}/")),
     ] {
         result = result.replace(&format!("{{{{ {key} }}}}"), &serde_json::to_string(&value)?);
@@ -425,7 +448,16 @@ fn execute(
         .as_str()
         .context("missing run identifier")?
         .to_owned();
-    let mut fixture = Fixture::new(args.delivery.events as usize, WARMUP, token);
+    let subject = if args.fluent_bit_bin.is_some() {
+        Subject::FluentBit
+    } else {
+        Subject::Vector
+    };
+    let fixture_token = args
+        .delivery
+        .seed
+        .map_or(token, |seed| format!("{seed:032x}"));
+    let mut fixture = Fixture::new(args.delivery.events as usize, WARMUP, fixture_token);
     if !matches!(args.case, CheckCase::TcpToBlackhole) {
         fixture.prepare_text(|| budget(deadline))?;
     }
@@ -464,7 +496,7 @@ fn execute(
         Ipv4Addr::LOCALHOST,
         receiver.as_ref().map_or(1, Receiver::port),
     ));
-    let config = output.join("vector.yaml");
+    let config = output.join(subject.config_name());
     budget(deadline)?;
     fs::write(
         &config,
@@ -476,66 +508,39 @@ fn execute(
     phase(output, report, "version")?;
     budget(deadline)?;
     let version_spec = Invocation::new(&binary.to_string_lossy(), output).args(["--version"]);
-    let mut version = Target::spawn(runtime, &version_spec, output, "version")?;
+    let mut version = Target::spawn(runtime, &version_spec, output, "version", subject)?;
     while version.status()?.is_none() {
         budget(deadline)?;
         thread::sleep(POLL);
     }
-    ensure!(version.status.unwrap().success(), "Vector --version failed");
+    ensure!(
+        version.status.unwrap().success(),
+        "subject --version failed"
+    );
     ensure!(
         fs::metadata(output.join("version.stdout.log"))?.len() <= 16 * 1024,
-        "Vector version output exceeds 16 KiB"
+        "subject version output exceeds 16 KiB"
     );
     let version_text = fs::read_to_string(output.join("version.stdout.log"))?;
     ensure!(
-        version_text.starts_with("vector "),
-        "supplied binary did not identify itself as Vector"
+        subject.identifies(&version_text),
+        "supplied binary did not identify itself as {}",
+        subject.display_name()
     );
     report["subject"]["version"] = json!(version_text.trim());
     drop(version);
 
-    let launch = if let Some(cpus) = &args.vector_cpus {
-        Invocation::new("taskset", output).args([
-            "--cpu-list".to_owned(),
-            cpus.clone(),
-            binary.to_string_lossy().into_owned(),
-        ])
-    } else {
-        Invocation::new(&binary.to_string_lossy(), output)
-    };
-    let mut invocation = launch
-        .args([
-            "--config".to_owned(),
-            config.to_string_lossy().into_owned(),
-            "--log-format".into(),
-            "json".into(),
-            "--color".into(),
-            "never".into(),
-            "--threads".into(),
-            "2".into(),
-            "--require-healthy".into(),
-            "true".into(),
-            "--graceful-shutdown-limit-secs".into(),
-            args.timeout_secs.to_string(),
-        ])
-        .env("VECTOR_LOG", "info");
-    invocation.unset_env = [
-        "VECTOR_CONFIG",
-        "VECTOR_CONFIG_DIR",
-        "VECTOR_CONFIG_TOML",
-        "VECTOR_CONFIG_JSON",
-        "VECTOR_CONFIG_YAML",
-        "VECTOR_WATCH_CONFIG",
-        "VECTOR_NO_GRACEFUL_SHUTDOWN_LIMIT",
-        "RUST_LOG",
-    ]
-    .into_iter()
-    .map(String::from)
-    .collect();
+    let invocation = subject.invocation(
+        binary,
+        output,
+        &config,
+        args.vector_cpus.as_deref(),
+        args.timeout_secs,
+    );
     report["invocation"] = serde_json::to_value(&invocation)?;
     phase(output, report, "startup")?;
     drop(reservation);
-    let mut target = Target::spawn(runtime, &invocation, output, "vector")?;
+    let mut target = Target::spawn(runtime, &invocation, output, subject.name(), subject)?;
     report["process"] = json!({"pid":target.child.id(),"state":"running"});
     save(output, report)?;
     let log = output.to_path_buf();
@@ -576,8 +581,11 @@ fn execute(
             &mut published[1],
         )?;
         wait_for(&mut target, receiver.as_ref(), &log, WARMUP + 1, deadline)?;
-        report["cpu_placement"] =
-            environment::placement(args.vector_cpus.as_deref(), target.child.id())?;
+        report["cpu_placement"] = environment::placement(
+            args.vector_cpus.as_deref(),
+            target.child.id(),
+            subject.name(),
+        )?;
         phase(output, report, "measured_input")?;
         if let Some(receiver) = &receiver {
             receiver.start_measurement().map_err(|error| {
@@ -605,7 +613,7 @@ fn execute(
         json!({"canary":published[0],"warmup":published[1],"measured":published[2]});
     report["verification_phase"] = report["phase"].clone();
     phase(output, report, "shutdown")?;
-    // Even a failed verification reaps Vector before the receiver is drained.
+    // Even a failed verification reaps the subject before the receiver is drained.
     let cleanup_deadline = if work.is_ok() {
         deadline
     } else {
@@ -622,7 +630,7 @@ fn execute(
             json!({"graceful":false,"error":error.to_string()})
         }
     };
-    let final_logs = match logs(&log) {
+    let final_logs = match logs(&log, subject) {
         Ok(logs) => Some(logs),
         Err(error) => {
             finalization_errors.push(format!("log inspection: {error:#}"));
@@ -647,8 +655,11 @@ fn execute(
             })
         }
     };
-    let vector_errors = final_logs.map_or_else(Vec::new, |logs| logs.errors);
-    report["vector_errors"] = json!(vector_errors);
+    let subject_errors = final_logs.map_or_else(Vec::new, |logs| logs.errors);
+    report["subject_errors"] = json!(subject_errors);
+    if subject == Subject::Vector {
+        report["vector_errors"] = json!(subject_errors);
+    }
     report["finalization_errors"] = json!(finalization_errors);
     // A cleanup/logging problem must not erase the primary verification failure.
     work?;
@@ -659,9 +670,9 @@ fn execute(
     );
     budget(deadline)?;
     if report["process"]["graceful"] != true {
-        return Err(stopped("failed", "Vector did not shut down gracefully"));
+        return Err(stopped("failed", "subject did not shut down gracefully"));
     }
-    if report["verification"]["passed"] != true || !vector_errors.is_empty() {
+    if report["verification"]["passed"] != true || !subject_errors.is_empty() {
         return Err(stopped("failed", "final workload verification failed"));
     }
     if !matches!(args.case, CheckCase::TcpToBlackhole) {
@@ -711,20 +722,34 @@ pub fn run(runtime: &Runtime, args: CheckArgs) -> Result<i32> {
     ensure!(cfg!(unix), "workload checks currently require a Unix host");
     ensure!(
         args.vector_cpus.is_none() || cfg!(target_os = "linux"),
-        "--vector-cpus currently requires Linux and taskset"
+        "--subject-cpus/--vector-cpus currently requires Linux and taskset"
     );
     ensure!(
         !matches!(args.case, CheckCase::TcpToHttp | CheckCase::TcpToBlackhole)
             || args.delivery.receiver_reads_per_pass == 16,
         "--receiver-reads-per-pass applies only to TCP receivers"
     );
-    let binary = runtime.path(&args.vector_bin)?;
+    let (subject, binary) = if let Some(binary) = &args.fluent_bit_bin {
+        ensure!(
+            matches!(args.case, CheckCase::TcpToTcp),
+            "Fluent Bit is supported only for tcp_to_tcp_performance"
+        );
+        (Subject::FluentBit, binary)
+    } else {
+        (
+            Subject::Vector,
+            args.vector_bin
+                .as_ref()
+                .context("supply --vector-bin or --fluent-bit-bin")?,
+        )
+    };
+    let binary = runtime.path(binary)?;
     check_file(&binary)?;
     let source = runtime
         .root
         .join("cases")
         .join(args.case.name())
-        .join("vector.yaml");
+        .join(subject.config_name());
     let template = fs::read_to_string(&source).context("read workload config")?;
     let nonce = SystemTime::now().duration_since(UNIX_EPOCH)?.as_nanos();
     let output = args
@@ -752,7 +777,7 @@ pub fn run(runtime: &Runtime, args: CheckArgs) -> Result<i32> {
     if runtime.dry_run {
         println!(
             "{}",
-            json!({"action":"verify_workload","case":args.case.name(),"subject":"vector","binary":binary,"output":output,"config_source":source,"delivery":args.delivery,"vector_cpus":args.vector_cpus,"warmup":WARMUP,"canary":1,"performance_result":false})
+            json!({"action":"verify_workload","case":args.case.name(),"subject":subject.name(),"binary":binary,"output":output,"config_source":source,"delivery":args.delivery,"subject_cpus":args.vector_cpus,"vector_cpus":if subject == Subject::Vector { args.vector_cpus.as_deref() } else { None },"warmup":WARMUP,"canary":1,"performance_result":false})
         );
         return Ok(0);
     }
@@ -769,16 +794,20 @@ pub fn run(runtime: &Runtime, args: CheckArgs) -> Result<i32> {
         "phase":"setup","purpose":"workload_verification","performance_result":false,
         "timeout_secs":args.timeout_secs,"os":std::env::consts::OS,"architecture":std::env::consts::ARCH,
         "run_id":format!("{nonce:032x}"),
-        "subject":{"name":"vector","binary":binary,"sha256":binary_sha256},
+        "subject":{"name":subject.name(),"binary":binary,"sha256":binary_sha256},
         "runner":{"version":env!("CARGO_PKG_VERSION"),"sha256":runner_sha256},
         "config_source":source,"config_source_sha256":config_sha256,"inputs":{},
         "delivery":args.delivery,
         "environment":environment::capture(),
-        "cpu_placement":{"requested_vector_cpus":args.vector_cpus,"observed_vector_cpus":null,"observed_harness_cpus":environment::affinity(std::process::id()),"exclusive_reservation":false},
+        "cpu_placement":{"requested_subject_cpus":args.vector_cpus,"observed_subject_cpus":null,"observed_harness_cpus":environment::affinity(std::process::id()),"exclusive_reservation":false},
         "scope":"same-host finite batch; optional CPU affinity is not exclusive reservation; no sustainable-capacity claim",
         "input_storage":"freshly written fixture files; filesystem cache not evicted",
         "producer_observation_interval_ms":POLL.as_millis(),
     });
+    if subject == Subject::Vector {
+        report["cpu_placement"]["requested_vector_cpus"] = json!(args.vector_cpus);
+        report["cpu_placement"]["observed_vector_cpus"] = Value::Null;
+    }
     save(&output, &report)?;
     let result = execute(
         runtime,
@@ -862,7 +891,7 @@ mod tests {
             "{\"level\":\"ERROR\",\"message\":\"processing failed\"}\n",
         )
         .unwrap();
-        let observed = logs(dir.path()).unwrap();
+        let observed = logs(dir.path(), Subject::Vector).unwrap();
         assert_eq!(observed.events, Some(11_001));
         assert_eq!(observed.errors, ["processing failed"]);
 
@@ -871,12 +900,26 @@ mod tests {
             counter(json!("invalid")),
         )
         .unwrap();
-        assert!(logs(dir.path()).is_err());
+        assert!(logs(dir.path(), Subject::Vector).is_err());
         fs::write(
             dir.path().join("vector.stdout.log"),
             counter(json!(2)) + &counter(json!(1)),
         )
         .unwrap();
-        assert!(logs(dir.path()).is_err());
+        assert!(logs(dir.path(), Subject::Vector).is_err());
+        fs::write(
+            dir.path().join("fluent-bit.stdout.log"),
+            "[2026/11/13 17:00:00] [ info] ready\n",
+        )
+        .unwrap();
+        fs::write(
+            dir.path().join("fluent-bit.stderr.log"),
+            "[2026/11/13 17:00:00] [error] failed to flush",
+        )
+        .unwrap();
+        assert_eq!(
+            logs(dir.path(), Subject::FluentBit).unwrap().errors,
+            ["failed to flush"]
+        );
     }
 }

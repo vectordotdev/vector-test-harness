@@ -408,6 +408,10 @@ fn differences(expected: &[Expected], received: &[&Received]) -> Vec<String> {
 }
 
 pub fn run(runtime: &Runtime, args: CheckArgs) -> Result<i32> {
+    ensure!(
+        args.fluent_bit_bin.is_none() || matches!(args.case, CheckCase::TcpToTcp),
+        "--fluent-bit-bin is supported only for tcp_to_tcp_performance"
+    );
     if args.case.is_workload() {
         return crate::delivery::run(runtime, args);
     }
@@ -419,7 +423,11 @@ pub fn run(runtime: &Runtime, args: CheckArgs) -> Result<i32> {
         cfg!(unix),
         "local correctness checks currently require a Unix host"
     );
-    let binary = runtime.path(&args.vector_bin)?;
+    let binary = runtime.path(
+        args.vector_bin
+            .as_ref()
+            .context("this correctness case requires --vector-bin")?,
+    )?;
     check_file(&binary)?;
     let source = runtime
         .root

@@ -57,8 +57,8 @@ vth list
 
 Run from this checkout or pass `--root /path/to/vector-test-harness`.
 For development, use `cargo run --locked --bin vth -- <command> ...`.
-Local checks and workloads require a Vector binary. Profiling requires Linux
-with perf or Valgrind; flamegraphs also require Inferno.
+Local checks and workloads require a supplied product binary. Profiling requires
+Linux with perf or Valgrind; flamegraphs also require Inferno.
 
 ## Usage
 
@@ -70,8 +70,8 @@ do not support dry runs.
 | --- | --- |
 | `vth list` | List remote cases and standalone workloads. |
 | `vth meta <mode>` | Print case or subject metadata. |
-| `vth check <case>` | Run a local Vector correctness check. |
-| `vth calibrate <tcp\|parsed-json\|http>` | Measure the finite producer-to-verifier path without Vector. |
+| `vth check <case>` | Run a local correctness or delivery check. |
+| `vth calibrate <tcp\|parsed-json\|http>` | Measure the direct finite producer-to-verifier path. |
 | `vth run` | Provision and run a remote case; `test` is an alias. |
 | `vth teardown` | Destroy a case's cloud resources. |
 | `vth bootstrap-aws` | Create account prerequisites and write `.env`. |
@@ -98,7 +98,7 @@ do not support dry runs.
 | [sighup_correctness](cases/sighup_correctness/) | `check` | Verify Vector switches receivers after reload, with correct payloads and counts. |
 | [docker_partial_events_merging_correctness](cases/docker_partial_events_merging_correctness/) | `run` | Verify one complete Docker input produces one complete output. |
 | [file_to_tcp_performance](cases/file_to_tcp_performance/) | `check` | Verify every file record at a TCP receiver. |
-| [tcp_to_tcp_performance](cases/tcp_to_tcp_performance/) | `check` | Verify forwarded records, including duplicates and losses. |
+| [tcp_to_tcp_performance](cases/tcp_to_tcp_performance/) | `check` | Verify Vector or Fluent Bit forwarding, including duplicates and losses. |
 | [regex_parsing_performance](cases/regex_parsing_performance/) | `check` | Verify every parsed field and output record. |
 | [tcp_to_http_performance](cases/tcp_to_http_performance/) | `check` | Verify records inside complete HTTP batches. |
 | [tcp_to_blackhole_performance](cases/tcp_to_blackhole_performance/) | `check` | Check the terminal processed count; no payload/delivery proof. |
@@ -106,9 +106,10 @@ do not support dry runs.
 | [klog_remap_to_blackhole](cases/performance/klog_remap_to_blackhole/) | `bench`, `profile` | Compare equivalent one-node and two-node remapping. |
 | [file_to_blackhole](cases/performance/file_to_blackhole/) | `generate`, `profile` | Profile a continuous file workload; no capacity result is published. |
 
-`check` is Vector-only. Remote wrapped JSON supports Filebeat, Fluent Bit,
-Fluentd, Logstash and Vector; the Docker case is Vector-only. Both remote cases
-use the `default` configuration. [subjects.json](config/subjects.json) records versions.
+Local TCP forwarding supports Vector and Fluent Bit; other local checks are
+Vector-only. Remote wrapped JSON supports Filebeat, Fluent Bit, Fluentd,
+Logstash and Vector; the Docker case is Vector-only. Both remote cases use the
+`default` configuration. [subjects.json](config/subjects.json) records versions.
 
 ## Local checks
 
@@ -116,13 +117,16 @@ use the `default` configuration. [subjects.json](config/subjects.json) records v
 vth check wrapped_json_correctness --vector-bin /path/to/vector
 vth check sighup_correctness --vector-bin /path/to/vector
 vth check file_to_tcp_performance --vector-bin /path/to/vector
+vth check tcp_to_tcp_performance --vector-bin /path/to/vector --seed 7
+vth check tcp_to_tcp_performance --fluent-bit-bin /path/to/fluent-bit --seed 7
 ```
 
 ### Finite workload contract
 
 Receiver-backed workloads measure completion of known input from A to B. They
-use deterministic Apache-like records with sequential IDs and run-specific
-payloads.
+use deterministic Apache-like records with sequential IDs. Payloads are unique
+to each run by default; use the same `--seed` to reuse identical input across
+subjects and direct baselines.
 Continuous-load regression testing is outside this work.
 
 - Verify one canary, then 1,000 warmup records, before releasing the measured
@@ -151,8 +155,9 @@ receiver completion time.
 for checks and baselines. `--producer-chunk-bytes` and TCP-only
 `--receiver-reads-per-pass` support IO batching sensitivity checks. These are
 diagnostics; baseline durations are not subtracted from Vector durations.
-On Linux, `--vector-cpus` places Vector on a CPU list independently of a
-`taskset`-placed harness; reports record observed placement and host metadata.
+On Linux, `--subject-cpus` (`--vector-cpus` remains an alias) places the subject
+on a CPU list independently of a `taskset`-placed harness; reports record
+observed placement and host metadata.
 Affinity does not reserve CPUs exclusively.
 Check producer and receiver headroom for each workload and execution environment.
 Finite completion timings do not establish sustained capacity or product rankings.

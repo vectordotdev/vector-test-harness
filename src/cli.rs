@@ -57,7 +57,7 @@ pub enum Commands {
     },
     /// Report installed external tools without contacting AWS.
     Doctor,
-    /// Verify a Vector correctness case or finite workload locally.
+    /// Verify a correctness case or finite workload locally.
     Check(CheckArgs),
     /// Measure the finite producer-to-verifier path without Vector.
     Calibrate(CalibrateArgs),
@@ -268,10 +268,17 @@ impl CheckCase {
 pub struct CheckArgs {
     #[arg(value_enum)]
     pub case: CheckCase,
+    #[arg(
+        long,
+        required_unless_present = "fluent_bit_bin",
+        conflicts_with = "fluent_bit_bin"
+    )]
+    pub vector_bin: Option<PathBuf>,
+    /// Fluent Bit binary; supported only for tcp_to_tcp_performance.
     #[arg(long)]
-    pub vector_bin: PathBuf,
-    /// Linux CPU list for Vector only, e.g. 0,2-3 (requires taskset).
-    #[arg(long, value_parser = cpu_list)]
+    pub fluent_bit_bin: Option<PathBuf>,
+    /// Linux CPU list for the selected subject, e.g. 0,2-3 (requires taskset).
+    #[arg(long = "subject-cpus", visible_alias = "vector-cpus", value_parser = cpu_list)]
     pub vector_cpus: Option<String>,
     /// Case budget, including startup, delivery, reload, and graceful shutdown.
     #[arg(long, default_value_t = 30, value_parser = clap::value_parser!(u64).range(1..=3600))]
@@ -316,6 +323,9 @@ pub struct DeliveryArgs {
     /// Measured records in a finite workload (in addition to canary and warmup).
     #[arg(long, default_value_t = 10_000, value_parser = clap::value_parser!(u32).range(1..=1_000_000))]
     pub events: u32,
+    /// Reuse identical input records across runs with the same seed.
+    #[arg(long)]
+    pub seed: Option<u64>,
     /// Maximum producer write size; changes IO batching, not logical records.
     #[arg(long, default_value_t = 16_384, value_parser = clap::value_parser!(u32).range(1024..=1_048_576))]
     pub producer_chunk_bytes: u32,
@@ -327,6 +337,7 @@ pub struct DeliveryArgs {
 impl DeliveryArgs {
     pub fn is_default(&self) -> bool {
         self.events == 10_000
+            && self.seed.is_none()
             && self.producer_chunk_bytes == 16_384
             && self.receiver_reads_per_pass == 16
     }
