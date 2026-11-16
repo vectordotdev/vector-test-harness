@@ -17,11 +17,19 @@ Uses the shared [finite workload contract](../../README.md#finite-workload-contr
 This verifies delivered records and records diagnostic finite completion times;
 comparative rankings are not published.
 
-The Vector and Fluent Bit configurations above use volatile memory queues
-without application acknowledgements. Buffering and backpressure differ: Vector blocks at a
-512-event sink queue; Fluent Bit uses `mem_buf_limit: 16M` with chunk-based
-accounting and closes TCP input connections
-[when paused](https://github.com/fluent/fluent-bit/blob/v5.2.0/plugins/in_tcp/tcp.c).
-Queue capacities are not equivalent, and overload behavior is outside this check.
+The profiles use volatile memory and plain TCP without application
+acknowledgements. Vector suppresses optional peer host/port fields. Its
+1,048,576-event blocking sink queue and Fluent Bit's 512 MiB input limit are
+sized to hold the full million-record fixture; they do not establish equivalent
+queue capacity or process memory limits. Fluent Bit closes input connections
+[when paused](https://github.com/fluent/fluent-bit/blob/v5.2.0/plugins/in_tcp/tcp.c),
+so a pause, overflow or retry disqualifies a comparison run. Overload and crash
+recovery are outside this workload.
+
+Fluent Bit uses a 50 ms flush interval and two output workers; Vector uses two
+runtime workers and streams output. Scheduling and batching remain part of the
+measured completion time. Comparisons require equal whole-process CPU placement,
+identical input hashes, matching received wire bytes and separate apparatus
+headroom checks.
 Other product profiles use their native framing and acknowledgements through
 the same application-record verifier.

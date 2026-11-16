@@ -5,6 +5,8 @@ sources:
     type: socket
     mode: tcp
     address: {{ source_address }}
+    host_key: ""
+    port_key: ""
     framing:
       method: newline_delimited
     decoding:
@@ -14,7 +16,7 @@ sinks:
   out:
     buffer:
       type: memory
-      max_events: 512
+      max_events: 1048576
       when_full: block
     acknowledgements:
       enabled: false

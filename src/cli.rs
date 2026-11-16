@@ -316,6 +316,15 @@ pub struct CampaignArgs {
     pub events: u32,
     #[arg(long, default_value_t = 7)]
     pub seed: u64,
+    /// Linux CPU list for each subject; finite workloads only.
+    #[arg(long, value_parser = cpu_list)]
+    pub subject_cpus: Option<String>,
+    /// Maximum publisher write size in bytes; finite workloads only.
+    #[arg(long, default_value_t = 16_384, value_parser = clap::value_parser!(u32).range(1024..=1_048_576))]
+    pub producer_chunk_bytes: u32,
+    /// Maximum TCP receiver reads per pass; finite workloads only.
+    #[arg(long, default_value_t = 16, value_parser = clap::value_parser!(u16).range(1..=256))]
+    pub receiver_reads_per_pass: u16,
     #[arg(long, value_parser = clap::value_parser!(u64).range(1..=3600))]
     pub timeout_secs: Option<u64>,
     #[arg(long, default_value_t = 1, value_parser = clap::value_parser!(u16).range(1..=100))]
@@ -340,6 +349,15 @@ pub struct MatrixArgs {
     pub events: u32,
     #[arg(long, default_value_t = 7)]
     pub seed: u64,
+    /// Linux CPU list for each subject; finite workloads only.
+    #[arg(long, value_parser = cpu_list)]
+    pub subject_cpus: Option<String>,
+    /// Maximum publisher write size in bytes; finite workloads only.
+    #[arg(long, default_value_t = 16_384, value_parser = clap::value_parser!(u32).range(1024..=1_048_576))]
+    pub producer_chunk_bytes: u32,
+    /// Maximum TCP receiver reads per pass; finite workloads only.
+    #[arg(long, default_value_t = 16, value_parser = clap::value_parser!(u16).range(1..=256))]
+    pub receiver_reads_per_pass: u16,
     /// Override each case budget; defaults to 300s for klog and 90s otherwise.
     #[arg(long, value_parser = clap::value_parser!(u64).range(1..=3600))]
     pub timeout_secs: Option<u64>,

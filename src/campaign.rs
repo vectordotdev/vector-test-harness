@@ -479,7 +479,14 @@ fn execute(
             &args.seed.to_string(),
             "--runs",
             &args.runs.to_string(),
+            "--producer-chunk-bytes",
+            &args.producer_chunk_bytes.to_string(),
+            "--receiver-reads-per-pass",
+            &args.receiver_reads_per_pass.to_string(),
         ]);
+    if let Some(cpus) = &args.subject_cpus {
+        matrix.args(["--subject-cpus", cpus]);
+    }
     if let Some(timeout) = args.timeout_secs {
         matrix.args(["--timeout-secs", &timeout.to_string()]);
     }
@@ -524,7 +531,9 @@ pub fn run(runtime: &Runtime, args: CampaignArgs) -> Result<i32> {
         "runtime_lock_path":args.lock,"output":output,
         "selection":{"subjects":args.subjects.iter().map(|s|s.name()).collect::<Vec<_>>(),
             "cases":args.cases.iter().map(|c|c.name()).collect::<Vec<_>>(),
-            "events":args.events,"seed":args.seed,"runs":args.runs,"timeout_secs":args.timeout_secs},
+            "events":args.events,"seed":args.seed,"runs":args.runs,"timeout_secs":args.timeout_secs,
+            "subject_cpus":args.subject_cpus,"producer_chunk_bytes":args.producer_chunk_bytes,
+            "receiver_reads_per_pass":args.receiver_reads_per_pass},
         "performance_comparison":false});
     if runtime.dry_run {
         println!("{}", serde_json::to_string(&receipt)?);

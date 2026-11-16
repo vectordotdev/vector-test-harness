@@ -13,7 +13,7 @@ pipeline:
       format: none
       chunk_size: 64
       buffer_size: 64
-      mem_buf_limit: 16M
+      mem_buf_limit: 512M
       storage.type: memory
   outputs:
     - name: tcp

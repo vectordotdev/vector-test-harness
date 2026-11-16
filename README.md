@@ -172,6 +172,10 @@ commit, verifies and unpacks the complete Vector and Fluent Bit packages, builds
 the selected harness with `--locked`, and runs its TCP delivery matrix. Use
 `--subjects`, `--cases`, `--events`, `--seed` and `--runs` to select other finite
 or functional checks. Docker and perf prerequisites are not yet pinned.
+Finite workloads also accept `--subject-cpus`, `--producer-chunk-bytes` and
+`--receiver-reads-per-pass`. Place the harness on a separate CPU set with
+`taskset`; observed placement is recorded. Repeated matrix rounds reverse the
+product order on alternate rounds.
 
 Each new output directory retains the checkout, downloads, build logs,
 `runtimes.json`, `campaign.json` and `results/`. The receipt records source and

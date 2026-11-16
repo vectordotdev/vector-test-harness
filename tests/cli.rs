@@ -520,6 +520,18 @@ fn matrix_retains_catalog_gaps_and_continues_after_case_failures() {
         "matrix-plan",
         "--timeout-secs",
         "17",
+        "--subjects",
+        "vector,filebeat",
+        "--cases",
+        "wrapped_json_correctness,tcp_to_tcp_performance",
+        "--runs",
+        "3",
+        "--subject-cpus",
+        "2-3",
+        "--producer-chunk-bytes",
+        "65536",
+        "--receiver-reads-per-pass",
+        "64",
     ]);
     let overridden: Value = serde_json::from_slice(&overridden.stdout).unwrap();
     assert!(overridden["rows"]
@@ -527,25 +539,39 @@ fn matrix_retains_catalog_gaps_and_continues_after_case_failures() {
         .unwrap()
         .iter()
         .all(|row| row["timeout_secs"] == 17));
+    assert_eq!(overridden["finite_workload"]["subject_cpus"], "2-3");
+    assert_eq!(overridden["finite_workload"]["producer_chunk_bytes"], 65536);
+    assert_eq!(overridden["finite_workload"]["receiver_reads_per_pass"], 64);
+    for (index, row) in overridden["rows"].as_array().unwrap().iter().enumerate() {
+        assert_eq!(row["run"], (index % 6) / 2 + 1);
+        assert_eq!(
+            row["subject"],
+            ["vector", "filebeat", "filebeat", "vector", "vector", "filebeat"][index % 6]
+        );
+    }
+    assert_eq!(overridden["rows"].as_array().unwrap().len(), 12);
     fs::write(
         &runtimes,
         json!({"subjects":{"vector":{"binary":tools().path().join("aws")}}}).to_string(),
     )
     .unwrap();
-    let output = fixture
-        .command()
-        .args(["matrix", "--runtimes"])
-        .arg(&runtimes)
-        .args([
-            "--output",
-            "matrix-run",
-            "--subjects",
-            "vector,filebeat",
-            "--cases",
-            "wrapped_json_correctness,tcp_to_tcp_performance,file_to_blackhole",
-        ])
-        .output()
-        .unwrap();
+    let mut command = fixture.command();
+    command.args(["matrix", "--runtimes"]).arg(&runtimes).args([
+        "--output",
+        "matrix-run",
+        "--subjects",
+        "vector,filebeat",
+        "--cases",
+        "wrapped_json_correctness,tcp_to_tcp_performance,file_to_blackhole",
+        "--producer-chunk-bytes",
+        "65536",
+        "--receiver-reads-per-pass",
+        "64",
+    ]);
+    if cfg!(target_os = "linux") {
+        command.args(["--subject-cpus", "2-3"]);
+    }
+    let output = command.output().unwrap();
     assert!(!output.status.success());
     let report: Value =
         serde_json::from_slice(&fs::read(fixture.root().join("matrix-run/matrix.json")).unwrap())
@@ -577,6 +603,20 @@ fn matrix_retains_catalog_gaps_and_continues_after_case_failures() {
         if row["outcome"] == "errored" {
             assert_eq!(row["raw_report_exists"], true);
             assert!(Path::new(row["raw_report_path"].as_str().unwrap()).is_file());
+            let args = row["command"]["args"].as_array().unwrap();
+            let has_arg = |key: &str, value: &str| {
+                args.windows(2)
+                    .any(|pair| pair[0] == key && pair[1] == value)
+            };
+            if row["case"] == "tcp_to_tcp_performance" {
+                assert!(has_arg("--producer-chunk-bytes", "65536"));
+                assert!(has_arg("--receiver-reads-per-pass", "64"));
+                assert_eq!(has_arg("--subject-cpus", "2-3"), cfg!(target_os = "linux"));
+            } else {
+                assert!(!args.iter().any(|arg| arg == "--producer-chunk-bytes"
+                    || arg == "--receiver-reads-per-pass"
+                    || arg == "--subject-cpus"));
+            }
         }
     }
     let invalid = fixture
