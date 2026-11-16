@@ -3,7 +3,7 @@
 use std::{
     fs,
     io::Write,
-    os::unix::fs::symlink,
+    os::unix::fs::{symlink, PermissionsExt},
     path::{Path, PathBuf},
     process::{Command, Output},
     sync::OnceLock,
@@ -593,6 +593,14 @@ fn matrix_retains_catalog_gaps_and_continues_after_case_failures() {
 #[test]
 fn local_check_failures_retain_artifacts_and_reap_vector() {
     let fixture = Fixture::new();
+    // Ignored TERM survives exec, so the stalled fixture reliably requires KILL.
+    let stalled = fixture.root().join("stalled-vector");
+    fs::write(
+        &stalled,
+        "#!/bin/sh\ntrap '' TERM\nexec \"$VTH_TEST_VECTOR\" \"$@\"\n",
+    )
+    .unwrap();
+    fs::set_permissions(&stalled, fs::Permissions::from_mode(0o755)).unwrap();
     // Only the stalled case needs a tight deadline; early exit uses the normal budget.
     for (name, mode, delay, timeout, code, outcome, forced) in [
         ("exited", "failed-vector", "0", "30", 1, "failed", false),
@@ -602,8 +610,13 @@ fn local_check_failures_retain_artifacts_and_reap_vector() {
         let output = command
             .env("VTH_TEST_MODE", mode)
             .env("VTH_TEST_DELAY_MS", delay)
+            .env("VTH_TEST_VECTOR", tools().path().join("vector"))
             .args(["check", "wrapped_json_correctness", "--vector-bin"])
-            .arg(tools().path().join("vector"))
+            .arg(if forced {
+                stalled.clone()
+            } else {
+                tools().path().join("vector")
+            })
             .args(["--timeout-secs", timeout, "--output", name])
             .output()
             .unwrap();

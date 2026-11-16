@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "platform": {
+    "os": "linux",
+    "arch": "x86_64",
+    "distribution": "ubuntu",
+    "version": "22.04"
+  },
+  "toolchain": "1.94.0",
+  "subjects": {
+    "vector": {
+      "version": "0.61.0-1",
+      "url": "https://github.com/vectordotdev/vector/releases/download/v0.61.0/vector_0.61.0-1_amd64.deb",
+      "sha256": "1cf2bc77f865e05e539c177feb0eb5feee20ee2762ea379f101610c9625fc4b8",
+      "binary": "usr/bin/vector"
+    },
+    "fluent-bit": {
+      "version": "5.2.0",
+      "url": "https://packages.fluentbit.io/ubuntu/jammy/pool/main/f/fluent-bit/fluent-bit_5.2.0_amd64.deb",
+      "sha256": "6e2fcad738d7f484642acf3a17f7a977957552c1ca9a4b7a7dc8be8c7f15ae84",
+      "binary": "opt/fluent-bit/bin/fluent-bit"
+    }
+  }
+}

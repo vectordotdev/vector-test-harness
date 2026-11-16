@@ -72,6 +72,7 @@ do not support dry runs.
 | `vth meta <mode>` | Print case or subject metadata. |
 | `vth check <case>` | Run a local correctness or delivery check. |
 | `vth matrix` | Run the current cases across supplied product binaries and retain every outcome. |
+| `vth campaign` | Build one harness commit, prepare checksum-pinned Linux runtimes, and run the matrix. |
 | `vth calibrate <tcp\|parsed-json\|http>` | Measure the direct finite producer-to-verifier path. |
 | `vth run` | Provision and run a remote case; `test` is an alias. |
 | `vth teardown` | Destroy a case's cloud resources. |
@@ -154,6 +155,30 @@ this does not establish streaming capacity. A failed health, shutdown or
 verification check invalidates any candidate timing. Matrix execution is
 sequential, with no exclusive host reservation or headroom calibration. Its
 finite completion times are diagnostics, not a product ranking.
+
+### Reproducible Linux runs
+
+On Ubuntu 22.04 x86_64, install Git, curl, `dpkg-deb`, build tools and the runtime
+libraries, then prepare the pinned Rust toolchain:
+
+```sh
+sudo apt-get install -y git curl build-essential pkg-config libssl-dev libcurl4 libpq5 libsasl2-2 libyaml-0-2
+rustup toolchain install 1.94.0 --profile minimal
+vth campaign --revision <full-40-character-commit> --output /tmp/vth-campaign-001
+```
+
+The campaign reads [the runtime lock](config/runtimes-linux-x86_64.json) from that
+commit, verifies and unpacks the complete Vector and Fluent Bit packages, builds
+the selected harness with `--locked`, and runs its TCP delivery matrix. Use
+`--subjects`, `--cases`, `--events`, `--seed` and `--runs` to select other finite
+or functional checks. Docker and perf prerequisites are not yet pinned.
+
+Each new output directory retains the checkout, downloads, build logs,
+`runtimes.json`, `campaign.json` and `results/`. The receipt records source and
+binary identities, lock hashes, toolchain, host packages and matrix outcome.
+Build and product environments are isolated; ancestor Cargo configuration is
+rejected. OS package versions are recorded rather than frozen, and timings
+remain unqualified diagnostics.
 
 ### Finite workload contract
 
