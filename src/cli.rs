@@ -62,6 +62,8 @@ pub enum Commands {
     Check(CheckArgs),
     /// Run selected products across the current local case catalog.
     Matrix(MatrixArgs),
+    /// Prepare pinned Linux runtimes and run a matrix from one exact harness commit.
+    Campaign(CampaignArgs),
     /// Measure the finite producer-to-verifier path without Vector.
     Calibrate(CalibrateArgs),
     /// Build a pinned revision in an isolated clone, leaving other checkouts alone.
@@ -291,6 +293,33 @@ impl CheckCase {
             Self::StdinToBlackhole | Self::KlogRemap | Self::FileToBlackhole
         )
     }
+}
+
+#[derive(Debug, Args)]
+pub struct CampaignArgs {
+    /// Full 40-character harness commit available in this repository.
+    #[arg(long)]
+    pub revision: String,
+    /// Runtime lock inside the selected commit (repository-relative).
+    #[arg(long, default_value = "config/runtimes-linux-x86_64.json")]
+    pub lock: PathBuf,
+    /// New directory containing source, build, runtimes and results.
+    #[arg(long)]
+    pub output: PathBuf,
+    /// Defaults to every product in the runtime lock.
+    #[arg(long, value_enum, value_delimiter = ',', num_args = 1..)]
+    pub subjects: Vec<Subject>,
+    /// Defaults to TCP delivery. Docker and perf dependencies are not yet pinned.
+    #[arg(long, value_enum, value_delimiter = ',', num_args = 1.., default_value = "tcp_to_tcp_performance")]
+    pub cases: Vec<CheckCase>,
+    #[arg(long, default_value_t = 10_000, value_parser = clap::value_parser!(u32).range(1..=1_000_000))]
+    pub events: u32,
+    #[arg(long, default_value_t = 7)]
+    pub seed: u64,
+    #[arg(long, value_parser = clap::value_parser!(u64).range(1..=3600))]
+    pub timeout_secs: Option<u64>,
+    #[arg(long, default_value_t = 1, value_parser = clap::value_parser!(u16).range(1..=100))]
+    pub runs: u16,
 }
 
 #[derive(Debug, Args)]

@@ -1,5 +1,6 @@
 mod analysis;
 mod aws;
+mod campaign;
 mod cli;
 mod delivery;
 mod guest;
@@ -51,13 +52,18 @@ fn execute(cli: Cli, inherited: Option<Runtime>) -> Result<()> {
         nested.root = nested.root.or(cli.root);
         nested.dry_run |= cli.dry_run;
         nested.no_dotenv |= cli.no_dotenv;
+        nested.no_dotenv |= matches!(&nested.command, Commands::Campaign(_));
         let mut runtime = Runtime::new(nested.root.as_deref(), nested.no_dotenv, nested.dry_run)?;
         runtime.container_keys()?;
         return execute(nested, Some(runtime));
     }
     let runtime = match inherited {
         Some(runtime) => runtime,
-        None => Runtime::new(cli.root.as_deref(), cli.no_dotenv, cli.dry_run)?,
+        None => Runtime::new(
+            cli.root.as_deref(),
+            cli.no_dotenv || matches!(&cli.command, Commands::Campaign(_)),
+            cli.dry_run,
+        )?,
     };
     match cli.command {
         Commands::Run(args) => infra::run(&runtime, args),
@@ -82,6 +88,13 @@ fn execute(cli: Cli, inherited: Option<Runtime>) -> Result<()> {
         }
         Commands::Matrix(args) => {
             let code = matrix::run(&runtime, args)?;
+            if code != 0 {
+                std::process::exit(code);
+            }
+            Ok(())
+        }
+        Commands::Campaign(args) => {
+            let code = campaign::run(&runtime, args)?;
             if code != 0 {
                 std::process::exit(code);
             }
