@@ -18,6 +18,30 @@ matching application records, counts and payloads under a shared delivery and
 durability contract. Native protocols, batching and encodings may differ.
 See the [comparison requirements](docs/comparisons.md).
 
+## TCP → TCP finite-batch comparison
+
+Measured on 2026-11-16 on one AWS `c5.4xlarge`, Ubuntu 22.04.5, with SMT disabled.
+Both products used the same two guest CPUs; the harness used two others.
+Host RAM is the instance specification; neither product had a process memory limit.
+
+| Product | Version | Measured records | Input size | Product CPUs | Host RAM | Valid / attempted | Median completion | Observed min–max |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Vector | 0.61.0 | 1,000,000 | 187 MB | 2 | 32 GiB | 5 / 5 | 1.006 s | 1.003–1.008 s |
+| Fluent Bit | 5.2.0 | 1,000,000 | 187 MB | 2 | 32 GiB | 5 / 5 | 0.829 s | 0.817–0.833 s |
+
+The [profiles](cases/tcp_to_tcp_performance/) forward identical raw text with
+newline framing and volatile queues sized for the batch. Timing starts at input
+publication and ends when the last record is verified; startup, canary and
+1,000 warmup records are excluded. Every run verified all 1,001,001 records,
+then completed clean shutdown and receiver drain.
+
+All 27 qualification checks passed; batching variations changed product medians
+by less than 0.4%. The five direct-path diagnostics had a 0.241 s median, which
+is not subtracted. These results describe finite normal-operation completion,
+not sustained capacity or durable delivery. [Timings, qualification gates and
+source/runtime identities](results/2026-11-16/tcp-comparison.json) retain every
+sample and identify the excluded development cohort.
+
 ## Vector-only finite-batch results
 
 Measured on 2026-11-13. Input sizes include line delimiters. One AWS
