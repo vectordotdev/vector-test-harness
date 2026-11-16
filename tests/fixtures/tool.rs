@@ -39,6 +39,7 @@ fn main() {
         process::exit(17);
     } else if tool == "curl" { println!("203.0.113.8"); }
     else if tool == "vector" || tool == "socat" {
+        if tool == "vector" && has("--version") { println!("vector 0.61.0"); return; }
         let mut bytes = vec![];
         io::stdin().read_to_end(&mut bytes).unwrap();
         if let Ok(path) = env::var("VTH_TEST_BYTES") { fs::write(path,bytes.len().to_string()).unwrap(); }

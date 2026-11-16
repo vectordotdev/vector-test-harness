@@ -1,4 +1,10 @@
-# Stdin-to-blackhole benchmark
+# Stdin-to-blackhole checks and benchmark
+
+`vth check stdin_to_blackhole --subject <product> --subject-bin /path/to/binary`
+feeds the original million-record gzip fixture and requires an exact native
+completed-discard count, clean health and shutdown. It verifies no payloads or
+identities and publishes no delivery timing. Input lifecycles are recorded;
+Filebeat's native CEL profile buffers the finite input through EOF.
 
 Stream a finite fixture through Vector's stdin source into a blackhole sink.
 The default fixture is `../file_to_blackhole/baked.log.gz`; the Rust harness
@@ -18,7 +24,7 @@ use `vth build --revision <commit>`.
 
 See the [standalone guide](../README.md) for measurement and artifact details.
 
-## AWS baseline — 2026-11-12
+## Historical Vector process timings — 2026-11-12
 
 Vector 0.61.0 on an AWS `c5.large` (2 vCPUs, 4 GiB RAM), Ubuntu 22.04.5,
 using the checked-in fixture and config:

@@ -1,0 +1,25 @@
+data_dir: {{ data_dir }}
+sources:
+  in:
+    type: socket
+    mode: tcp
+    address: {{ source_address }}
+    framing:
+      method: newline_delimited
+    decoding:
+      codec: json
+transforms:
+  decode:
+    type: remap
+    inputs: [in]
+    source: '. = parse_json!(string!(.log))'
+sinks:
+  out:
+    type: socket
+    mode: tcp
+    inputs: [decode]
+    address: {{ receiver_address }}
+    encoding:
+      codec: json
+    framing:
+      method: newline_delimited

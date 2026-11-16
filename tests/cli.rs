@@ -66,6 +66,7 @@ impl Fixture {
             "cases/performance/stdin_to_blackhole",
             "cases/performance/file_to_blackhole",
             "cases/wrapped_json_correctness/ansible/config_files",
+            "cases/tcp_to_tcp_performance",
         ] {
             fs::create_dir_all(root.join(name)).unwrap();
         }
@@ -92,12 +93,24 @@ impl Fixture {
             )
             .unwrap();
         }
-        let config = "cases/wrapped_json_correctness/ansible/config_files/vector.yaml";
-        fs::copy(
-            Path::new(env!("CARGO_MANIFEST_DIR")).join(config),
-            root.join(config),
-        )
-        .unwrap();
+        for config in [
+            "cases/wrapped_json_correctness/ansible/config_files/vector.yaml",
+            "cases/wrapped_json_correctness/vector.yaml",
+            "cases/tcp_to_tcp_performance/vector.yaml",
+            "cases/tcp_to_tcp_performance/fluent-bit.yaml",
+            "cases/tcp_to_tcp_performance/telegraf.toml",
+            "cases/tcp_to_tcp_performance/filebeat.yml",
+            "cases/tcp_to_tcp_performance/fluentd.conf",
+            "cases/tcp_to_tcp_performance/logstash.conf",
+            "cases/tcp_to_tcp_performance/splunk-hf.conf",
+            "cases/tcp_to_tcp_performance/splunk-uf.conf",
+        ] {
+            fs::copy(
+                Path::new(env!("CARGO_MANIFEST_DIR")).join(config),
+                root.join(config),
+            )
+            .unwrap();
+        }
         Self { dir }
     }
     fn root(&self) -> &Path {
@@ -294,6 +307,8 @@ fn dry_run_has_no_external_or_filesystem_side_effects() {
         "tcp",
         "--events",
         "1000000",
+        "--seed",
+        "7",
         "--producer-chunk-bytes",
         "262144",
         "--receiver-reads-per-pass",
@@ -303,18 +318,115 @@ fn dry_run_has_no_external_or_filesystem_side_effects() {
     ]);
     let plan: Value = serde_json::from_slice(&output.stdout).unwrap();
     assert_eq!(plan["delivery"]["events"], 1_000_000);
+    assert_eq!(plan["delivery"]["seed"], 7);
     assert_eq!(plan["delivery"]["producer_chunk_bytes"], 262_144);
     assert_eq!(plan["delivery"]["receiver_reads_per_pass"], 64);
     assert!(fixture.invocations().is_empty());
     assert!(!fixture.root().join("direct-calibration").exists());
+    for (binary_flag, subject) in [
+        ("--vector-bin", "vector"),
+        ("--fluent-bit-bin", "fluent-bit"),
+    ] {
+        let output = fixture.run(&[
+            "--dry-run",
+            "check",
+            "tcp_to_tcp_performance",
+            binary_flag,
+            tools().path().join("vector").to_str().unwrap(),
+            "--seed",
+            "7",
+            "--output",
+            "tcp-check",
+        ]);
+        let plan: Value = serde_json::from_slice(&output.stdout).unwrap();
+        assert_eq!(plan["subject"], subject);
+        assert_eq!(plan["delivery"]["seed"], 7);
+        assert!(!fixture.root().join("tcp-check").exists());
+    }
+    for cpu_flag in ["--subject-cpus", "--vector-cpus"] {
+        let output = fixture
+            .command()
+            .args([
+                "--dry-run",
+                "check",
+                "tcp_to_tcp_performance",
+                "--vector-bin",
+                tools().path().join("vector").to_str().unwrap(),
+                cpu_flag,
+                "0,2-3",
+                "--output",
+                "cpu-check",
+            ])
+            .output()
+            .unwrap();
+        if cfg!(target_os = "linux") {
+            assert!(output.status.success());
+            let plan: Value = serde_json::from_slice(&output.stdout).unwrap();
+            assert_eq!(plan["subject_cpus"], "0,2-3");
+        } else {
+            assert!(!output.status.success());
+            assert!(String::from_utf8_lossy(&output.stderr).contains("requires Linux"));
+        }
+        assert!(!fixture.root().join("cpu-check").exists());
+    }
+    assert!(fixture.invocations().is_empty());
 }
 
 #[test]
 fn finite_delivery_controls_reject_inapplicable_or_unbounded_values() {
     let fixture = Fixture::new();
+    for subject in [
+        "vector",
+        "fluent-bit",
+        "telegraf",
+        "filebeat",
+        "fluentd",
+        "logstash",
+        "splunk-hf",
+        "splunk-uf",
+    ] {
+        let output = fixture.run(&[
+            "--dry-run",
+            "check",
+            "tcp_to_tcp_performance",
+            "--subject",
+            subject,
+            "--subject-bin",
+            tools().path().join("vector").to_str().unwrap(),
+            "--output",
+            "selected-subject",
+        ]);
+        let plan: Value = serde_json::from_slice(&output.stdout).unwrap();
+        assert_eq!(plan["subject"], subject);
+        assert!(!fixture.root().join("selected-subject").exists());
+    }
+    for (binaries, error) in [
+        (&[][..], "required"),
+        (
+            &[
+                "--vector-bin",
+                "/missing/vector",
+                "--fluent-bit-bin",
+                "/missing/fluent-bit",
+            ][..],
+            "cannot be used with",
+        ),
+    ] {
+        let output = fixture
+            .command()
+            .args(["check", "tcp_to_tcp_performance"])
+            .args(binaries)
+            .args(["--output", "invalid-binary-selection"])
+            .output()
+            .unwrap();
+        assert!(!output.status.success());
+        assert!(String::from_utf8_lossy(&output.stderr).contains(error));
+        assert!(!fixture.root().join("invalid-binary-selection").exists());
+    }
     for case in ["wrapped_json_correctness", "sighup_correctness"] {
         for (option, value) in [
             ("--events", "100"),
+            ("--seed", "7"),
             ("--producer-chunk-bytes", "262144"),
             ("--receiver-reads-per-pass", "64"),
             ("--vector-cpus", "0"),
@@ -339,6 +451,7 @@ fn finite_delivery_controls_reject_inapplicable_or_unbounded_values() {
     for (option, value) in [
         ("--events", "0"),
         ("--events", "1000001"),
+        ("--seed", "18446744073709551616"),
         ("--producer-chunk-bytes", "0"),
         ("--receiver-reads-per-pass", "0"),
         ("--receiver-reads-per-pass", "257"),
@@ -371,6 +484,113 @@ fn finite_delivery_controls_reject_inapplicable_or_unbounded_values() {
 }
 
 #[test]
+fn matrix_retains_catalog_gaps_and_continues_after_case_failures() {
+    let fixture = Fixture::new();
+    let runtimes = fixture.root().join("runtimes.json");
+    fs::write(&runtimes, "{\"subjects\":{}}").unwrap();
+    let plan = fixture.run(&[
+        "--dry-run",
+        "matrix",
+        "--runtimes",
+        runtimes.to_str().unwrap(),
+        "--output",
+        "matrix-plan",
+    ]);
+    let plan: Value = serde_json::from_slice(&plan.stdout).unwrap();
+    assert_eq!(plan["rows"].as_array().unwrap().len(), 88);
+    assert_eq!(plan["catalog"]["cases"].as_array().unwrap().len(), 11);
+    assert_eq!(plan["finite_workload"]["seed"], 7);
+    assert!(plan["rows"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .all(|row| row["timeout_secs"]
+            == if row["case"] == "klog_remap_to_blackhole" {
+                300
+            } else {
+                90
+            }));
+    assert!(!fixture.root().join("matrix-plan").exists());
+    let overridden = fixture.run(&[
+        "--dry-run",
+        "matrix",
+        "--runtimes",
+        runtimes.to_str().unwrap(),
+        "--output",
+        "matrix-plan",
+        "--timeout-secs",
+        "17",
+    ]);
+    let overridden: Value = serde_json::from_slice(&overridden.stdout).unwrap();
+    assert!(overridden["rows"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .all(|row| row["timeout_secs"] == 17));
+    fs::write(
+        &runtimes,
+        json!({"subjects":{"vector":{"binary":tools().path().join("aws")}}}).to_string(),
+    )
+    .unwrap();
+    let output = fixture
+        .command()
+        .args(["matrix", "--runtimes"])
+        .arg(&runtimes)
+        .args([
+            "--output",
+            "matrix-run",
+            "--subjects",
+            "vector,filebeat",
+            "--cases",
+            "wrapped_json_correctness,tcp_to_tcp_performance,file_to_blackhole",
+        ])
+        .output()
+        .unwrap();
+    assert!(!output.status.success());
+    let report: Value =
+        serde_json::from_slice(&fs::read(fixture.root().join("matrix-run/matrix.json")).unwrap())
+            .unwrap();
+    assert_eq!(report["execution_complete"], true);
+    assert_eq!(report["all_requested_cases_verified"], false);
+    let rows = report["rows"].as_array().unwrap();
+    assert_eq!(rows.len(), 6);
+    assert_eq!(
+        rows.iter()
+            .filter(|row| row["outcome"] == "errored")
+            .count(),
+        2
+    );
+    assert_eq!(
+        rows.iter()
+            .filter(|row| row["outcome"] == "unavailable_environment")
+            .count(),
+        1
+    );
+    assert_eq!(
+        rows.iter()
+            .filter(|row| row["outcome"] == "missing_binary")
+            .count(),
+        3
+    );
+    for row in rows {
+        assert!(row["finite_seconds"].is_null());
+        if row["outcome"] == "errored" {
+            assert_eq!(row["raw_report_exists"], true);
+            assert!(Path::new(row["raw_report_path"].as_str().unwrap()).is_file());
+        }
+    }
+    let invalid = fixture
+        .command()
+        .args(["matrix", "--runtimes"])
+        .arg(&runtimes)
+        .args(["--output", "invalid-matrix", "--cases", "retired_case"])
+        .output()
+        .unwrap();
+    assert!(!invalid.status.success());
+    assert!(!fixture.root().join("invalid-matrix").exists());
+}
+
+#[test]
 fn local_check_failures_retain_artifacts_and_reap_vector() {
     let fixture = Fixture::new();
     // Only the stalled case needs a tight deadline; early exit uses the normal budget.
@@ -393,21 +613,20 @@ fn local_check_failures_retain_artifacts_and_reap_vector() {
         assert_eq!(output.status.code(), Some(code), "{report}");
         // Forced cleanup below checks the deadline; CLI setup time varies by host.
         assert_eq!(report["outcome"], outcome);
-        assert_eq!(report["complete"], false);
-        assert_eq!(report["cleanup"]["forced"], forced);
-        assert_eq!(report["cleanup"]["vector_reaped"], true);
+        assert_eq!(report["passed"], false);
+        assert_eq!(report["process"]["forced"], forced);
+        assert_eq!(report["process"]["graceful"], false);
         for file in [
-            "initial.yaml",
-            "input.jsonl",
-            "expected.json",
-            "received.jsonl",
+            "initial.config",
+            "vector.yaml",
+            "input/output.jsonl",
             "vector.stdout.log",
             "vector.stderr.log",
         ] {
             assert!(artifacts.join(file).is_file(), "missing {file}");
         }
         let probe = Command::new("/bin/kill")
-            .args(["-0", "--", &report["vector_pid"].to_string()])
+            .args(["-0", "--", &report["process"]["pid"].to_string()])
             .output()
             .unwrap();
         assert!(!probe.status.success(), "Vector process survived cleanup");

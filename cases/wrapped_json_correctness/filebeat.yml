@@ -1,0 +1,47 @@
+logging.level: info
+logging.to_files: false
+max_procs: 2
+filebeat.shutdown_timeout: 5s
+setup.ilm.enabled: false
+setup.template.enabled: false
+queue.mem:
+  events: 16384
+  flush.min_events: 0
+  flush.timeout: 50ms
+
+filebeat.inputs:
+  - type: tcp
+    id: vth-input
+    host: @VTH_SOURCE_ADDRESS@
+    framing: delimiter
+    line_delimiter: "\n"
+    max_message_size: 1MiB
+    number_of_workers: 2
+    publisher_pipeline.disable_host: true
+
+processors:
+  - drop_fields:
+      fields: [agent, ecs, log, input, host, event]
+      ignore_missing: true
+
+  - decode_json_fields:
+      fields: [message]
+      target: ""
+      overwrite_keys: true
+      add_error_key: true
+  - decode_json_fields:
+      fields: [log]
+      target: ""
+      overwrite_keys: true
+      add_error_key: true
+  - drop_fields:
+      fields: [log]
+      ignore_missing: true
+
+output.logstash:
+  hosts: [@VTH_RECEIVER_ADDRESS@]
+  compression_level: 0
+  worker: 1
+  pipelining: 0
+  bulk_max_size: 256
+  timeout: 5s

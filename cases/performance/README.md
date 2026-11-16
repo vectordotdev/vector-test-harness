@@ -1,15 +1,20 @@
 # Standalone performance workflows
 
-These workloads share the Rust harness's build, timing, and profiling commands.
-Run comparable measurements on controlled Linux machines. The configs target
-Vector 0.61. The remap variants handle both plain klog and structured JSON input,
-and share a focused check for plain and structured records.
+`vth check` runs native product profiles: stdin verifies terminal counts, klog
+verifies complete file-captured application output, and continuous file profiling
+checks process health on Linux. These contracts produce no comparative scores.
+Filebeat's CEL stdin/klog profiles buffer the finite input through EOF. Klog
+checks default to 300 seconds; explicit timeout overrides are retained.
+
+The older `build`, `bench` and `profile` workflows below remain Vector-specific.
+Their configs target Vector 0.61. Run controlled Linux measurements and verify
+equivalent output before comparing configurations.
 
 The two-node and single-node remap variants parse each record once and perform
 identical timestamp handling. Text records pass through reduction once; JSON
 records pass directly to the sink. Container-envelope parsing lives in the
 separate correctness cases. The [retained Vector-only measurements](../../results/2026-11-12/README.md)
-records measurements for the current definitions with Vector 0.61.0.
+record the pinned historical definitions and Vector 0.61.0 measurements.
 
 ```sh
 vth build --revision <commit>

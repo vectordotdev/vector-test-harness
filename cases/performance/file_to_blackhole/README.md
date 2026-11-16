@@ -1,5 +1,16 @@
 # File-to-blackhole profiling
 
+`vth check file_to_blackhole --subject <product> --subject-bin /path/to/binary`
+performs a bounded Linux process profile with fresh inputs and state. It requires
+`perf`, a pinned `VTH_FILEGEN_BIN` and port 9000 free, verifies that all 480 generator
+files grow, and retains a ten-second perf-stat sample (twenty seconds for Splunk's
+minimum ten-second counter cadence). Passing establishes native
+process/profiler health, not identities, complete delivery or capacity. Native
+discard-counter samples remain diagnostic.
+
+The older Vector `generate`/`profile` workflow below runs until interrupted and
+retains its existing input and checkpoint state.
+
 Continuously tail `logs/*.log` into a blackhole sink. The config also exports
 Vector's internal metrics on port 9001. This workload runs until interrupted;
 use `profile` with generated files instead of the finite-stdin `bench` command.

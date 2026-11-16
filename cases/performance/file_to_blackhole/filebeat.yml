@@ -1,0 +1,25 @@
+logging.level: info
+logging.metrics.period: 100ms
+logging.to_files: false
+max_procs: 2
+filebeat.shutdown_timeout: 5s
+setup.ilm.enabled: false
+setup.template.enabled: false
+queue.mem:
+  events: 16384
+  flush.min_events: 0
+  flush.timeout: 50ms
+filebeat.inputs:
+  - type: filestream
+    id: vth-input
+    paths: [@VTH_LOG_GLOB@]
+    file_identity.native: ~
+    prospector.scanner.check_interval: 1s
+    message_max_bytes: 1048576
+    publisher_pipeline.disable_host: true
+processors:
+  - drop_fields:
+      fields: [agent, ecs, log, input, host, event]
+      ignore_missing: true
+output.discard:
+  enabled: true

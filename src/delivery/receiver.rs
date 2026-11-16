@@ -3,15 +3,15 @@
 
 use super::fixture::{Fixture, Format, Verifier};
 use anyhow::{Context, Result};
-use http_body_util::{BodyExt, Empty, Limited};
+use http_body_util::{BodyExt, Full, Limited};
 use hyper::body::{Bytes, Incoming};
 use hyper::server::conn::http1;
 use hyper::service::service_fn;
 use hyper::{Method, Request, Response, StatusCode};
-use hyper_util::rt::{TokioIo, TokioTimer};
+use hyper_util::rt::TokioIo;
 use serde_json::{json, Value};
 use std::convert::Infallible;
-use std::io::{ErrorKind, Read};
+use std::io::{ErrorKind, Read, Write};
 use std::net::{Ipv4Addr, TcpListener, TcpStream};
 use std::pin::Pin;
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
@@ -35,6 +35,12 @@ pub(super) enum Transport {
     Text,
     ParsedJson,
     HttpJson,
+    HttpLogJson,
+    BeatsMessage,
+    BeatsParsed,
+    ForwardMessage,
+    ForwardParsed,
+    ElasticBulk,
 }
 
 impl Transport {
@@ -43,15 +49,28 @@ impl Transport {
             Self::Text => "tcp_text",
             Self::ParsedJson => "tcp_parsed_json",
             Self::HttpJson => "http_json",
+            Self::HttpLogJson => "http_log_json",
+            Self::BeatsMessage => "beats_message",
+            Self::BeatsParsed => "beats_parsed",
+            Self::ForwardMessage => "forward_message",
+            Self::ForwardParsed => "forward_parsed",
+            Self::ElasticBulk => "elastic_bulk",
         }
     }
 
     fn format(self) -> Format {
         match self {
             Self::Text => Format::Text,
-            Self::ParsedJson => Format::ParsedJson,
-            Self::HttpJson => Format::MessageJson,
+            Self::ParsedJson | Self::BeatsParsed | Self::ForwardParsed => Format::ParsedJson,
+            Self::HttpJson | Self::BeatsMessage | Self::ForwardMessage | Self::ElasticBulk => {
+                Format::MessageJson("message")
+            }
+            Self::HttpLogJson => Format::MessageJson("log"),
         }
+    }
+
+    fn is_http(self) -> bool {
+        matches!(self, Self::HttpJson | Self::HttpLogJson | Self::ElasticBulk)
     }
 }
 
@@ -75,6 +94,32 @@ impl Receiver {
         transport: Transport,
         reads_per_pass: usize,
     ) -> Result<Self> {
+        Self::start_verifier(
+            Verifier::new(fixture, transport.format()),
+            transport,
+            reads_per_pass,
+        )
+    }
+
+    pub(super) fn start_values(
+        expected: Vec<Value>,
+        format: Format,
+        projection: Option<Vec<String>>,
+        transport: Transport,
+        reads_per_pass: usize,
+    ) -> Result<Self> {
+        Self::start_verifier(
+            Verifier::new_values(expected, format, projection)?,
+            transport,
+            reads_per_pass,
+        )
+    }
+
+    fn start_verifier(
+        verifier: Verifier,
+        transport: Transport,
+        reads_per_pass: usize,
+    ) -> Result<Self> {
         anyhow::ensure!(
             (1..=1024).contains(&reads_per_pass),
             "receiver reads per pass must be between 1 and 1024"
@@ -83,17 +128,24 @@ impl Receiver {
             .context("bind delivery receiver to loopback")?;
         listener.set_nonblocking(true)?;
         let port = listener.local_addr()?.port();
-        let verifier = Arc::new(Mutex::new(Verifier::new(fixture, transport.format())));
+        let verifier = Arc::new(Mutex::new(verifier));
         let stop = Arc::new(AtomicBool::new(false));
         let worker_verifier = verifier.clone();
         let worker_stop = stop.clone();
         let worker = thread::Builder::new()
             .name(format!("delivery-{}", transport.name()))
-            .spawn(move || match transport {
-                Transport::Text | Transport::ParsedJson => {
-                    receive_tcp(listener, worker_verifier, worker_stop, reads_per_pass)
+            .spawn(move || {
+                if transport.is_http() {
+                    receive_http(listener, worker_verifier, worker_stop, transport)
+                } else {
+                    receive_tcp(
+                        listener,
+                        worker_verifier,
+                        worker_stop,
+                        reads_per_pass,
+                        transport,
+                    )
                 }
-                Transport::HttpJson => receive_http(listener, worker_verifier, worker_stop),
             })
             .context("start delivery receiver worker")?;
         Ok(Self {
@@ -148,9 +200,10 @@ impl Receiver {
         let drained = observations["drained"].as_bool().unwrap_or(false);
         report["passed"] = json!(verifier.passed() && drained);
         report["transport"] = json!(self.transport.name());
-        report["receiver_reads_per_pass"] = match self.transport {
-            Transport::Text | Transport::ParsedJson => json!(self.reads_per_pass),
-            Transport::HttpJson => Value::Null,
+        report["receiver_reads_per_pass"] = if self.transport.is_http() {
+            Value::Null
+        } else {
+            json!(self.reads_per_pass)
         };
         let seconds = if verifier.passed() && drained {
             verifier.measurement_seconds()
@@ -189,6 +242,8 @@ impl Drop for Receiver {
 struct Connection {
     stream: TcpStream,
     frame: Vec<u8>,
+    beats: super::protocol::beats::Decoder,
+    reply: Vec<u8>,
 }
 
 fn malformed(verifier: &Mutex<Verifier>, reason: impl AsRef<str>) {
@@ -214,6 +269,7 @@ fn receive_tcp(
     verifier: Arc<Mutex<Verifier>>,
     stop: Arc<AtomicBool>,
     reads_per_pass: usize,
+    transport: Transport,
 ) -> Result<Value> {
     let mut connections: Vec<Connection> = Vec::new();
     let mut accepted = 0u64;
@@ -247,6 +303,8 @@ fn receive_tcp(
                     connections.push(Connection {
                         stream,
                         frame: Vec::new(),
+                        beats: super::protocol::beats::Decoder::default(),
+                        reply: Vec::new(),
                     });
                 }
                 Err(error) if error.kind() == ErrorKind::WouldBlock => break,
@@ -255,14 +313,35 @@ fn receive_tcp(
             }
         }
         connections.retain_mut(|connection| {
+            while !connection.reply.is_empty() {
+                match connection.stream.write(&connection.reply) {
+                    Ok(0) => {
+                        malformed(&verifier, "native protocol ACK made no progress");
+                        return false;
+                    }
+                    Ok(count) => {
+                        connection.reply.drain(..count);
+                        progress = true;
+                    }
+                    Err(error) if error.kind() == ErrorKind::WouldBlock => break,
+                    Err(error) if error.kind() == ErrorKind::Interrupted => continue,
+                    Err(error) => {
+                        malformed(&verifier, format!("native protocol ACK failed: {error}"));
+                        return false;
+                    }
+                }
+            }
             for _ in 0..reads_per_pass {
                 read_calls += 1;
                 match connection.stream.read(&mut scratch) {
                     Ok(0) => {
                         progress = true;
                         eof += 1;
-                        if !connection.frame.is_empty() {
-                            malformed(&verifier, "TCP EOF before newline frame delimiter");
+                        if !connection.frame.is_empty()
+                            || !connection.reply.is_empty()
+                            || !connection.beats.complete()
+                        {
+                            malformed(&verifier, "TCP EOF before protocol frame or ACK completed");
                         }
                         return false;
                     }
@@ -270,6 +349,59 @@ fn receive_tcp(
                         progress = true;
                         wire_bytes += length as u64;
                         data_reads += 1;
+                        if matches!(
+                            transport,
+                            Transport::BeatsMessage
+                                | Transport::BeatsParsed
+                                | Transport::ForwardMessage
+                                | Transport::ForwardParsed
+                        ) {
+                            if connection.frame.len() + length > MAX_BODY_BYTES {
+                                malformed(&verifier, "native protocol frame exceeds 4 MiB");
+                                return false;
+                            }
+                            connection.frame.extend_from_slice(&scratch[..length]);
+                            loop {
+                                let decoded = if matches!(
+                                    transport,
+                                    Transport::BeatsMessage | Transport::BeatsParsed
+                                ) {
+                                    connection.beats.decode(&connection.frame)
+                                } else {
+                                    super::protocol::forward::decode(&connection.frame)
+                                };
+                                match decoded {
+                                    Ok(Some(frame)) => {
+                                        if frame.consumed == 0
+                                            || frame.consumed > connection.frame.len()
+                                        {
+                                            malformed(&verifier, "invalid native decoder progress");
+                                            return false;
+                                        }
+                                        let mut verifier = verifier_lock(&verifier);
+                                        for record in frame.records {
+                                            verifier.record_json(&record);
+                                        }
+                                        if !verifier.has_errors() {
+                                            connection.reply.extend_from_slice(&frame.reply);
+                                        }
+                                        connection.frame.drain(..frame.consumed);
+                                    }
+                                    Ok(None) => break,
+                                    Err(error) => {
+                                        malformed(
+                                            &verifier,
+                                            format!("native protocol decode failed: {error:#}"),
+                                        );
+                                        return false;
+                                    }
+                                }
+                            }
+                            if !connection.reply.is_empty() {
+                                break;
+                            }
+                            continue;
+                        }
                         for fragment in scratch[..length].split_inclusive(|byte| *byte == b'\n') {
                             if connection.frame.len() + fragment.len() > MAX_FRAME_BYTES {
                                 malformed(&verifier, "TCP frame exceeds 64 KiB");
@@ -330,6 +462,7 @@ struct HttpStats {
     completed_body_bytes: u64,
     validated_requests: u64,
     active_bodies: usize,
+    control_requests: u64,
 }
 
 // Also decremented when the connection future is cancelled at the drain deadline.
@@ -345,6 +478,7 @@ fn receive_http(
     listener: TcpListener,
     verifier: Arc<Mutex<Verifier>>,
     stop: Arc<AtomicBool>,
+    transport: Transport,
 ) -> Result<Value> {
     let runtime = tokio::runtime::Builder::new_current_thread()
         .enable_io()
@@ -393,15 +527,18 @@ fn receive_http(
                             });
                             let service_verifier = verifier.clone();
                             let service = service_fn(move |request| {
-                                http_request(request, service_verifier.clone(), stats.clone())
+                                http_request(request, service_verifier.clone(), stats.clone(), transport)
                             });
                             let outcome = http1::Builder::new()
                                 .half_close(true)
                                 .ignore_invalid_headers(false)
                                 .max_headers(64)
                                 .max_buf_size(MAX_FRAME_BYTES)
-                                .header_read_timeout(REQUEST_LIMIT)
-                                .timer(TokioTimer::new())
+                                // An idle keep-alive connection is valid between
+                                // canary, warmup and measured requests. The case
+                                // deadline and bounded final drain own header
+                                // cancellation; each request body is still timed.
+                                .header_read_timeout(None)
                                 .serve_connection(io, service)
                                 .await;
                             // A TCP readiness probe can connect and close without
@@ -434,6 +571,7 @@ fn receive_http(
                         "completed_connections": completed_connections,
                         "open_connections": open_connections,
                         "requests": stats.requests,
+                        "control_requests": stats.control_requests,
                         "completed_request_bodies": stats.completed_bodies,
                         "completed_request_body_bytes": stats.completed_body_bytes,
                         "io_counters_scope": "whole_receiver_lifetime",
@@ -457,18 +595,26 @@ async fn http_request(
     request: Request<Incoming>,
     verifier: Arc<Mutex<Verifier>>,
     stats: Arc<Mutex<HttpStats>>,
-) -> std::result::Result<Response<Empty<Bytes>>, Infallible> {
+    transport: Transport,
+) -> std::result::Result<Response<Full<Bytes>>, Infallible> {
     stats.lock().expect("HTTP stats poisoned").requests += 1;
     let reject = |status, reason: &str| {
         malformed(&verifier, reason);
         response(status)
     };
-    if request.method() != Method::POST
-        || request.uri().path_and_query().map(|path| path.as_str()) != Some("/")
+    let elastic = matches!(transport, Transport::ElasticBulk);
+    let control = if elastic && request.method() == Method::GET {
+        super::protocol::elastic::handshake(request.uri().path())
+    } else {
+        None
+    };
+    let expected_path = if elastic { "/_bulk" } else { "/" };
+    if control.is_none()
+        && (request.method() != Method::POST || request.uri().path() != expected_path)
     {
         return Ok(reject(
             StatusCode::BAD_REQUEST,
-            "HTTP receiver expects POST /",
+            "unexpected HTTP method or path",
         ));
     }
     if request
@@ -521,7 +667,40 @@ async fn http_request(
         stats.completed_bodies += 1;
         stats.completed_body_bytes += body.len() as u64;
     }
+    if let Some(control) = control {
+        if !body.is_empty() {
+            return Ok(reject(
+                StatusCode::BAD_REQUEST,
+                "protocol handshake must have an empty body",
+            ));
+        }
+        stats.lock().expect("HTTP stats poisoned").control_requests += 1;
+        return Ok(elastic_response(StatusCode::OK, &control));
+    }
     let mut verifier = verifier_lock(&verifier);
+    if elastic {
+        let (records, responses) = match super::protocol::elastic::decode_bulk(&body) {
+            Ok(decoded) => decoded,
+            Err(error) => {
+                verifier.malformed(&format!("invalid Bulk request: {error:#}"));
+                return Ok(response(StatusCode::BAD_REQUEST));
+            }
+        };
+        for record in records {
+            verifier.record_json(&record);
+        }
+        if verifier.has_errors() {
+            return Ok(response(StatusCode::BAD_REQUEST));
+        }
+        stats
+            .lock()
+            .expect("HTTP stats poisoned")
+            .validated_requests += 1;
+        return Ok(elastic_response(
+            StatusCode::OK,
+            &json!({"errors":false,"took":0,"items":responses}),
+        ));
+    }
     let mut records = 0usize;
     // Vector can use one JSON array per request or a stream of JSON values.
     // The body and parser depth are bounded; raw output is discarded immediately.
@@ -558,8 +737,8 @@ async fn http_request(
     Ok(response(status))
 }
 
-fn response(status: StatusCode) -> Response<Empty<Bytes>> {
-    let mut response = Response::new(Empty::new());
+fn response(status: StatusCode) -> Response<Full<Bytes>> {
+    let mut response = Response::new(Full::new(Bytes::new()));
     *response.status_mut() = status;
     if !status.is_success() {
         response.headers_mut().insert(
@@ -567,6 +746,22 @@ fn response(status: StatusCode) -> Response<Empty<Bytes>> {
             hyper::header::HeaderValue::from_static("close"),
         );
     }
+    response
+}
+
+fn elastic_response(status: StatusCode, value: &Value) -> Response<Full<Bytes>> {
+    let mut response = Response::new(Full::new(Bytes::from(
+        serde_json::to_vec(value).expect("serializable protocol response"),
+    )));
+    *response.status_mut() = status;
+    response.headers_mut().insert(
+        "x-elastic-product",
+        hyper::header::HeaderValue::from_static("Elasticsearch"),
+    );
+    response.headers_mut().insert(
+        hyper::header::CONTENT_TYPE,
+        hyper::header::HeaderValue::from_static("application/json"),
+    );
     response
 }
 
@@ -616,6 +811,51 @@ mod tests {
     use std::io::Write;
 
     #[test]
+    fn http_keepalive_can_idle_but_incomplete_next_request_fails_drain() {
+        for partial_next_request in [false, true] {
+            let receiver = Receiver::start_values(
+                vec![json!({"message":"one"}), json!({"message":"two"})],
+                Format::ApplicationJson,
+                None,
+                Transport::HttpJson,
+                16,
+            )
+            .unwrap();
+            let mut stream = TcpStream::connect((Ipv4Addr::LOCALHOST, receiver.port())).unwrap();
+            stream
+                .set_read_timeout(Some(Duration::from_secs(4)))
+                .unwrap();
+            for message in ["one", "two"] {
+                let body = json!({"message":message}).to_string();
+                write!(
+                    stream,
+                    "POST / HTTP/1.1\r\nHost: localhost\r\nContent-Length: {}\r\n\r\n{body}",
+                    body.len()
+                )
+                .unwrap();
+                let mut response = Vec::new();
+                while !response.ends_with(b"\r\n\r\n") {
+                    let mut byte = [0];
+                    stream.read_exact(&mut byte).unwrap();
+                    response.push(byte[0]);
+                }
+                assert!(response.starts_with(b"HTTP/1.1 200"));
+                if message == "one" && !partial_next_request {
+                    thread::sleep(REQUEST_LIMIT + Duration::from_millis(100));
+                }
+            }
+            if partial_next_request {
+                stream.write_all(b"POST / HTTP/1.1\r\nHost:").unwrap();
+            } else {
+                drop(stream);
+            }
+            let report = receiver.finish().unwrap();
+            assert_eq!(report["passed"], !partial_next_request, "{report}");
+            assert_eq!(report["unique"], 2);
+        }
+    }
+
+    #[test]
     fn wire_delivery_drains_fragments_and_rejects_late_duplicates_and_http_errors() {
         let fixture = Fixture::new(2, 0, "receiver-wire-test".to_owned());
         assert!(Receiver::start_with_reads(fixture.clone(), Transport::Text, 0).is_err());
@@ -625,6 +865,7 @@ mod tests {
                 Transport::Text => 1,
                 Transport::ParsedJson => 64,
                 Transport::HttpJson => 16,
+                _ => unreachable!("basic transport fixture"),
             };
             let receiver =
                 Receiver::start_with_reads(fixture.clone(), transport, reads_per_pass).unwrap();
@@ -655,6 +896,7 @@ mod tests {
                             );
                             body.push(b'\n');
                         }
+                        _ => unreachable!("basic transport fixture"),
                     }
                 }
                 sent_bytes.set(sent_bytes.get() + body.len() as u64);

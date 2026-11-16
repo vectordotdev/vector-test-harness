@@ -1,0 +1,19 @@
+[agent]
+  debug = true
+  interval = "1s"
+  round_interval = false
+  metric_batch_size = 256
+  metric_buffer_limit = 16384
+  flush_interval = "50ms"
+  flush_jitter = "0s"
+  collection_jitter = "0s"
+  omit_hostname = true
+[[inputs.tail]]
+  files = ["/dev/stdin"]
+  pipe = true
+  watch_method = "poll"
+  initial_read_offset = "beginning"
+  max_undelivered_lines = 16384
+  data_format = "value"
+  data_type = "string"
+[[outputs.discard]]

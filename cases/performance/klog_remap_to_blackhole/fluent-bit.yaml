@@ -1,0 +1,78 @@
+service:
+  flush: 0.05
+  grace: 5
+  daemon: off
+  log_level: info
+parsers:
+  - name: raw_line
+    format: regex
+    regex: '^(?<raw>(?<log>[^\n]*))(?=\n)'
+    decode_field_as: json log
+pipeline:
+  inputs:
+    - name: stdin
+      tag: vth.records
+      parser: raw_line
+      buffer_size: 64k
+      mem_buf_limit: 16M
+    - name: dummy
+      tag: vth.tick
+      dummy: '{"tick":true}'
+      interval_sec: 1
+  filters:
+    - name: lua
+      match: 'vth.*'
+      call: process
+      time_as_table: true
+      enable_flb_null: true
+      type_int_key: v
+      code: |
+        local pending = nil
+        local last = nil
+        local function stamp(sec, nsec)
+          return os.date("!%Y-%m-%dT%H:%M:%S", sec) .. string.format(".%09dZ", nsec)
+        end
+        local function event(ts, log, kind)
+          local sec = ts.sec
+          local nsec = ts.nsec
+          if type(log) == "table" and type(log.ts) == "number" then
+            local nanos = log.ts * 1000000000
+            sec = math.floor(nanos / 1000000000)
+            nsec = nanos - sec * 1000000000
+          end
+          return {log=log, log_type=kind, host=FLB_ENV["HOSTNAME"], source_type="stdin", timestamp=stamp(sec,nsec)}
+        end
+        function process(tag, ts, record)
+          local now = ts.sec + ts.nsec / 1000000000
+          if tag == "vth.tick" then
+            if pending ~= nil and now - last >= 30 then
+              local out = pending
+              pending = nil
+              return 2, ts, out
+            end
+            return -1, ts, record
+          end
+          if type(record.log) ~= "string" or record.log ~= record.raw then
+            return 2, ts, event(ts, record.log, "json")
+          end
+          local text = record.log
+          local starts = string.match(text, "^[IWEF]%d%d%d%d%s") ~= nil
+          local out = nil
+          if starts and pending ~= nil then
+            out = pending
+            pending = nil
+          end
+          if pending == nil then
+            pending = event(ts, text, "text")
+          else
+            pending.log = pending.log .. "\n" .. text
+          end
+          last = now
+          if out ~= nil then return 2, ts, out end
+          return -1, ts, record
+        end
+  outputs:
+    - name: file
+      match: 'vth.*'
+      file: @VTH_CAPTURE_FILE@
+      format: plain

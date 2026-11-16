@@ -1,4 +1,4 @@
-# Klog remapping performance
+# Klog checks and Vector benchmarking
 
 The baked million-line fixture contains plain klog and structured JSON records.
 Each record is decoded once into `log`, classified as text or JSON, and given the
@@ -10,14 +10,23 @@ metadata is retained. The payload is not duplicated into top-level fields.
 the blackhole and pass text through the same multiline reducer. Klog headers
 start new text records; continuation lines are joined with newlines.
 
-The fixture does not contain Docker/container envelopes. That parsing belongs in
-the dedicated wrapped-JSON and Docker cases rather than unused stages here.
+`vth check klog_remap_to_blackhole --subject <product> --subject-bin /path/to/binary`
+runs an interleaved JSON/continuation canary and the full fixture, capturing native
+output to files for exact multiset, host/source and nanosecond timestamp checks.
+Vector runs both variants; other products use one native logical pipeline.
+This proves output semantics with file capture, not discard throughput.
+
+The check defaults to 300 seconds, including native 30-second idle flushes where
+required. Explicit `--timeout-secs` values take precedence. Filebeat's CEL profile
+buffers the finite input through EOF; its result is no streaming-capacity claim.
+
+The fixture contains no Docker/container envelopes; those have dedicated cases.
 
 Run `vth bench klog_remap_to_blackhole --vector-bin /path/to/vector`. Use
 `--config` to select one variant. The untransformed stdin reference was removed
 because it performs different work.
 
-## Vector-only elapsed-time measurements — 2026-11-12
+## Historical Vector process timings — 2026-11-12
 
 Vector 0.61.0 on an AWS `c5.large` (2 vCPUs, 4 GiB RAM), Ubuntu 22.04.5.
 Each config used the checked-in fixture, one warmup, and ten measured runs.

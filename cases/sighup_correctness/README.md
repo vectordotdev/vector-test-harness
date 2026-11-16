@@ -1,15 +1,15 @@
 # sighup_correctness
 
-This remote case has been retired.
+The local check verifies exact records before and after a SIGHUP output switch.
+It waits for the product's native reload-completion signal before sending the
+second record and requires the same main PID, clean shutdown and drained receivers.
+It produces no performance score; the old remote timing case remains retired.
 
-A fixed one-second delay does not establish comparable reload completion across products. The Vector-only local check remains supported.
-
-See the [comparison audit](../../docs/comparisons.md) for the publication criteria.
-Historical scorecards and new numerical comparisons have been removed; raw run
-artifacts remain in private storage and the case history remains in Git.
-
-Run the Vector-only check with:
+Profiles exist for Vector, Fluent Bit, Telegraf, Fluentd and Logstash. Fluentd's
+supervisor can replace its worker during reload. Filebeat and Splunk output
+changes do not satisfy this same-main-process SIGHUP contract.
 
 ```sh
 vth check sighup_correctness --vector-bin /path/to/vector
+vth check sighup_correctness --subject telegraf --subject-bin /path/to/telegraf
 ```
