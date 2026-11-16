@@ -25,7 +25,8 @@ use tokio::task::JoinSet;
 const POLL: Duration = Duration::from_millis(5);
 const DRAIN_QUIET: Duration = Duration::from_millis(100);
 const DRAIN_LIMIT: Duration = Duration::from_secs(2);
-const MAX_CONNECTIONS: usize = 32;
+const MAX_CONNECTIONS: usize = 512;
+const MAX_HTTP_CONNECTIONS: usize = 32;
 const MAX_FRAME_BYTES: usize = 64 * 1024;
 const MAX_BODY_BYTES: usize = 4 * 1024 * 1024;
 const REQUEST_LIMIT: Duration = Duration::from_secs(2);
@@ -274,6 +275,7 @@ fn receive_tcp(
     let mut connections: Vec<Connection> = Vec::new();
     let mut accepted = 0u64;
     let mut eof = 0u64;
+    let mut peak_open_connections = 0usize;
     let mut wire_bytes = 0u64;
     let mut read_calls = 0u64;
     let mut data_reads = 0u64;
@@ -306,6 +308,7 @@ fn receive_tcp(
                         beats: super::protocol::beats::Decoder::default(),
                         reply: Vec::new(),
                     });
+                    peak_open_connections = peak_open_connections.max(connections.len());
                 }
                 Err(error) if error.kind() == ErrorKind::WouldBlock => break,
                 Err(error) if error.kind() == ErrorKind::Interrupted => continue,
@@ -440,6 +443,8 @@ fn receive_tcp(
                     "drain_basis": "TCP EOF and quiet accept queue after subject exit",
                     "accepted_connections": accepted,
                     "eof_connections": eof,
+                    "connection_limit": MAX_CONNECTIONS,
+                    "peak_open_connections": peak_open_connections,
                     "open_connections": connections.len(),
                     "pending_frame_bytes": pending_bytes,
                     "wire_bytes": wire_bytes,
@@ -506,12 +511,12 @@ fn receive_http(
                     malformed(&verifier, format!("HTTP connection task failed: {error}"));
                 }
             }
-            for _ in 0..MAX_CONNECTIONS {
+            for _ in 0..MAX_HTTP_CONNECTIONS {
                 match listener.accept() {
                     Ok((stream, _)) => {
                         progress = true;
                         accepted += 1;
-                        if connections.len() == MAX_CONNECTIONS {
+                        if connections.len() == MAX_HTTP_CONNECTIONS {
                             malformed(&verifier, "HTTP connection limit exceeded");
                             continue;
                         }
@@ -872,6 +877,14 @@ mod tests {
             let sent_bytes = std::cell::Cell::new(0u64);
             // Empty readiness connections are allowed for every transport.
             drop(TcpStream::connect((Ipv4Addr::LOCALHOST, receiver.port())).unwrap());
+            // Native chunk flushes may retain more than 32 concurrent TCP connections.
+            let idle_connections = if transport.is_http() {
+                Vec::new()
+            } else {
+                (0..40)
+                    .map(|_| TcpStream::connect((Ipv4Addr::LOCALHOST, receiver.port())).unwrap())
+                    .collect::<Vec<_>>()
+            };
             let send = |ids: std::ops::Range<usize>| {
                 let mut stream =
                     TcpStream::connect((Ipv4Addr::LOCALHOST, receiver.port())).unwrap();
@@ -931,6 +944,7 @@ mod tests {
                 .measurement_seconds()
                 .is_none());
             send(1..fixture.total());
+            drop(idle_connections);
             let report = receiver.finish().unwrap();
             assert_eq!(report["passed"], true, "{report}");
             assert_eq!(report["drained"], true, "{report}");
@@ -939,6 +953,10 @@ mod tests {
                 assert!(report["receiver_reads_per_pass"].is_null());
                 assert_eq!(report["completed_request_body_bytes"], sent_bytes.get());
             } else {
+                assert_eq!(report["connection_limit"], MAX_CONNECTIONS);
+                assert!(report["peak_open_connections"].as_u64().unwrap() > 32);
+                assert_eq!(report["accepted_connections"], 43);
+                assert_eq!(report["eof_connections"], 43);
                 assert_eq!(report["receiver_reads_per_pass"], reads_per_pass);
                 assert_eq!(report["wire_bytes"], sent_bytes.get());
                 let data_reads = report["data_reads"].as_u64().unwrap();
