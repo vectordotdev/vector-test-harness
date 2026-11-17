@@ -23,7 +23,7 @@
       when: vector_version is regex('^nightly')
       include_tasks: "install_deb_from_url.yml"
       vars:
-        deb: "https://packages.timber.io/vector/nightly/{{ vector_version | regex_replace('^nightly-', '') }}/vector_nightly-1_amd64.deb"
+        deb: "https://install.datadoghq.com/vector/nightly/{{ vector_version | regex_replace('^nightly-', '') }}/vector_nightly-1_amd64.deb"
 
     - name: Install Vector .deb package from local file
       when: vector_version is regex('^dev-')
