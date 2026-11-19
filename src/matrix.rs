@@ -246,7 +246,14 @@ fn run_case(
             args.events.to_string(),
             "--seed".into(),
             args.seed.to_string(),
+            "--producer-chunk-bytes".into(),
+            args.producer_chunk_bytes.to_string(),
+            "--receiver-reads-per-pass".into(),
+            args.receiver_reads_per_pass.to_string(),
         ]);
+        if let Some(cpus) = &args.subject_cpus {
+            child_args.extend(["--subject-cpus".into(), cpus.clone()]);
+        }
     }
     row["command"] = json!({"program":executable,"args":child_args,"cwd":root,"env_keys":product.env.keys().collect::<Vec<_>>(),"unset_env":CLEAN_ENV});
     row["raw_report_path"] = json!(output.join("result.json"));
@@ -459,8 +466,12 @@ pub fn run(runtime: &Runtime, args: MatrixArgs) -> Result<i32> {
     }
     let mut rows = Vec::new();
     for case in &cases {
-        for subject in &subjects {
-            for run in 1..=args.runs {
+        for run in 1..=args.runs {
+            let mut round_subjects = subjects.clone();
+            if run % 2 == 0 {
+                round_subjects.reverse();
+            }
+            for subject in &round_subjects {
                 let (outcome, reason) = if let Some((outcome, reason)) = pending(*case, *subject) {
                     (outcome, Some(reason.to_owned()))
                 } else if !runtimes
@@ -487,10 +498,12 @@ pub fn run(runtime: &Runtime, args: MatrixArgs) -> Result<i32> {
         "runtimes":{"source":config,"sha256":sha256(&config)?,"subjects":provenance},
         "catalog":{"cases":CheckCase::value_variants().iter().map(|case| case.name()).collect::<Vec<_>>(),"subjects":Subject::value_variants().iter().map(|subject|subject.name()).collect::<Vec<_>>()},
         "selection":{"cases":cases.iter().map(|case|case.name()).collect::<Vec<_>>(),"subjects":subjects.iter().map(|subject|subject.name()).collect::<Vec<_>>(),"runs":args.runs},
-        "finite_workload":{"events":args.events,"seed":args.seed,"timeout_secs":args.timeout_for(CheckCase::TcpToTcp)},
+        "finite_workload":{"events":args.events,"seed":args.seed,"timeout_secs":args.timeout_for(CheckCase::TcpToTcp),
+            "subject_cpus":args.subject_cpus,"producer_chunk_bytes":args.producer_chunk_bytes,"receiver_reads_per_pass":args.receiver_reads_per_pass},
         "timeout_policy":{"override_secs":args.timeout_secs,"default_secs":90,"klog_default_secs":300},
         "scope":"sequential same-host verification; native unsupported and pending backends remain visible; no ranking or capacity claim",
-        "execution":{"concurrent_cases":1,"exclusive_host":false,"headroom_calibrated":false},
+        "execution":{"concurrent_cases":1,"exclusive_host":false,"headroom_calibrated":false,
+            "order":"case, round, subject; subject order reverses on even rounds"},
         "os":std::env::consts::OS,"architecture":std::env::consts::ARCH,"rows":rows});
     if runtime.dry_run {
         println!("{}", serde_json::to_string(&report)?);
